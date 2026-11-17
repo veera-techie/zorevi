@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    background-color: #F6F3FB;
+    color: #1E1B2E;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Custom Scrollbar for sleek UI */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #D9D2E9;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #BAAED9;
+}
+
+/* Glass & Card styles */
+.zorevi-card {
+  background: #FFFFFF;
+  border: 1px solid #EAE4F5;
+  border-radius: 18px;
+  box-shadow: 0 4px 20px rgba(108, 43, 217, 0.05);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.zorevi-card:hover {
+  box-shadow: 0 6px 24px rgba(108, 43, 217, 0.08);
+}
+
+.purple-gradient {
+  background: linear-gradient(135deg, #6B35D9 0%, #8B5CF6 100%);
+}
+
+.purple-gradient-subtle {
+  background: linear-gradient(135deg, #F3EEFB 0%, #EDE5FA 100%);
+}
+
+.purple-banner-gradient {
+  background: linear-gradient(105deg, #F5F0FD 0%, #EDE6FC 40%, #E3D7FA 100%);
+}

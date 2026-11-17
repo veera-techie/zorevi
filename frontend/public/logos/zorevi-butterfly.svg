@@ -1,0 +1,30 @@
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="wing-tl" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8B5CF6"/>
+      <stop offset="100%" stop-color="#6B35D9"/>
+    </linearGradient>
+    <linearGradient id="wing-tr" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#A78BFA"/>
+      <stop offset="100%" stop-color="#7C3AED"/>
+    </linearGradient>
+    <linearGradient id="wing-bl" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6B35D9"/>
+      <stop offset="100%" stop-color="#4C1D95"/>
+    </linearGradient>
+    <linearGradient id="wing-br" x1="100%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#7C3AED"/>
+      <stop offset="100%" stop-color="#5B21B6"/>
+    </linearGradient>
+  </defs>
+  <!-- Top Left Wing -->
+  <path d="M19 19C15 11 6 8 3 14C0.5 19 6 23 19 19Z" fill="url(#wing-tl)" opacity="0.95"/>
+  <!-- Top Right Wing -->
+  <path d="M21 19C25 11 34 8 37 14C39.5 19 34 23 21 19Z" fill="url(#wing-tr)" opacity="0.95"/>
+  <!-- Bottom Left Wing -->
+  <path d="M19 21C14 26 7 29 5 34C3.5 37.5 9 39 19 21Z" fill="url(#wing-bl)" opacity="0.9"/>
+  <!-- Bottom Right Wing -->
+  <path d="M21 21C26 26 33 29 35 34C36.5 37.5 31 39 21 21Z" fill="url(#wing-br)" opacity="0.9"/>
+  <!-- Center Ribbon Knot / Body -->
+  <circle cx="20" cy="20" r="2.5" fill="#4C1D95"/>
+</svg>
