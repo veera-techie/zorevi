@@ -1,0 +1,139 @@
+.zorevi-designers-page {
+  padding-top: 24px;
+  padding-bottom: 60px;
+}
+
+.zorevi-designers-header {
+  margin-bottom: 24px;
+}
+
+.zorevi-designers-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #1e1b4b;
+  margin-bottom: 6px;
+}
+
+.zorevi-designers-subtitle {
+  font-size: 0.95rem;
+  color: #6b7280;
+}
+
+.zorevi-filter-panel {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid var(--color-border-light, #f3f4f6);
+  padding: 18px 24px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+}
+
+.zorevi-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.zorevi-filter-search {
+  position: relative;
+  flex: 1.5;
+  min-width: 240px;
+}
+
+.zorevi-filter-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  pointer-events: none;
+}
+
+.zorevi-filter-search input {
+  width: 100%;
+  padding: 10px 14px 10px 40px;
+  border: 1px solid #e5e7eb;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  color: #1e1b4b;
+  outline: none;
+  background: #f9fafb;
+  transition: all 0.15s ease;
+}
+
+.zorevi-filter-search input:focus {
+  background: #ffffff;
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
+}
+
+.zorevi-clear-input {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #e5e7eb;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.zorevi-filter-select-wrap {
+  flex: 1;
+  min-width: 160px;
+}
+
+.zorevi-filter-select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  color: #374151;
+  background: #ffffff;
+  outline: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.zorevi-filter-select:focus {
+  border-color: #7c3aed;
+}
+
+.zorevi-filter-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid #f3f4f6;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.zorevi-empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px dashed #ddd6fe;
+  margin-top: 24px;
+}
+
+.zorevi-empty-state h3 {
+  font-size: 1.25rem;
+  color: #1e1b4b;
+  margin-bottom: 8px;
+}
+
+.zorevi-empty-state p {
+  color: #6b7280;
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+}
+

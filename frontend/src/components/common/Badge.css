@@ -1,0 +1,78 @@
+.zorevi-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 600;
+  border-radius: 9999px;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.zorevi-badge--sm {
+  font-size: 0.72rem;
+  padding: 3px 8px;
+}
+
+.zorevi-badge--md {
+  font-size: 0.8rem;
+  padding: 5px 12px;
+}
+
+.zorevi-badge--lg {
+  font-size: 0.875rem;
+  padding: 6px 14px;
+}
+
+/* Variants */
+.zorevi-badge--default {
+  background: var(--color-primary-light, #ede9fe);
+  color: var(--color-primary, #7c3aed);
+}
+
+.zorevi-badge--verified {
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid #a7f3d0;
+}
+
+.zorevi-badge--top-rated {
+  background: #fffbeb;
+  color: #d97706;
+  border: 1px solid #fde68a;
+}
+
+.zorevi-badge--pending {
+  background: #fffbeb;
+  color: #b45309;
+  border: 1px solid #fef3c7;
+}
+
+.zorevi-badge--confirmed {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+
+.zorevi-badge--upcoming {
+  background: #f5f0ff;
+  color: #7c3aed;
+  border: 1px solid #ddd6fe;
+}
+
+.zorevi-badge--completed {
+  background: #eef2ff;
+  color: #4338ca;
+  border: 1px solid #c7d2fe;
+}
+
+.zorevi-badge--cancelled {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.zorevi-badge--pill {
+  background: #f3f4f6;
+  color: #4b5563;
+}
+

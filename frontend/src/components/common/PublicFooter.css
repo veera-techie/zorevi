@@ -1,0 +1,137 @@
+.zorevi-footer {
+  background: #ffffff;
+  border-top: 1px solid var(--color-border-light, #f3f4f6);
+  padding: 60px 0 24px;
+  margin-top: auto;
+}
+
+.zorevi-footer__grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 48px;
+}
+
+.zorevi-footer__logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  margin-bottom: 16px;
+}
+
+.zorevi-footer__brand-name {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--color-primary, #7c3aed);
+  display: block;
+  line-height: 1;
+}
+
+.zorevi-footer__tagline {
+  font-size: 0.7rem;
+  color: #6b7280;
+  display: block;
+}
+
+.zorevi-footer__desc {
+  color: #6b7280;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  max-width: 340px;
+  margin-bottom: 20px;
+}
+
+.zorevi-footer__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #f5f0ff;
+  color: var(--color-primary, #7c3aed);
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 1px solid #ddd6fe;
+}
+
+.zorevi-footer__title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1e1b4b;
+  margin-bottom: 18px;
+}
+
+.zorevi-footer__links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.zorevi-footer__links a {
+  color: #6b7280;
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.zorevi-footer__links a:hover {
+  color: var(--color-primary, #7c3aed);
+}
+
+.zorevi-footer__bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 24px;
+  border-top: 1px solid #f3f4f6;
+  color: #9ca3af;
+  font-size: 0.8rem;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.zorevi-footer__legal {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.zorevi-footer__legal a {
+  color: #6b7280;
+  text-decoration: none;
+}
+
+.zorevi-footer__legal a:hover {
+  color: var(--color-primary, #7c3aed);
+}
+
+.zorevi-footer__credit {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+@media (max-width: 900px) {
+  .zorevi-footer__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .zorevi-footer {
+    padding: 40px 0 80px; /* space for mobile nav */
+  }
+  .zorevi-footer__grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .zorevi-footer__bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+

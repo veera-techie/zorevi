@@ -1,0 +1,123 @@
+/* ============================================
+   DESIGNER STUDIO PAGES STYLES
+   ============================================ */
+
+.zorevi-designer-dash {
+  width: 100%;
+}
+
+.zorevi-designer-dash__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.zorevi-designer-dash__title {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #1e1b4b;
+  margin: 0 0 4px 0;
+}
+
+.zorevi-designer-dash__subtitle {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.zorevi-designer-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.zorevi-des-stat-card {
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid var(--color-border-light, #f3f4f6);
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+}
+
+.zorevi-des-stat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.zorevi-des-stat-val {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #1e1b4b;
+  margin-bottom: 4px;
+}
+
+.zorevi-des-stat-trend {
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.zorevi-des-stat-trend.positive {
+  color: #10b981;
+}
+
+.zorevi-des-stat-trend.neutral {
+  color: #6b7280;
+}
+
+.zorevi-designer-mid-grid {
+  display: grid;
+  grid-template-columns: 320px 1fr 280px;
+  gap: 20px;
+}
+
+.zorevi-des-avatar-md {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ede9fe;
+}
+
+.zorevi-designer-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.zorevi-designer-status-badge .dot {
+  width: 8px;
+  height: 8px;
+  background: #10b981;
+  border-radius: 50%;
+}
+
+@media (max-width: 1200px) {
+  .zorevi-designer-stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .zorevi-designer-mid-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .zorevi-designer-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+

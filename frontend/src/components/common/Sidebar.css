@@ -1,0 +1,157 @@
+.zorevi-sidebar {
+  width: var(--sidebar-width, 260px);
+  min-width: var(--sidebar-width, 260px);
+  background: #ffffff;
+  border-right: 1px solid var(--color-border-light, #f3f4f6);
+  height: calc(100vh - var(--header-height, 64px));
+  position: sticky;
+  top: var(--header-height, 64px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px 12px;
+  overflow-y: auto;
+  box-shadow: 1px 0 2px rgba(0, 0, 0, 0.02);
+  z-index: 100;
+  transition: transform 0.25s ease;
+}
+
+.zorevi-sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.zorevi-sidebar__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  color: #4b5563;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.zorevi-sidebar__item:hover {
+  background: #f5f0ff;
+  color: var(--color-primary, #7c3aed);
+}
+
+.zorevi-sidebar__item.active {
+  background: var(--color-primary-gradient, linear-gradient(135deg, #7c3aed 0%, #a855f7 100%));
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+}
+
+.zorevi-sidebar__item.active svg {
+  color: #ffffff;
+}
+
+.zorevi-sidebar__badge {
+  margin-left: auto;
+  background: #f59e0b;
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  line-height: 1;
+}
+
+.zorevi-sidebar__badge--danger {
+  background: #ef4444;
+}
+
+.zorevi-sidebar__divider {
+  height: 1px;
+  background: #f3f4f6;
+  margin: 10px 0;
+}
+
+/* Sidebar Promo Card */
+.zorevi-sidebar__promo {
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+  border: 1px solid #e9d5ff;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.zorevi-sidebar__promo-icon {
+  width: 32px;
+  height: 32px;
+  background: #7c3aed;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 8px;
+}
+
+.zorevi-sidebar__promo-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #1e1b4b;
+  margin-bottom: 8px;
+}
+
+.zorevi-sidebar__promo-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: var(--color-primary-gradient, linear-gradient(135deg, #7c3aed 0%, #a855f7 100%));
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  text-decoration: none;
+  transition: opacity 0.15s ease;
+}
+
+.zorevi-sidebar__promo-btn:hover {
+  opacity: 0.92;
+  color: #ffffff;
+}
+
+/* Mobile Sidebar Drawer */
+@media (max-width: 1023px) {
+  .zorevi-sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 500;
+    transform: translateX(-100%);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+  }
+
+  .zorevi-sidebar.open {
+    transform: translateX(0);
+  }
+
+  .zorevi-sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(2px);
+    z-index: 490;
+  }
+}
+
