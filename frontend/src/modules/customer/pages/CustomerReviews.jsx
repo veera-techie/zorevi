@@ -24,7 +24,7 @@ export default function CustomerReviews() {
       designerId: 'des-004',
       customerName: 'Praveen Kumar',
       designerName: 'Diya Sharma',
-      customerAvatar: '/images/customer-praveen.jpg',
+      customerAvatar: '/images/customer-praveen.png',
       rating,
       comment: comment.trim(),
       date: 'Just now',

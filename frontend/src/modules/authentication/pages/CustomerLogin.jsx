@@ -64,7 +64,7 @@ export default function CustomerLogin() {
 
           <div className="zorevi-auth-hero__img-container">
             <ImageWithFallback
-              src="/images/auth-fashion-group.jpg"
+              src="/images/auth-fashion-group.png"
               alt="Fashion for Everyone"
               className="zorevi-auth-hero__img"
               fallbackType="hero"

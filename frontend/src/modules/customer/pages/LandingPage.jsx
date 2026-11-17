@@ -57,7 +57,7 @@ export default function LandingPage() {
 
           <div className="zorevi-hero-banner__img-col">
             <ImageWithFallback
-              src="/images/hero-fashion-banner.jpg"
+              src="/images/hero-fashion-banner.png"
               alt="Fashion for Everyone"
               className="zorevi-hero-banner__img"
               fallbackType="hero"
