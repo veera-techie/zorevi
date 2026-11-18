@@ -17,6 +17,11 @@ export default function DashboardHeader({ onToggleSidebar, role = 'customer' }) 
   const navigate = useNavigate();
 
   const unreadCount = getUnreadCount(role);
+  const localAvatarFallback = role === 'designer'
+    ? '/images/designer-aarohi.jpg'
+    : role === 'admin'
+      ? '/images/admin-priya.png'
+      : '/images/customer-praveen.png';
 
   useEffect(() => {
     function handleClickOutside(e) {
@@ -156,12 +161,12 @@ export default function DashboardHeader({ onToggleSidebar, role = 'customer' }) 
             onClick={() => setShowUserDropdown(!showUserDropdown)}
           >
             <img
-              src={user?.avatar || '/images/aarohi-avatar.png'}
+              src={user?.avatar || localAvatarFallback}
               alt={user?.name || 'User'}
               className="zorevi-dash-header__avatar"
               onError={(e) => {
                 e.target.onerror = null;
-                e.target.src = '/images/aarohi-avatar.png';
+                e.target.src = localAvatarFallback;
               }}
             />
             <div className="zorevi-dash-header__user-label">
