@@ -50,7 +50,7 @@ export default function CustomerRegister() {
       name: fullName || 'New Customer',
       email: email || 'customer@zorevi.in',
       phone: phone || '+91 98765 00000',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
+      avatar: '/images/customer-praveen.png',
       role: 'customer',
       preferredStyles: selectedStyles,
       preferredCategories: selectedCategories,

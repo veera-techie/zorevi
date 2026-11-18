@@ -161,8 +161,9 @@ export default function NotificationCenter({ role = 'customer' }) {
 
             <div className="zorevi-notifs-account-user">
               <img
-                src={user?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80'}
+                src={user?.avatar || '/images/customer-praveen.png'}
                 alt={user?.name || 'Customer'}
+                onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/images/customer-praveen.png'; }}
                 className="zorevi-notifs-account-avatar"
               />
               <div>

@@ -63,7 +63,7 @@ export default function DesignerProfile() {
 
   const openMallEditor = (mall) => {
     setEditingMall(mall ? { id: mall.id, isCustom: customMalls.some((item) => item.id === mall.id) } : { id: `custom-${Date.now()}`, isCustom: true });
-    setMallDraft(mall ? { name: mall.name, address: mall.address, image: mall.image, fashionStores: mall.fashionStores || 1 } : { name: '', address: location, image: '/images/hero-banner-group.png', fashionStores: 1 });
+    setMallDraft(mall ? { name: mall.name, address: mall.address, image: mall.image, fashionStores: mall.fashionStores || 1 } : { name: '', address: location, image: '/images/mall-lakeside.jpg', fashionStores: 1 });
   };
 
   const saveMall = () => {
@@ -71,7 +71,7 @@ export default function DesignerProfile() {
       addToast('Enter the mall name and address before saving.', 'error');
       return;
     }
-    const nextMall = { id: editingMall.id, name: mallDraft.name.trim(), address: mallDraft.address.trim(), location: location || 'Hyderabad', image: mallDraft.image || '/images/hero-banner-group.png', fashionStores: Math.max(1, Number(mallDraft.fashionStores) || 1) };
+    const nextMall = { id: editingMall.id, name: mallDraft.name.trim(), address: mallDraft.address.trim(), location: location || 'Hyderabad', image: mallDraft.image || '/images/mall-lakeside.jpg', fashionStores: Math.max(1, Number(mallDraft.fashionStores) || 1) };
     const nextOverrides = editingMall.isCustom ? mallOverrides : { ...mallOverrides, [editingMall.id]: nextMall };
     const nextCustomMalls = editingMall.isCustom ? [...customMalls.filter((mall) => mall.id !== editingMall.id), nextMall] : customMalls;
     const nextAvailableMallIds = availableMallIds.includes(nextMall.id) ? availableMallIds : [...availableMallIds, nextMall.id];
@@ -255,7 +255,7 @@ export default function DesignerProfile() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(245px, 1fr))', gap: '12px' }}>
             {availableMalls.map((mall) => (
               <article key={mall.id} style={{ overflow: 'hidden', border: availableMallIds.includes(mall.id) ? '1px solid #BFA9E8' : '1px solid #EEE9F5', borderRadius: '13px', background: availableMallIds.includes(mall.id) ? '#FAF8FE' : '#fff' }}>
-                <img src={mall.image} alt={mall.name} onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/images/entire_banner_card.png'; }} style={{ display: 'block', width: '100%', height: '118px', objectFit: 'cover', background: '#F3EEFB' }} />
+                <img src={mall.image} alt={mall.name} onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/images/mall-lakeside.jpg'; }} style={{ display: 'block', width: '100%', height: '118px', objectFit: 'cover', background: '#F3EEFB' }} />
                 <div style={{ padding: '11px' }}>
                   <label style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', cursor: 'pointer' }}>
                     <input type="checkbox" checked={availableMallIds.includes(mall.id)} onChange={() => toggleMall(mall.id)} style={{ accentColor: '#7043C5', marginTop: '3px' }} />
@@ -352,7 +352,7 @@ export default function DesignerProfile() {
           <Modal isOpen={Boolean(editingMall)} onClose={() => setEditingMall(null)} title={editingMall.isCustom && !customMalls.some((mall) => mall.id === editingMall.id) ? 'Add mall location' : 'Edit mall location'} maxWidth="560px">
             <div onKeyDown={(e) => { if (e.key === 'Enter') e.preventDefault(); }}>
               <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '12px', background: '#F3EEFB', marginBottom: '14px' }}>
-                <img src={mallDraft.image} alt={mallDraft.name || 'Mall preview'} onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/images/entire_banner_card.png'; }} style={{ display: 'block', width: '100%', height: '190px', objectFit: 'cover' }} />
+                <img src={mallDraft.image} alt={mallDraft.name || 'Mall preview'} onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/images/mall-lakeside.jpg'; }} style={{ display: 'block', width: '100%', height: '190px', objectFit: 'cover' }} />
                 <button type="button" onClick={() => mallPhotoInputRef.current?.click()} className="zorevi-btn zorevi-btn--outline" style={{ position: 'absolute', right: '10px', bottom: '10px', background: '#fff' }}><Upload size={14} /> Change image</button>
                 <input ref={mallPhotoInputRef} type="file" accept="image/*" onChange={handleMallPhotoChange} style={{ display: 'none' }} />
               </div>

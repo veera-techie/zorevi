@@ -156,11 +156,12 @@ export default function DashboardHeader({ onToggleSidebar, role = 'customer' }) 
             onClick={() => setShowUserDropdown(!showUserDropdown)}
           >
             <img
-              src={user?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80'}
+              src={user?.avatar || '/images/aarohi-avatar.png'}
               alt={user?.name || 'User'}
               className="zorevi-dash-header__avatar"
               onError={(e) => {
-                e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'Z')}&background=7C3AED&color=fff`;
+                e.target.onerror = null;
+                e.target.src = '/images/aarohi-avatar.png';
               }}
             />
             <div className="zorevi-dash-header__user-label">

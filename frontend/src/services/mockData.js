@@ -317,7 +317,7 @@ export const mockMalls = [
   {
     id: 'mall-001',
     name: 'Lakeside Fashion Mall',
-    image: 'https://res.cloudinary.com/dfk4oa4zp/image/upload/v1746974148/portcart-Nexus-Hyderabad-1_4.jpg',
+    image: '/images/mall-lakeside.jpg',
     location: 'Hyderabad',
     address: 'Kukatpally, Hyderabad – 500072',
     distance: '3.2 km',
@@ -339,7 +339,7 @@ export const mockMalls = [
   {
     id: 'mall-002',
     name: 'Forum Square Mall',
-    image: 'https://www.holidify.com/images/cmsuploads/compressed/13757970038267151373797861243985109056901959o_20210128172233.jpg',
+    image: '/images/mall-forum.jpg',
     location: 'Hyderabad',
     address: 'Madhapur, Hyderabad – 500081',
     distance: '4.1 km',
@@ -355,7 +355,7 @@ export const mockMalls = [
   {
     id: 'mall-003',
     name: 'Inorbit Mall',
-    image: 'https://img.staticmb.com/mbcontent/images/uploads/2022/11/inorbit-mall-hyderabad.jpg',
+    image: '/images/mall-inorbit.jpg',
     location: 'Hyderabad',
     address: 'Madhapur, Hyderabad – 500081',
     distance: '5.2 km',
@@ -370,7 +370,7 @@ export const mockMalls = [
   {
     id: 'mall-004',
     name: 'Nexus Central Mall',
-    image: 'https://www.nexusselecttrust.com/resources/assets/images/hyderabad/banner2.jpg',
+    image: '/images/mall-nexus.jpg',
     location: 'Hyderabad',
     address: 'Gachibowli, Hyderabad – 500032',
     distance: '3.8 km',
@@ -385,7 +385,7 @@ export const mockMalls = [
   {
     id: 'mall-005',
     name: 'Galleria Mall',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/1/1f/GVK_Mall_Hyderabad.jpg',
+    image: '/images/mall-galleria.jpg',
     location: 'Hyderabad',
     address: 'Banjara Hills, Hyderabad – 500034',
     distance: '4.8 km',
@@ -400,7 +400,7 @@ export const mockMalls = [
   {
     id: 'mall-006',
     name: 'Sarath City Capital Mall',
-    image: 'https://img.staticmb.com/mbcontent/images/crop/uploads/ver2/XIwvQlc61t8ZIpanz4mAnzU1K8zvzZreCrY41rkKVPWXIg/Sarath_City_mall_0_1200.jpg',
+    image: '/images/mall-sarath.jpg',
     location: 'Hyderabad',
     address: 'Kondapur, Hyderabad – 500084',
     distance: '6.2 km',

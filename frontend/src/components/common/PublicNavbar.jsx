@@ -95,7 +95,7 @@ export default function PublicNavbar() {
               <div className="navbar__user-menu" ref={userRef}>
                 <button className="navbar__user-btn" onClick={() => setShowUserDropdown(!showUserDropdown)}>
                   <img src={user.avatar} alt={user.name} className="navbar__avatar"
-                    onError={(e) => { e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=7C3AED&color=fff`; }} />
+                    onError={(e) => { e.target.onerror = null; e.target.src = '/images/aarohi-avatar.png'; }} />
                   <span className="navbar__username">Hi, {user.name.split(' ')[0]}</span>
                   <ChevronDown size={14} />
                 </button>
