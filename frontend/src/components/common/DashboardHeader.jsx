@@ -4,6 +4,7 @@ import { Search, MapPin, Heart, Bell, ChevronDown, LogOut, User, Settings, Menu 
 import { useAuth } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
 import { CITIES } from '../../constants';
+import { AAROHI_PROFILE_IMAGE } from '../../utils/aarohiProfileImage';
 import './DashboardHeader.css';
 
 export default function DashboardHeader({ onToggleSidebar, role = 'customer' }) {
@@ -17,6 +18,11 @@ export default function DashboardHeader({ onToggleSidebar, role = 'customer' }) 
   const navigate = useNavigate();
 
   const unreadCount = getUnreadCount(role);
+  const localAvatarFallback = role === 'designer'
+    ? AAROHI_PROFILE_IMAGE
+    : role === 'admin'
+      ? '/images/admin-priya.png'
+      : '/images/customer-praveen.png';
 
   useEffect(() => {
     function handleClickOutside(e) {
@@ -53,17 +59,19 @@ export default function DashboardHeader({ onToggleSidebar, role = 'customer' }) 
 
         <Link to={`/${role}`} className="zorevi-dash-header__brand">
           <div className="zorevi-dash-header__logo-icon">
-            <svg viewBox="0 0 32 32" fill="none" width="28" height="28">
-              <path d="M16 4C12 4 8 8 8 12c0 4 4 8 8 12 4-4 8-8 8-12 0-4-4-8-8-8z" fill="url(#dash-logo-g)"/>
-              <path d="M8 12c-4 0-6 2-6 4s2 4 6 4c2 0 4-2 6-4-2-2-4-4-6-4z" fill="url(#dash-logo-g)" opacity="0.8"/>
-              <path d="M24 12c4 0 6 2 6 4s-2 4-6 4c-2 0-4-2-6-4 2-2 4-4 6-4z" fill="url(#dash-logo-g)" opacity="0.8"/>
-              <defs>
-                <linearGradient id="dash-logo-g" x1="0" y1="0" x2="32" y2="32">
-                  <stop stopColor="#7C3AED"/>
-                  <stop offset="1" stopColor="#A855F7"/>
-                </linearGradient>
-              </defs>
-            </svg>
+            {role === 'designer' ? <img src="/zorevi-butterfly-hd.svg" alt="" /> : (
+              <svg viewBox="0 0 32 32" fill="none" width="28" height="28">
+                <path d="M16 4C12 4 8 8 8 12c0 4 4 8 8 12 4-4 8-8 8-12 0-4-4-8-8-8z" fill="url(#dash-logo-g)"/>
+                <path d="M8 12c-4 0-6 2-6 4s2 4 6 4c2 0 4-2 6-4-2-2-4-4-6-4z" fill="url(#dash-logo-g)" opacity="0.8"/>
+                <path d="M24 12c4 0 6 2 6 4s-2 4-6 4c-2 0-4-2-6-4 2-2 4-4 6-4z" fill="url(#dash-logo-g)" opacity="0.8"/>
+                <defs>
+                  <linearGradient id="dash-logo-g" x1="0" y1="0" x2="32" y2="32">
+                    <stop stopColor="#7C3AED"/>
+                    <stop offset="1" stopColor="#A855F7"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+            )}
           </div>
           <div className="zorevi-dash-header__brand-text">
             <span className="zorevi-dash-header__title">Zorevi</span>
@@ -154,11 +162,12 @@ export default function DashboardHeader({ onToggleSidebar, role = 'customer' }) 
             onClick={() => setShowUserDropdown(!showUserDropdown)}
           >
             <img
-              src={user?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80'}
+              src={user?.avatar || localAvatarFallback}
               alt={user?.name || 'User'}
               className="zorevi-dash-header__avatar"
               onError={(e) => {
-                e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'Z')}&background=7C3AED&color=fff`;
+                e.target.onerror = null;
+                e.target.src = localAvatarFallback;
               }}
             />
             <div className="zorevi-dash-header__user-label">

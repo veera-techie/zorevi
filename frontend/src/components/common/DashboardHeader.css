@@ -37,6 +37,21 @@
   text-decoration: none;
 }
 
+.zorevi-dash-header__logo-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.zorevi-dash-header__logo-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
 .zorevi-dash-header__title {
   font-size: 1.25rem;
   font-weight: 800;
@@ -239,6 +254,7 @@
   height: 36px;
   border-radius: 50%;
   object-fit: cover;
+  object-position: center 25%;
   border: 2px solid #ede9fe;
 }
 

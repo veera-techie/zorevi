@@ -35,7 +35,7 @@ const AdminMalls = () => {
     totalStores: 40,
     openingHours: '10:00 AM - 10:00 PM',
     rating: 4.8,
-    image: 'https://images.unsplash.com/photo-1519567241046-7f570eee3ce6?w=600&auto=format&fit=crop&q=80'
+    image: '/images/mall-lakeside.jpg'
   });
 
   const handleToggleMallStatus = (id) => {
@@ -73,7 +73,7 @@ const AdminMalls = () => {
       totalStores: 40,
       openingHours: '10:00 AM - 10:00 PM',
       rating: 4.8,
-      image: 'https://images.unsplash.com/photo-1519567241046-7f570eee3ce6?w=600&auto=format&fit=crop&q=80'
+      image: '/images/mall-lakeside.jpg'
     });
   };
 

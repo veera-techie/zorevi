@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {
   Scissors, Sparkles, Clock, MapPin, DollarSign, Plus,
-  CheckCircle2, Edit2, ArrowRight
+  CheckCircle2, Edit2
 } from 'lucide-react';
 import { mockServices } from '../../../services/mockData';
 import Modal from '../../../components/common/Modal';
@@ -10,6 +10,7 @@ import { useApp } from '../../../context/AppContext';
 export default function DesignerServices() {
   const [services, setServices] = useState(mockServices.slice(0, 4));
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [editingService, setEditingService] = useState(null);
   const [newServiceName, setNewServiceName] = useState('');
   const [newServicePrice, setNewServicePrice] = useState(1499);
   const [newServiceDuration, setNewServiceDuration] = useState('2 hours');
@@ -24,24 +25,47 @@ export default function DesignerServices() {
     addToast('Service visibility updated', 'info');
   };
 
-  const handleCreateService = (e) => {
+  const openNewService = () => {
+    setEditingService(null);
+    setNewServiceName('');
+    setNewServicePrice(1499);
+    setNewServiceDuration('2 hours');
+    setNewServiceCategory('Personal Styling');
+    setNewServiceDesc('');
+    setIsAddModalOpen(true);
+  };
+
+  const openServiceEditor = (service) => {
+    setEditingService(service);
+    setNewServiceName(service.name);
+    setNewServicePrice(service.basePrice);
+    setNewServiceDuration(service.duration);
+    setNewServiceCategory(service.category || 'Personal Styling');
+    setNewServiceDesc(service.description || '');
+    setIsAddModalOpen(true);
+  };
+
+  const handleSaveService = (e) => {
     e.preventDefault();
     if (!newServiceName.trim()) return;
 
-    const newSvc = {
-      id: `svc-${Date.now()}`,
+    const serviceDetails = {
       name: newServiceName,
       basePrice: Number(newServicePrice),
       duration: newServiceDuration,
       category: newServiceCategory,
       description: newServiceDesc || 'Custom fashion consultation and styling service.',
-      isActive: true,
     };
 
-    setServices([...services, newSvc]);
+    if (editingService) {
+      setServices((current) => current.map((service) => service.id === editingService.id ? { ...service, ...serviceDetails } : service));
+      addToast(`${newServiceName} updated successfully`, 'success');
+    } else {
+      setServices((current) => [...current, { id: `svc-${Date.now()}`, ...serviceDetails, isActive: true }]);
+      addToast('New service published to your profile!', 'success');
+    }
     setIsAddModalOpen(false);
-    setNewServiceName('');
-    addToast('New service published to your profile!', 'success');
+    setEditingService(null);
   };
 
   return (
@@ -57,7 +81,7 @@ export default function DesignerServices() {
           </p>
         </div>
 
-        <button className="zorevi-btn zorevi-btn--primary" onClick={() => setIsAddModalOpen(true)}>
+        <button className="zorevi-btn zorevi-btn--primary" onClick={openNewService}>
           <Plus size={16} /> Add New Service
         </button>
       </div>
@@ -168,7 +192,7 @@ export default function DesignerServices() {
 
               <button
                 className="zorevi-btn zorevi-btn--ghost zorevi-btn--sm"
-                onClick={() => addToast('Opening service editor for ' + svc.name, 'info')}
+                onClick={() => openServiceEditor(svc)}
               >
                 <Edit2 size={13} /> Edit
               </button>
@@ -181,11 +205,11 @@ export default function DesignerServices() {
       {isAddModalOpen && (
         <Modal
           isOpen={isAddModalOpen}
-          onClose={() => setIsAddModalOpen(false)}
-          title="Create New Styling Service"
+          onClose={() => { setIsAddModalOpen(false); setEditingService(null); }}
+          title={editingService ? `Edit ${editingService.name}` : 'Create New Styling Service'}
           maxWidth="520px"
         >
-          <form onSubmit={handleCreateService}>
+          <form onSubmit={handleSaveService}>
             <div className="zorevi-auth-field">
               <label>Service Name *</label>
               <input
@@ -222,6 +246,17 @@ export default function DesignerServices() {
             </div>
 
             <div className="zorevi-auth-field">
+              <label>Service Category</label>
+              <select className="zorevi-input" value={newServiceCategory} onChange={(e) => setNewServiceCategory(e.target.value)}>
+                <option>Personal Styling</option>
+                <option>Bridal &amp; Groom</option>
+                <option>Family Styling</option>
+                <option>Wardrobe Consultation</option>
+                <option>Custom Tailoring</option>
+              </select>
+            </div>
+
+            <div className="zorevi-auth-field">
               <label>Service Description</label>
               <textarea
                 className="zorevi-textarea"
@@ -233,11 +268,11 @@ export default function DesignerServices() {
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '16px' }}>
-              <button type="button" className="zorevi-btn zorevi-btn--outline" onClick={() => setIsAddModalOpen(false)}>
+              <button type="button" className="zorevi-btn zorevi-btn--outline" onClick={() => { setIsAddModalOpen(false); setEditingService(null); }}>
                 Cancel
               </button>
               <button type="submit" className="zorevi-btn zorevi-btn--primary">
-                Publish Service
+                {editingService ? 'Save Changes' : 'Publish Service'}
               </button>
             </div>
           </form>

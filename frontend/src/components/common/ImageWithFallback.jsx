@@ -17,15 +17,15 @@ export default function ImageWithFallback({
 }) {
   const [error, setError] = useState(false);
 
-  // High quality Unsplash fashion curated fallbacks
+  // Use local project assets so the fallback still works when the browser is offline.
   const fallbackUrls = {
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
-    avatarMen: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
-    designer: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80',
-    fashion: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=800&q=80',
-    mall: 'https://images.unsplash.com/photo-1519567241046-7f570eee3ce6?auto=format&fit=crop&w=800&q=80',
-    bridal: 'https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=800&q=80',
-    hero: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&q=80',
+    avatar: '/images/customer-praveen.png',
+    avatarMen: '/images/customer-rohan.png',
+    designer: '/images/aarohi-portrait.png',
+    fashion: '/images/hero-banner-group.png',
+    mall: '/images/entire_banner_card.png',
+    bridal: '/images/portfolio-bridal-hd.jpg',
+    hero: '/images/hero-banner-group.png',
   };
 
   const chosenFallback = fallbackUrls[fallbackType] || fallbackUrls.fashion;

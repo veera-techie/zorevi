@@ -21,7 +21,7 @@ export default function DesignerPortfolio() {
       id: `p-${Date.now()}`,
       title: projectTitle,
       category: projectCategory,
-      image: 'https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=800&q=80',
+      image: '/images/portfolio-bridal-hd.jpg',
     };
 
     setPortfolio([newProject, ...portfolio]);

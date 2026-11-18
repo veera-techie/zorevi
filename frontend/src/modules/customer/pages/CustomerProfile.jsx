@@ -59,8 +59,9 @@ export default function CustomerProfile() {
         <div style={{ background: '#FFFFFF', borderRadius: '24px', border: '1px solid #F3F4F6', padding: '28px', boxShadow: '0 4px 16px rgba(0,0,0,0.03)', marginBottom: '24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '24px' }}>
             <img
-              src={user?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80'}
+              src={user?.avatar || '/images/customer-praveen.png'}
               alt={name}
+              onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/images/customer-praveen.png'; }}
               style={{ width: '80px', height: '80px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #EDE9FE' }}
             />
             <div>

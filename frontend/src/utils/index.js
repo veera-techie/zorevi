@@ -77,11 +77,17 @@ export function getStatusColor(status) {
 }
 
 export function getPlaceholderImage(type, index = 0) {
-  const colors = ['7C3AED', 'A855F7', 'EC4899', '6366F1', '8B5CF6'];
-  const color = colors[index % colors.length];
-  const sizes = { avatar: '200x200', card: '400x300', hero: '1200x400', mall: '600x400', portfolio: '300x400' };
-  const size = sizes[type] || '400x300';
-  return `https://placehold.co/${size}/${color}/white?text=${type}`;
+  const images = {
+    avatar: '/images/customer-praveen.png',
+    card: '/images/hero-banner-group.png',
+    hero: '/images/hero-banner-group-generated.png',
+    mall: '/images/mall-lakeside.jpg',
+    portfolio: '/images/portfolio-bridal-hd.jpg',
+  };
+  const fallback = images[type] || images.card;
+  return type === 'mall' && index > 0
+    ? `/images/mall-${['lakeside', 'forum', 'inorbit', 'nexus', 'galleria', 'sarath'][index % 6]}.jpg`
+    : fallback;
 }
 
 export function debounce(fn, delay = 300) {

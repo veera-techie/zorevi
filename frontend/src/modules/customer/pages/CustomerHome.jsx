@@ -59,7 +59,7 @@ export default function CustomerHome() {
 
           <div className="zorevi-hero-banner__img-col">
             <ImageWithFallback
-              src="/images/hero-fashion-banner.jpg"
+              src="/images/hero-fashion-banner.png"
               alt="Fashion for Everyone"
               className="zorevi-hero-banner__img"
               fallbackType="hero"
@@ -160,7 +160,7 @@ export default function CustomerHome() {
             </div>
 
             <div style={{ borderRadius: '14px', overflow: 'hidden', border: '1px solid #E5E7EB' }}>
-              <img src={mockMalls[0].image} alt={mockMalls[0].name} style={{ width: '100%', height: '110px', objectFit: 'cover' }} />
+              <img src={mockMalls[0].image} alt={mockMalls[0].name} onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/images/entire_banner_card.png'; }} style={{ width: '100%', height: '110px', objectFit: 'cover' }} />
               <div style={{ padding: '12px', background: '#FAFAFC' }}>
                 <strong style={{ fontSize: '0.88rem', color: '#1E1B4B', display: 'block' }}>{mockMalls[0].name}</strong>
                 <small style={{ color: '#6B7280', fontSize: '0.75rem', display: 'block', margin: '2px 0 8px' }}>

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {
   Inbox, Check, X, Clock, MapPin, Calendar, Sparkles,
-  DollarSign, MessageSquare, ArrowRight
+  DollarSign, MessageSquare, ArrowRight, Eye
 } from 'lucide-react';
 import Modal from '../../../components/common/Modal';
 import { useApp } from '../../../context/AppContext';
@@ -20,7 +20,7 @@ export default function DesignerBookingRequests() {
       location: 'Lakeside Fashion Mall, Hyderabad',
       notes: 'Need full bridal look coordination for reception and sangeet.',
       amount: 4500,
-      avatar: '/images/customer-neha.jpg',
+      avatar: '/images/customer-neha.png',
     },
     {
       id: 'req-102',
@@ -32,7 +32,7 @@ export default function DesignerBookingRequests() {
       location: 'Nexus Central Mall, Hyderabad',
       notes: 'Looking for sharp business casuals and ethnic party kurtas.',
       amount: 1200,
-      avatar: '/images/customer-karan.jpg',
+      avatar: '/images/customer-karan.png',
     },
     {
       id: 'req-103',
@@ -44,11 +44,12 @@ export default function DesignerBookingRequests() {
       location: 'Forum Square Mall, Hyderabad',
       notes: 'Family of 4 needing coordinated festive looks for anniversary.',
       amount: 3800,
-      avatar: '/images/customer-pooja.jpg',
+      avatar: '/images/customer-pooja.png',
     },
   ]);
 
   const [counterModalOpen, setCounterModalOpen] = useState(false);
+  const [detailsReq, setDetailsReq] = useState(null);
   const [selectedReq, setSelectedReq] = useState(null);
   const [counterTime, setCounterTime] = useState('04:00 PM');
   const [counterPrice, setCounterPrice] = useState('');
@@ -161,6 +162,13 @@ export default function DesignerBookingRequests() {
                 </div>
 
                 <button
+                  className="zorevi-btn zorevi-btn--outline zorevi-btn--sm zorevi-btn--full"
+                  onClick={() => setDetailsReq(req)}
+                >
+                  <Eye size={14} /> View booking details
+                </button>
+
+                <button
                   className="zorevi-btn zorevi-btn--ghost zorevi-btn--sm zorevi-btn--full"
                   onClick={() => handleOpenCounter(req)}
                 >
@@ -236,6 +244,33 @@ export default function DesignerBookingRequests() {
               </button>
             </div>
           </form>
+        </Modal>
+      )}
+
+      {detailsReq && (
+        <Modal
+          isOpen={Boolean(detailsReq)}
+          onClose={() => setDetailsReq(null)}
+          title="Booking Request Details"
+          maxWidth="560px"
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '13px', paddingBottom: '16px', borderBottom: '1px solid #F3EEFB' }}>
+            <img src={detailsReq.avatar} alt="" style={{ width: '54px', height: '54px', borderRadius: '50%', objectFit: 'cover', background: '#F3EEFB' }} />
+            <div><h4 style={{ margin: 0, color: '#1E1B4B', fontSize: '1.05rem' }}>{detailsReq.customer}</h4><span style={{ color: '#7C3AED', fontSize: '0.85rem', fontWeight: 600 }}>{detailsReq.service}</span><div style={{ color: '#9CA3AF', fontSize: '0.72rem', marginTop: '3px' }}>Request {detailsReq.id}</div></div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginTop: '16px' }}>
+            <div><small style={{ color: '#9CA3AF' }}>Date & time</small><strong style={{ display: 'block', color: '#30283C', marginTop: '3px' }}>{detailsReq.date} at {detailsReq.time}</strong></div>
+            <div><small style={{ color: '#9CA3AF' }}>Duration</small><strong style={{ display: 'block', color: '#30283C', marginTop: '3px' }}>{detailsReq.duration}</strong></div>
+            <div><small style={{ color: '#9CA3AF' }}>Client budget / quote</small><strong style={{ display: 'block', color: '#7043C5', marginTop: '3px' }}>INR {Number(detailsReq.amount).toLocaleString('en-IN')}</strong></div>
+            <div><small style={{ color: '#9CA3AF' }}>Location</small><strong style={{ display: 'block', color: '#30283C', marginTop: '3px' }}>{detailsReq.location}</strong></div>
+          </div>
+          <div style={{ marginTop: '16px', padding: '13px 15px', borderRadius: '12px', background: '#FAF8FD', border: '1px solid #EEE9F5' }}>
+            <small style={{ color: '#9CA3AF' }}>Client notes</small>
+            <p style={{ margin: '5px 0 0', color: '#4B5563', fontSize: '0.88rem', lineHeight: 1.55 }}>{detailsReq.notes || 'No additional notes from the customer.'}</p>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '18px' }}>
+            <button className="zorevi-btn zorevi-btn--primary" onClick={() => setDetailsReq(null)}>Close</button>
+          </div>
         </Modal>
       )}
     </div>

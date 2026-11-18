@@ -4,24 +4,77 @@ import {
   Plus, Edit2, AlertCircle, Sparkles, ChevronLeft, ChevronRight
 } from 'lucide-react';
 import { useApp } from '../../../context/AppContext';
+import Modal from '../../../components/common/Modal';
+
+const formatTime = (time) => {
+  if (!time) return '';
+  const [hour, minute] = time.split(':').map(Number);
+  return new Date(2000, 0, 1, hour, minute).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+};
+
+const formatHours = (item) => `${formatTime(item.start)} to ${formatTime(item.end)}${item.hasBreak ? ` | Break ${formatTime(item.breakStart)} to ${formatTime(item.breakEnd)}` : ''}`;
+
+const defaultWeeklySchedule = [
+  { day: 'Mon, Nov 17', start: '10:00', end: '17:00', hasBreak: true, breakStart: '13:00', breakEnd: '14:00', status: 'available' },
+  { day: 'Tue, Nov 18', start: '10:00', end: '17:00', hasBreak: true, breakStart: '13:00', breakEnd: '14:00', status: 'booked' },
+  { day: 'Wed, Nov 19', start: '14:30', end: '18:00', hasBreak: false, breakStart: '13:00', breakEnd: '14:00', status: 'available' },
+  { day: 'Thu, Nov 20', start: '11:00', end: '16:00', hasBreak: true, breakStart: '13:00', breakEnd: '14:00', status: 'available' },
+  { day: 'Fri, Nov 21', start: '09:00', end: '18:00', hasBreak: true, breakStart: '13:00', breakEnd: '14:00', status: 'available' },
+  { day: 'Sat, Nov 22', start: '10:00', end: '16:00', hasBreak: true, breakStart: '13:00', breakEnd: '14:00', status: 'booked' },
+  { day: 'Sun, Nov 23', start: '10:00', end: '16:00', hasBreak: false, breakStart: '13:00', breakEnd: '14:00', status: 'blocked' },
+];
+
+const loadWeeklySchedule = () => {
+  try {
+    const saved = JSON.parse(localStorage.getItem('zorevi-designer-weekly-schedule') || 'null');
+    return Array.isArray(saved) && saved.length === 7 ? saved : defaultWeeklySchedule;
+  } catch {
+    return defaultWeeklySchedule;
+  }
+};
 
 export default function DesignerAvailability() {
   const { addToast } = useApp();
-  const [vacationMode, setVacationMode] = useState(false);
+  const [vacationMode, setVacationMode] = useState(() => {
+    try { return localStorage.getItem('zorevi-designer-vacation-mode') === 'true'; }
+    catch { return false; }
+  });
   const [selectedDay, setSelectedDay] = useState('18');
 
-  const [weeklySchedule, setWeeklySchedule] = useState([
-    { day: 'Mon, Nov 17', hours: '10:00 AM – 05:00 PM', status: 'available' },
-    { day: 'Tue, Nov 18', hours: 'Booked (2 slots)', status: 'booked' },
-    { day: 'Wed, Nov 19', hours: '02:30 PM – 06:00 PM', status: 'available' },
-    { day: 'Thu, Nov 20', hours: '11:00 AM – 04:00 PM', status: 'available' },
-    { day: 'Fri, Nov 21', hours: 'Available Full Day', status: 'available' },
-    { day: 'Sat, Nov 22', hours: 'Booked (1 slot)', status: 'booked' },
-    { day: 'Sun, Nov 23', hours: 'Unavailable / Off', status: 'blocked' },
-  ]);
+  const [weeklySchedule, setWeeklySchedule] = useState(loadWeeklySchedule);
+  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+  const [draftSchedule, setDraftSchedule] = useState([]);
+
+  const openScheduleEditor = () => {
+    setDraftSchedule(weeklySchedule.map((item) => ({ ...item })));
+    setIsScheduleModalOpen(true);
+  };
+
+  const saveSchedule = (e) => {
+    e.preventDefault();
+    const invalid = draftSchedule.find((item) => (
+      item.start >= item.end || (item.hasBreak && (
+        item.breakStart >= item.breakEnd || item.breakStart < item.start || item.breakEnd > item.end
+      ))
+    ));
+    if (invalid) {
+      addToast(`Check the working hours and break times for ${invalid.day.split(',')[0]}.`, 'error');
+      return;
+    }
+    setWeeklySchedule(draftSchedule);
+    try {
+      localStorage.setItem('zorevi-designer-weekly-schedule', JSON.stringify(draftSchedule));
+    } catch {
+      addToast('Schedule updated for this session, but the browser could not store it.', 'info');
+    }
+    setIsScheduleModalOpen(false);
+    addToast('Working hours and breaks updated.', 'success');
+  };
 
   const handleToggleVacation = () => {
     setVacationMode(!vacationMode);
+    try { localStorage.setItem('zorevi-designer-vacation-mode', String(!vacationMode)); }
+    catch { addToast('Vacation mode changed for this session, but the browser could not store it.', 'info'); }
     addToast(
       !vacationMode ? 'Vacation mode activated. Your calendar is paused.' : 'Vacation mode turned off. Back online!',
       'info'
@@ -137,7 +190,7 @@ export default function DesignerAvailability() {
               >
                 <div>
                   <strong style={{ fontSize: '0.85rem', color: '#1E1B4B', display: 'block' }}>{s.day}</strong>
-                  <small style={{ color: '#6B7280', fontSize: '0.78rem' }}>{s.hours}</small>
+                  <small style={{ color: '#6B7280', fontSize: '0.78rem' }}>{formatHours(s)}</small>
                 </div>
 
                 <span
@@ -159,12 +212,35 @@ export default function DesignerAvailability() {
           <button
             className="zorevi-btn zorevi-btn--outline zorevi-btn--full"
             style={{ marginTop: '20px' }}
-            onClick={() => addToast('Opening working hours editor modal', 'info')}
+            onClick={openScheduleEditor}
           >
             <Edit2 size={14} /> Edit Working Hours & Breaks
           </button>
         </div>
       </div>
+
+      {isScheduleModalOpen && (
+        <Modal isOpen={isScheduleModalOpen} onClose={() => setIsScheduleModalOpen(false)} title="Edit Working Hours & Breaks" maxWidth="720px">
+          <form onSubmit={saveSchedule}>
+            <p style={{ color: '#6B7280', fontSize: '0.85rem', margin: '0 0 16px' }}>Set your regular hours and break times for each day.</p>
+            <div style={{ display: 'grid', gap: '9px' }}>
+              {draftSchedule.map((item, index) => (
+                <div key={item.day} style={{ display: 'grid', gridTemplateColumns: 'minmax(90px, 1fr) 1fr 1fr auto', gap: '9px', alignItems: 'center', padding: '10px', border: '1px solid #EEE9F5', borderRadius: '12px', background: '#FCFBFE' }}>
+                  <strong style={{ fontSize: '0.8rem', color: '#30283C' }}>{item.day.split(',')[0]}</strong>
+                  <label style={{ fontSize: '0.68rem', color: '#817A89' }}>Start<input aria-label={`${item.day} start time`} type="time" value={item.start} onChange={(e) => setDraftSchedule((list) => list.map((row, i) => i === index ? { ...row, start: e.target.value } : row))} style={{ display: 'block', width: '100%', marginTop: '4px', border: '1px solid #EAE4F5', borderRadius: '7px', padding: '6px', color: '#30283C', background: '#fff' }} required /></label>
+                  <label style={{ fontSize: '0.68rem', color: '#817A89' }}>End<input aria-label={`${item.day} end time`} type="time" value={item.end} onChange={(e) => setDraftSchedule((list) => list.map((row, i) => i === index ? { ...row, end: e.target.value } : row))} style={{ display: 'block', width: '100%', marginTop: '4px', border: '1px solid #EAE4F5', borderRadius: '7px', padding: '6px', color: '#30283C', background: '#fff' }} required /></label>
+                  <label style={{ display: 'flex', gap: '6px', alignItems: 'center', fontSize: '0.72rem', color: '#5F5968', whiteSpace: 'nowrap' }}><input type="checkbox" checked={item.hasBreak} onChange={(e) => setDraftSchedule((list) => list.map((row, i) => i === index ? { ...row, hasBreak: e.target.checked } : row))} /> Break</label>
+                  {item.hasBreak && <div style={{ gridColumn: '2 / -1', display: 'flex', alignItems: 'center', gap: '10px', paddingLeft: '2px' }}><label style={{ fontSize: '0.68rem', color: '#817A89' }}>Break starts<input aria-label={`${item.day} break start`} type="time" value={item.breakStart} onChange={(e) => setDraftSchedule((list) => list.map((row, i) => i === index ? { ...row, breakStart: e.target.value } : row))} style={{ display: 'block', marginTop: '4px', border: '1px solid #EAE4F5', borderRadius: '7px', padding: '6px', color: '#30283C', background: '#fff' }} required /></label><label style={{ fontSize: '0.68rem', color: '#817A89' }}>Break ends<input aria-label={`${item.day} break end`} type="time" value={item.breakEnd} onChange={(e) => setDraftSchedule((list) => list.map((row, i) => i === index ? { ...row, breakEnd: e.target.value } : row))} style={{ display: 'block', marginTop: '4px', border: '1px solid #EAE4F5', borderRadius: '7px', padding: '6px', color: '#30283C', background: '#fff' }} required /></label></div>}
+                </div>
+              ))}
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '9px', marginTop: '18px' }}>
+              <button type="button" className="zorevi-btn zorevi-btn--outline" onClick={() => setIsScheduleModalOpen(false)}>Cancel</button>
+              <button type="submit" className="zorevi-btn zorevi-btn--primary">Save Schedule</button>
+            </div>
+          </form>
+        </Modal>
+      )}
     </div>
   );
 }
