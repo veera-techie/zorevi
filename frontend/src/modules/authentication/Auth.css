@@ -1,0 +1,278 @@
+/* ============================================
+   AUTHENTICATION PAGES STYLES
+   ============================================ */
+
+.zorevi-auth-page {
+  min-height: 100vh;
+  display: flex;
+  background: #ffffff;
+}
+
+.zorevi-auth-hero {
+  flex: 1;
+  background: linear-gradient(135deg, #f5f0ff 0%, #ede9fe 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+.zorevi-auth-hero__logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  z-index: 2;
+}
+
+.zorevi-auth-hero__brand {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #7c3aed;
+}
+
+.zorevi-auth-hero__tagline {
+  font-size: 0.7rem;
+  color: #6b7280;
+  display: block;
+}
+
+.zorevi-auth-hero__content {
+  z-index: 2;
+  max-width: 520px;
+  margin: auto 0;
+}
+
+.zorevi-auth-hero__title {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1.15;
+  color: #1e1b4b;
+  margin-bottom: 16px;
+}
+
+.zorevi-auth-hero__title span {
+  background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.zorevi-auth-hero__desc {
+  font-size: 1.1rem;
+  color: #4b5563;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+.zorevi-auth-hero__img-container {
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(124, 58, 237, 0.15);
+  border: 4px solid #ffffff;
+}
+
+.zorevi-auth-hero__img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+}
+
+/* Form Container */
+.zorevi-auth-form-wrap {
+  width: 580px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 48px 64px;
+  overflow-y: auto;
+}
+
+.zorevi-auth-form-header {
+  margin-bottom: 28px;
+}
+
+.zorevi-auth-form-title {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #1e1b4b;
+  margin-bottom: 6px;
+}
+
+.zorevi-auth-form-sub {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.zorevi-auth-field {
+  margin-bottom: 18px;
+}
+
+.zorevi-auth-field label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.zorevi-auth-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.zorevi-auth-input-wrap svg.icon-left {
+  position: absolute;
+  left: 14px;
+  color: #9ca3af;
+  pointer-events: none;
+}
+
+.zorevi-auth-input-wrap input {
+  width: 100%;
+  padding: 12px 14px 12px 42px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  color: #1e1b4b;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.zorevi-auth-input-wrap input:focus {
+  outline: none;
+  background: #ffffff;
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
+}
+
+.zorevi-auth-toggle-pwd {
+  position: absolute;
+  right: 14px;
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0;
+}
+
+.zorevi-auth-row-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  font-size: 0.85rem;
+}
+
+.zorevi-auth-checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #4b5563;
+  cursor: pointer;
+}
+
+.zorevi-auth-link {
+  color: #7c3aed;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.zorevi-auth-link:hover {
+  text-decoration: underline;
+}
+
+.zorevi-auth-divider {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+  color: #9ca3af;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.zorevi-auth-divider::before,
+.zorevi-auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #e5e7eb;
+}
+
+.zorevi-auth-divider span {
+  padding: 0 12px;
+}
+
+.zorevi-google-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  margin-bottom: 24px;
+}
+
+.zorevi-google-btn:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.zorevi-auth-footer-prompt {
+  text-align: center;
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 12px;
+}
+
+.zorevi-auth-designer-cta {
+  text-align: center;
+  font-size: 0.875rem;
+  padding: 12px;
+  border-radius: 12px;
+  background: #faf5ff;
+  border: 1px dashed #ddd6fe;
+  color: #7c3aed;
+  font-weight: 600;
+}
+
+.zorevi-auth-legal {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 32px;
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.zorevi-auth-legal a {
+  color: #9ca3af;
+  text-decoration: none;
+}
+
+@media (max-width: 1024px) {
+  .zorevi-auth-hero {
+    display: none;
+  }
+  .zorevi-auth-form-wrap {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 32px 24px;
+  }
+}
+

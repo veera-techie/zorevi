@@ -1,0 +1,271 @@
+/* ============================================
+   LANDING & DISCOVERY STYLES
+   ============================================ */
+
+.zorevi-landing {
+  padding-bottom: 60px;
+}
+
+/* Hero Section */
+.zorevi-hero-banner {
+  background: linear-gradient(135deg, #f5f0ff 0%, #ede9fe 100%);
+  border-radius: 28px;
+  padding: 40px;
+  margin-top: 24px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #e9d5ff;
+}
+
+.zorevi-hero-banner__grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  align-items: center;
+  gap: 32px;
+}
+
+.zorevi-hero-banner__title {
+  font-size: 2.75rem;
+  font-weight: 800;
+  line-height: 1.15;
+  color: #1e1b4b;
+  margin-bottom: 12px;
+}
+
+.zorevi-hero-banner__title span {
+  background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.zorevi-hero-banner__subtitle {
+  font-size: 1.05rem;
+  color: #4b5563;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.zorevi-hero-banner__actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.zorevi-hero-banner__img-col {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.zorevi-hero-banner__img {
+  width: 100%;
+  max-height: 380px;
+  border-radius: 20px;
+  object-fit: cover;
+  box-shadow: 0 15px 35px rgba(124, 58, 237, 0.15);
+}
+
+.zorevi-hero-price-badge {
+  position: absolute;
+  top: -16px;
+  right: -16px;
+  background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%);
+  color: #ffffff;
+  padding: 14px 18px;
+  border-radius: 18px;
+  box-shadow: 0 10px 25px rgba(124, 58, 237, 0.35);
+  border: 2px solid #ffffff;
+  max-width: 220px;
+}
+
+.zorevi-hero-price-badge__label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.9;
+}
+
+.zorevi-hero-price-badge__price {
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+  margin: 2px 0 6px;
+}
+
+.zorevi-hero-price-badge__list {
+  font-size: 0.68rem;
+  line-height: 1.4;
+  opacity: 0.95;
+  list-style: none;
+}
+
+/* Category Filter Bar */
+.zorevi-categories-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 28px 0;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.zorevi-cat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 9999px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #374151;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.zorevi-cat-pill:hover {
+  border-color: #ddd6fe;
+  background: #faf5ff;
+  color: #7c3aed;
+}
+
+.zorevi-cat-pill.active {
+  background: #7c3aed;
+  color: #ffffff;
+  border-color: #7c3aed;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+}
+
+/* Sections */
+.zorevi-section {
+  margin-top: 36px;
+}
+
+.zorevi-section__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.zorevi-section__title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #1e1b4b;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.zorevi-section__view-all {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #7c3aed;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.zorevi-section__view-all:hover {
+  text-decoration: underline;
+}
+
+/* Cards Grids */
+.zorevi-designers-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.zorevi-malls-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+/* Trust Bar */
+.zorevi-trust-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 48px;
+  padding: 24px;
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid #f3f4f6;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+}
+
+.zorevi-trust-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.zorevi-trust-item__icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #f5f0ff;
+  color: #7c3aed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.zorevi-trust-item strong {
+  display: block;
+  font-size: 0.9rem;
+  color: #1e1b4b;
+}
+
+.zorevi-trust-item span {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+@media (max-width: 1200px) {
+  .zorevi-designers-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .zorevi-hero-banner__grid {
+    grid-template-columns: 1fr;
+  }
+  .zorevi-hero-price-badge {
+    position: static;
+    margin-top: 16px;
+    max-width: 100%;
+  }
+  .zorevi-designers-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .zorevi-malls-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .zorevi-trust-bar {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .zorevi-hero-banner {
+    padding: 24px;
+  }
+  .zorevi-hero-banner__title {
+    font-size: 2rem;
+  }
+  .zorevi-designers-grid,
+  .zorevi-malls-grid,
+  .zorevi-trust-bar {
+    grid-template-columns: 1fr;
+  }
+}
+

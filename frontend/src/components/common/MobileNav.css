@@ -1,0 +1,64 @@
+.zorevi-mobile-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--mobile-nav-height, 64px);
+  background: #ffffff;
+  border-top: 1px solid var(--color-border-light, #f3f4f6);
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.04);
+  z-index: var(--z-sticky, 200);
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 8px;
+}
+
+.zorevi-mobile-nav__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: #9ca3af;
+  text-decoration: none;
+  font-size: 0.7rem;
+  font-weight: 500;
+  min-width: 52px;
+  padding: 6px 0;
+  position: relative;
+  transition: all 0.15s ease;
+}
+
+.zorevi-mobile-nav__item.active {
+  color: var(--color-primary, #7c3aed);
+  font-weight: 700;
+}
+
+.zorevi-mobile-nav__item.active svg {
+  transform: translateY(-1px);
+}
+
+.zorevi-mobile-nav__badge {
+  position: absolute;
+  top: 2px;
+  right: 12px;
+  min-width: 16px;
+  height: 16px;
+  background: #ef4444;
+  color: white;
+  border-radius: 9999px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+}
+
+@media (max-width: 1023px) {
+  .zorevi-mobile-nav {
+    display: flex;
+  }
+}
+

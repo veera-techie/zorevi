@@ -1,0 +1,481 @@
+/* Booking Modal Styles */
+
+.zorevi-booking-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.zorevi-booking-step-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #f3f4f6;
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.zorevi-booking-step-dot.active {
+  background: var(--color-primary, #7c3aed);
+  color: #ffffff;
+  transform: scale(1.1);
+  box-shadow: 0 4px 10px rgba(124, 58, 237, 0.3);
+}
+
+.zorevi-booking-step-dot.completed {
+  background: #ecfdf5;
+  color: #10b981;
+}
+
+.zorevi-step-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1e1b4b;
+  margin-bottom: 4px;
+}
+
+.zorevi-step-desc {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-bottom: 20px;
+}
+
+.zorevi-form-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.zorevi-designer-select-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.zorevi-designer-select-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.zorevi-designer-select-card:hover {
+  border-color: #ddd6fe;
+  background: #faf5ff;
+}
+
+.zorevi-designer-select-card.selected {
+  border-color: #7c3aed;
+  background: #f5f0ff;
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+}
+
+.zorevi-designer-select-img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.zorevi-designer-select-info strong {
+  display: block;
+  font-size: 0.9rem;
+  color: #1e1b4b;
+}
+
+.zorevi-designer-select-info span {
+  display: block;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.zorevi-designer-select-info small {
+  font-size: 0.75rem;
+  color: #7c3aed;
+  font-weight: 600;
+}
+
+/* Service Grid */
+.zorevi-service-select-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.zorevi-service-card {
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.zorevi-service-card:hover {
+  border-color: #ddd6fe;
+}
+
+.zorevi-service-card.selected {
+  border-color: #7c3aed;
+  background: #f5f0ff;
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+}
+
+.zorevi-service-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.zorevi-service-card__price {
+  font-weight: 700;
+  color: #7c3aed;
+}
+
+.zorevi-service-card p {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.zorevi-service-card small {
+  font-size: 0.72rem;
+  color: #9ca3af;
+}
+
+/* Chips */
+.zorevi-chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.zorevi-chip {
+  padding: 8px 14px;
+  border-radius: 9999px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #4b5563;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.zorevi-chip:hover {
+  border-color: #ddd6fe;
+  color: #7c3aed;
+}
+
+.zorevi-chip.active {
+  background: #f5f0ff;
+  border-color: #7c3aed;
+  color: #7c3aed;
+  font-weight: 600;
+}
+
+/* Counter */
+.zorevi-counter {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 6px 12px;
+}
+
+.zorevi-counter-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.zorevi-counter-btn:hover {
+  background: #f3f4f6;
+}
+
+.zorevi-counter-val {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #1e1b4b;
+}
+
+.zorevi-textarea,
+.zorevi-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  color: #1e1b4b;
+  font-family: inherit;
+  transition: all 0.15s ease;
+}
+
+.zorevi-textarea:focus,
+.zorevi-input:focus {
+  outline: none;
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+}
+
+.zorevi-form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.zorevi-input-icon-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.zorevi-input-icon-wrap svg {
+  position: absolute;
+  left: 12px;
+  color: #9ca3af;
+  pointer-events: none;
+}
+
+.zorevi-input-icon-wrap input,
+.zorevi-input-icon-wrap select {
+  padding-left: 36px;
+}
+
+.zorevi-duration-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.zorevi-duration-btn {
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+}
+
+.zorevi-duration-btn.active {
+  background: #f5f0ff;
+  border-color: #7c3aed;
+  color: #7c3aed;
+}
+
+.zorevi-pop-badge {
+  font-size: 0.6rem;
+  background: #7c3aed;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 9999px;
+}
+
+/* Location Selector */
+.zorevi-location-type-row {
+  display: flex;
+  gap: 10px;
+}
+
+.zorevi-location-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.zorevi-location-tab.active {
+  background: #f5f0ff;
+  border-color: #7c3aed;
+  color: #7c3aed;
+}
+
+.zorevi-mall-select-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.zorevi-mall-select-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+}
+
+.zorevi-mall-select-item.selected {
+  background: #f5f0ff;
+  border-color: #7c3aed;
+}
+
+.zorevi-mall-select-item strong {
+  display: block;
+  font-size: 0.875rem;
+}
+
+.zorevi-mall-select-item small {
+  color: #6b7280;
+  font-size: 0.75rem;
+}
+
+.zorevi-online-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 14px;
+  background: #f5f0ff;
+  border: 1px solid #ddd6fe;
+}
+
+.zorevi-online-box strong {
+  display: block;
+  font-size: 0.9rem;
+  color: #1e1b4b;
+  margin-bottom: 4px;
+}
+
+.zorevi-online-box p {
+  font-size: 0.8rem;
+  color: #4b5563;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Quote Card */
+.zorevi-quote-card {
+  background: #f9fafb;
+  border-radius: 14px;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  margin-bottom: 16px;
+}
+
+.zorevi-quote-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 0.85rem;
+  color: #4b5563;
+  border-bottom: 1px dashed #e5e7eb;
+}
+
+.zorevi-quote-row:last-child {
+  border-bottom: none;
+}
+
+.zorevi-quote-row--total {
+  font-size: 1.1rem;
+  color: #1e1b4b;
+  padding-top: 12px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.zorevi-cancellation-terms {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  padding: 14px;
+  border-radius: 12px;
+  margin-bottom: 14px;
+}
+
+.zorevi-cancellation-terms__title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #065f46;
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+}
+
+.zorevi-cancellation-terms p {
+  font-size: 0.8rem;
+  color: #047857;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.zorevi-pricing-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+.zorevi-pricing-note svg {
+  color: #7c3aed;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.zorevi-booking-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #f3f4f6;
+}
+
+@media (max-width: 640px) {
+  .zorevi-designer-select-grid,
+  .zorevi-service-select-grid,
+  .zorevi-form-grid-2 {
+    grid-template-columns: 1fr;
+  }
+  .zorevi-duration-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+

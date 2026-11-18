@@ -1,0 +1,30 @@
+/* General App Layout */
+.zorevi-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg-secondary, #f9fafb);
+}
+
+.zorevi-layout__body {
+  display: flex;
+  flex: 1;
+  position: relative;
+}
+
+.zorevi-layout__main {
+  flex: 1;
+  min-width: 0;
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+@media (max-width: 1023px) {
+  .zorevi-layout__main {
+    padding: 16px;
+    padding-bottom: 80px; /* space for bottom mobile nav */
+  }
+}
+
