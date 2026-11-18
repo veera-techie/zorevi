@@ -4,6 +4,7 @@ import { Search, MapPin, Heart, Bell, ShoppingBag, Menu, X, ChevronDown, LogOut,
 import { useAuth } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
 import { CITIES } from '../../constants';
+import { AAROHI_PROFILE_IMAGE } from '../../utils/aarohiProfileImage';
 import './Navbar.css';
 
 export default function PublicNavbar() {
@@ -95,7 +96,7 @@ export default function PublicNavbar() {
               <div className="navbar__user-menu" ref={userRef}>
                 <button className="navbar__user-btn" onClick={() => setShowUserDropdown(!showUserDropdown)}>
                   <img src={user.avatar} alt={user.name} className="navbar__avatar"
-                    onError={(e) => { e.target.onerror = null; e.target.src = '/images/aarohi-avatar.png'; }} />
+                    onError={(e) => { e.target.onerror = null; e.target.src = user.role === 'designer' ? AAROHI_PROFILE_IMAGE : '/images/customer-praveen.png'; }} />
                   <span className="navbar__username">Hi, {user.name.split(' ')[0]}</span>
                   <ChevronDown size={14} />
                 </button>

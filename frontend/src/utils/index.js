@@ -78,7 +78,7 @@ export function getStatusColor(status) {
 
 export function getPlaceholderImage(type, index = 0) {
   const images = {
-    avatar: '/images/aarohi-avatar.png',
+    avatar: '/images/customer-praveen.png',
     card: '/images/hero-banner-group.png',
     hero: '/images/hero-banner-group-generated.png',
     mall: '/images/mall-lakeside.jpg',

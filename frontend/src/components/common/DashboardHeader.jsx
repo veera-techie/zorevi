@@ -4,6 +4,7 @@ import { Search, MapPin, Heart, Bell, ChevronDown, LogOut, User, Settings, Menu 
 import { useAuth } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
 import { CITIES } from '../../constants';
+import { AAROHI_PROFILE_IMAGE } from '../../utils/aarohiProfileImage';
 import './DashboardHeader.css';
 
 export default function DashboardHeader({ onToggleSidebar, role = 'customer' }) {
@@ -18,7 +19,7 @@ export default function DashboardHeader({ onToggleSidebar, role = 'customer' }) 
 
   const unreadCount = getUnreadCount(role);
   const localAvatarFallback = role === 'designer'
-    ? '/images/designer-aarohi.jpg'
+    ? AAROHI_PROFILE_IMAGE
     : role === 'admin'
       ? '/images/admin-priya.png'
       : '/images/customer-praveen.png';

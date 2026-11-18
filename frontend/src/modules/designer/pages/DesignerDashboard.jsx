@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { mockDesigners, mockBookings, mockMalls } from '../../../services/mockData';
 import { useApp } from '../../../context/AppContext';
+import { AAROHI_PROFILE_IMAGE, loadAarohiProfileImage } from '../../../utils/aarohiProfileImage';
 import './DesignerPages.css';
 
 const money = (value) => `₹${Number(value || 0).toLocaleString('en-IN')}`;
@@ -30,8 +31,7 @@ export default function DesignerDashboard() {
   const [draftMallIds, setDraftMallIds] = useState(savedProfile.availableMallIds || []);
   const [isEditingLocations, setIsEditingLocations] = useState(false);
   const designer = { ...mockDesigners[0], ...savedProfile };
-  let profilePhoto = '/images/aarohi-portrait-hd.jpg';
-  try { profilePhoto = localStorage.getItem('zorevi-designer-profile-photo') || profilePhoto; } catch { /* Use the default dashboard portrait. */ }
+  const profilePhoto = loadAarohiProfileImage();
   const availableMalls = [...mockMalls, ...customMalls].map((mall) => ({ ...mall, ...(mallOverrides[mall.id] || {}) })).filter((mall) => mall.fashionStores > 0);
   const selectedMalls = availableMalls.filter((mall) => selectedMallIds.includes(mall.id));
   const socialLinks = Object.entries(savedProfile.socialAccounts || {}).filter(([, url]) => url);
@@ -91,7 +91,7 @@ export default function DesignerDashboard() {
       <section className="studio-overview" aria-label="Designer studio overview">
         <article className="studio-card studio-profile">
           <div className="studio-profile__identity">
-            <img src={profilePhoto} alt={designer.name} />
+            <img src={profilePhoto} alt={designer.name} onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = AAROHI_PROFILE_IMAGE; }} />
             <div><h2>{designer.name} <BadgeCheck size={16} /></h2><p>{designer.title}</p><span><MapPin size={13} /> {designer.location} · {designer.serviceRadius}</span><span><Briefcase size={13} /> {designer.experience} experience</span><span><Star size={13} fill="currentColor" /> {designer.rating} <small>({designer.reviewCount.toLocaleString('en-IN')} reviews)</small></span></div>
           </div>
           {designer.bio && <p className="studio-profile__bio">{designer.bio}</p>}

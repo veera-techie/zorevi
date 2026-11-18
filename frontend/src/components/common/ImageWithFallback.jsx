@@ -19,9 +19,9 @@ export default function ImageWithFallback({
 
   // Use local project assets so the fallback still works when the browser is offline.
   const fallbackUrls = {
-    avatar: '/images/aarohi-avatar.png',
+    avatar: '/images/customer-praveen.png',
     avatarMen: '/images/customer-rohan.png',
-    designer: '/images/aarohi-portrait-hd.jpg',
+    designer: '/images/aarohi-portrait.png',
     fashion: '/images/hero-banner-group.png',
     mall: '/images/entire_banner_card.png',
     bridal: '/images/portfolio-bridal-hd.jpg',

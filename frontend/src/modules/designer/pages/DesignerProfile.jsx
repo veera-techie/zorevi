@@ -4,6 +4,7 @@ import { mockDesigners, mockMalls } from '../../../services/mockData';
 import { SPECIALIZATIONS } from '../../../constants';
 import { useApp } from '../../../context/AppContext';
 import Modal from '../../../components/common/Modal';
+import { AAROHI_PROFILE_IMAGE, loadAarohiProfileImage } from '../../../utils/aarohiProfileImage';
 import './DesignerPages.css';
 
 const loadSavedProfile = () => {
@@ -22,10 +23,7 @@ export default function DesignerProfile() {
   const photoInputRef = useRef(null);
   const mallPhotoInputRef = useRef(null);
   const [savedProfile] = useState(loadSavedProfile);
-  const [profileImage, setProfileImage] = useState(() => {
-    try { return localStorage.getItem('zorevi-designer-profile-photo') || designer.avatar; }
-    catch { return designer.avatar; }
-  });
+  const [profileImage, setProfileImage] = useState(loadAarohiProfileImage);
 
   const [name, setName] = useState(savedProfile.name || designer.name);
   const [title, setTitle] = useState(savedProfile.title || designer.title);
@@ -196,7 +194,7 @@ export default function DesignerProfile() {
         <div style={{ background: '#FFFFFF', borderRadius: '24px', border: '1px solid #F3F4F6', padding: '28px', boxShadow: '0 4px 16px rgba(0,0,0,0.03)', marginBottom: '24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '24px' }}>
             <div style={{ position: 'relative', flexShrink: 0 }}>
-              <img src={profileImage} alt={name} style={{ width: '84px', height: '84px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #EDE9FE' }} />
+              <img src={profileImage} alt={name} onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = AAROHI_PROFILE_IMAGE; }} style={{ width: '84px', height: '84px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #EDE9FE' }} />
               <button type="button" onClick={() => photoInputRef.current?.click()} aria-label="Edit profile photo" title="Edit profile photo" style={{ position: 'absolute', right: 0, bottom: 0, width: '30px', height: '30px', borderRadius: '50%', border: '2px solid #fff', background: '#7043C5', color: '#fff', display: 'grid', placeItems: 'center', cursor: 'pointer' }}><Camera size={14} /></button>
               <input ref={photoInputRef} type="file" accept="image/*" onChange={handlePhotoChange} style={{ display: 'none' }} />
             </div>
