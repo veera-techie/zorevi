@@ -1,6 +1,6 @@
 # Zorevi – Fashion for Everyone
 
-**Zorevi** is a modern, responsive fashion marketplace connecting customers with verified professional fashion designers, stylists, and premier shopping malls. Customers can discover designers, explore mall styling hubs, book personalized 2-hour styling sessions (starting at **₹499**), and communicate securely through booking-scoped live chats.
+**Zorevi** is a responsive fashion marketplace prototype connecting customers with sample designer profiles and public mall information. Discovery, account, application, booking, and support interactions in this frontend are demonstrations; they do not create real accounts, bookings, payments, or support requests.
 
 ---
 
@@ -14,7 +14,7 @@ The frontend faithfully replicates the Zorevi design specifications:
   - Accent Tones: Soft Pink (`#F472B6`), Emerald Green (`#10B981`), Amber Gold (`#F59E0B`)
   - Text & Headings: Deep Indigo (`#1E1B4B`) for maximum contrast and readability.
 - **Component Styling**: 16px–24px rounded cards, soft elevation shadows (`0 8px 30px rgba(124, 58, 237, 0.06)`), 44px+ touch targets, and accessible focus outlines.
-- **Photography & Avatars**: Diverse representation across Men's, Women's, Kids', Couple, Family, and Bridal styling, with automatic graceful fallback handling (`ImageWithFallback`).
+- **Photography & Avatars**: Locally stored Pexels stock photography for public discovery, with an asset and source guide at `public/assets/images/README.md`. Stock subjects are illustrative and do not represent or endorse named sample designers.
 
 ---
 
@@ -56,7 +56,7 @@ The codebase is organized cleanly by roles and shared features:
 ```text
 frontend/
 ├── public/
-│   ├── images/              # Local images and placeholders
+│   ├── assets/images/       # Local public discovery stock imagery and asset guide
 │   └── zorevi-icon.svg      # Zorevi butterfly brand mark
 ├── src/
 │   ├── assets/              # Static styling assets and icons
@@ -90,25 +90,33 @@ frontend/
 ## 🧭 Comprehensive Route Directory
 
 ### 1. Public Discovery & Information
-- `/` — Landing page with discovery hero, ₹499 package banner, categories, nearby designers, and mall preview
-- `/explore/designers` — Searchable designer directory with city, occasion, and rating filters
-- `/explore/designers/:designerId` — Detailed designer profile with services, portfolio, reviews, and booking modal
-- `/explore/malls` — Mall discovery with fashion store counts and map preview
-- `/explore/malls/:mallId` — Mall details, tenant store directories, and opening hours
-- `/categories` — Comprehensive fashion category catalog (Men, Women, Kids, Couple, Family, Bridal)
-- `/how-it-works` — Step-by-step customer and designer process guide
-- `/help` — FAQ search and customer care contact options
+- `/` — Customer-focused landing page with searchable, filterable sample designers and mall previews
+- `/explore/designers` — Searchable, filterable and sortable sample designer directory with load more
+- `/designers/:id` and `/explore/designers/:designerId` — Guest designer preview; full sample profile screens are gated behind customer sign-in
+- `/explore/malls` — Searchable mall directory with illustrative photos and load more
+- `/malls/:id` and `/explore/malls/:mallId` — Mall details with official-site and map links; photos are illustrative
+- `/categories` — Styling categories for men, women, kids, couples, families, bridal, traditional and western styles
+- `/how-it-works` — Separate customer and designer prototype journeys
+- `/for-designers` — Designer information with separate application and sign-in actions
+- `/help` — Prototype FAQs and a feedback form that does not send a support request
+- `/terms` and `/privacy` — Prototype-only policy information; production policies require legal review
+
+Designer profiles, photographs, verification states, ratings, reviews, distances, prices and availability are illustrative demo data. Mall names link to official venue websites; no unverified venue facts or designer-on-site claims are shown.
 
 ### 2. Authentication & Onboarding
-- `/customer/login` — Dedicated customer sign-in with email, OTP, or Google mock authentication
-- `/customer/register` — Quick customer registration with personal styling preference questionnaire
-- `/customer/verify` — OTP verification simulation
-- `/customer/forgot-password` — Password reset flow
-- `/designer/login` — Designer studio login
-- `/designer/apply` — 5-step designer application (Profile, Skills & Services, Experience, Portfolio, Verification Docs)
-- `/designer/application-status` — Application tracking page (Pending, Under Review, Approved)
-- `/designer/forgot-password` — Designer account recovery
-- `/admin/login` — Secure administrator access portal
+- `/register` — Shared account entry where visitors choose customer registration or designer application
+- `/customer/login` — Customer sign-in preview with email/mobile validation and clearly labeled demo authentication
+- `/customer/register` — Customer registration with optional styling interests and required policy consent
+- `/customer/verify` — Six-digit, browser-only verification demo with resend, invalid-code, and expiry states
+- `/customer/forgot-password` — Customer password-recovery demo; no email or SMS is sent
+- `/designer/login` — Designer studio sign-in preview and application links
+- `/designer/apply` — Four-step designer application preview (Profile, Skills & Experience, Qualifications, Review)
+- `/designer/application-status` — Local demo states for Submitted, Under Review, Approved, and Revision Needed
+- `/designer/forgot-password` — Designer password-recovery demo
+- `/admin/login` — Invitation-only Admin Console sign-in; there is no public admin registration
+- `/admin/forgot-password` — Admin password-recovery demo
+
+Authentication and onboarding interactions are frontend demos only. Verification codes, application status changes, and submissions are stored in the current browser session and are not sent to Zorevi services.
 
 ### 3. Customer Dashboard & Experience
 - `/customer` — Personalized customer dashboard with upcoming styling sessions, recommendations, and recent activity
@@ -183,6 +191,6 @@ The confirmed booking chat (`BookingChat.jsx`) delivers the complete interactive
 ## 🔒 Security & Backend Boundary Disclaimers
 
 - **Frontend Only**: This project contains client-side UI and state logic only. No backend server, database, payment secret keys, or real SMS gateways are initialized.
-- **Mock Authentication**: Role-based access control and login simulations are managed through React Context (`AuthContext.jsx`) and browser memory. Real production security should be implemented via secure JWT/OAuth backend services.
+- **Mock Authentication**: Role-based access checks and login simulations are frontend-only. Public profile gating is a prototype UX, not a security boundary; a production backend must enforce authentication, customer/designer/admin roles, and access to protected profile, favorite, review, booking, and message data on every relevant API.
 - **Payment Sandbox**: Checkout interactions simulate payment transactions via local state; no real credit card or UPI charges are made.
 

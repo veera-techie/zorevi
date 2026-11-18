@@ -58,6 +58,27 @@
   min-width: 0;
 }
 
+.navbar__public-links {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 1.3vw, 19px);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.navbar__public-links a {
+  color: var(--color-text-secondary);
+  font-size: 0.84rem;
+  font-weight: var(--font-medium);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.navbar__public-links a:hover,
+.navbar__public-links a:focus-visible {
+  color: var(--color-primary);
+}
+
 .navbar__city-selector {
   position: relative;
   flex-shrink: 0;
@@ -320,6 +341,26 @@
   margin-bottom: var(--space-4);
 }
 
+.navbar__mobile-city {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+}
+
+.navbar__mobile-city select {
+  flex: 1;
+  min-width: 0;
+  min-height: 42px;
+  padding: 0 var(--space-3);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background: var(--color-bg);
+}
+
 .navbar__mobile-search input {
   flex: 1;
   border: none;
@@ -367,6 +408,21 @@
   .navbar__inner {
     padding: 0 var(--space-4);
     height: 56px;
+  }
+
+  @media (max-width: 900px) {
+    .navbar__center,
+    .navbar__public-links {
+      display: none;
+    }
+
+    .navbar__hamburger {
+      display: flex;
+    }
+
+    .navbar__mobile-menu {
+      display: block;
+    }
   }
 
   .navbar__center {

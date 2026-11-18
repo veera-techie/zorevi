@@ -29,7 +29,7 @@ export default function PublicFooter() {
               Discover top fashion designers and malls, book personalized styling sessions, and elevate your personal wardrobe for any occasion.
             </p>
             <div className="zorevi-footer__badge">
-              <Sparkles size={14} /> Packages starting at ₹499 / 2 hours
+              <Sparkles size={14} /> Standard package from ₹499 / 2 hours · custom services may cost more
             </div>
           </div>
 
@@ -40,6 +40,7 @@ export default function PublicFooter() {
               <li><Link to="/explore/malls">Nearby Malls</Link></li>
               <li><Link to="/categories">Fashion Categories</Link></li>
               <li><Link to="/how-it-works">How It Works</Link></li>
+              <li><Link to="/for-designers">For Designers</Link></li>
             </ul>
           </div>
 
@@ -58,7 +59,6 @@ export default function PublicFooter() {
               <li><Link to="/help">Help Center</Link></li>
               <li><Link to="/customer/login">Customer Sign In</Link></li>
               <li><Link to="/customer/register">Create Account</Link></li>
-              <li><Link to="/admin/login">Admin Console</Link></li>
             </ul>
           </div>
         </div>
@@ -66,9 +66,9 @@ export default function PublicFooter() {
         <div className="zorevi-footer__bottom">
           <p>© {new Date().getFullYear()} Zorevi Technologies Pvt Ltd. All rights reserved.</p>
           <div className="zorevi-footer__legal">
-            <Link to="/help">Terms & Conditions</Link>
+            <Link to="/terms">Terms & Conditions</Link>
             <span>•</span>
-            <Link to="/help">Privacy Policy</Link>
+            <Link to="/privacy">Privacy Policy</Link>
             <span>•</span>
             <span className="zorevi-footer__credit">
               Fashion for Everyone <Heart size={12} fill="#EC4899" color="#EC4899" />

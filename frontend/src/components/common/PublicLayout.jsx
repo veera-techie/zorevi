@@ -7,9 +7,9 @@ export default function PublicLayout() {
   return (
     <div className="zorevi-layout">
       <PublicNavbar />
-      <main style={{ flex: 1 }}>
+      <div style={{ flex: 1 }}>
         <Outlet />
-      </main>
+      </div>
       <PublicFooter />
       <ToastContainer />
     </div>

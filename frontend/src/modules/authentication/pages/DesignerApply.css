@@ -1,376 +1,410 @@
-/* ============================================
-   DESIGNER APPLICATION STYLES
-   ============================================ */
-
-.zorevi-apply-page {
-  min-height: 100vh;
-  background: #f9fafb;
+.zorevi-auth-page--application .zorevi-auth-card {
+  max-width: 780px;
 }
 
-.zorevi-apply-header {
-  height: 64px;
-  background: #ffffff;
-  border-bottom: 1px solid #f3f4f6;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 32px;
-}
-
-.zorevi-apply-logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-decoration: none;
-}
-
-.zorevi-apply-header-meta {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 0.85rem;
-  color: #6b7280;
-}
-
-.zorevi-apply-status-link {
-  color: #7c3aed;
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.zorevi-apply-container {
-  padding: 36px 24px 60px;
-  max-width: 1200px;
-}
-
-.zorevi-apply-title-banner {
-  text-align: center;
-  margin-bottom: 32px;
-}
-
-.zorevi-apply-title-banner h1 {
-  font-size: 2rem;
-  font-weight: 800;
-  color: #1e1b4b;
-  margin-bottom: 6px;
-}
-
-.zorevi-apply-title-banner p {
-  font-size: 1rem;
-  color: #6b7280;
-}
-
-/* Steps Bar */
-.zorevi-apply-steps-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #ffffff;
-  border-radius: 16px;
-  border: 1px solid #e5e7eb;
-  padding: 16px 24px;
-  margin-bottom: 32px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-}
-
-.zorevi-apply-step-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  color: #9ca3af;
-  font-size: 0.85rem;
-  font-weight: 500;
-  transition: all 0.15s ease;
-}
-
-.zorevi-apply-step-item.active {
-  color: #7c3aed;
-  font-weight: 700;
-}
-
-.zorevi-apply-step-item.completed {
-  color: #10b981;
-}
-
-.zorevi-apply-step-circle {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: #f3f4f6;
-  color: #6b7280;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-}
-
-.zorevi-apply-step-item.active .zorevi-apply-step-circle {
-  background: #7c3aed;
-  color: #ffffff;
-  box-shadow: 0 4px 10px rgba(124, 58, 237, 0.3);
-}
-
-.zorevi-apply-step-item.completed .zorevi-apply-step-circle {
-  background: #ecfdf5;
-  color: #10b981;
-}
-
-/* Grid */
-.zorevi-apply-body-grid {
+.zorevi-apply-steps {
   display: grid;
-  grid-template-columns: 1fr 360px;
-  gap: 28px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 7px;
+  margin: 0 0 24px;
+  padding: 0;
+  list-style: none;
 }
 
-.zorevi-apply-main-card {
-  background: #ffffff;
-  border-radius: 20px;
-  border: 1px solid #e5e7eb;
-  padding: 32px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
-}
-
-.zorevi-apply-pane-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #1e1b4b;
+.zorevi-apply-steps button {
+  width: 100%;
+  min-height: 56px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 4px;
-}
-
-.zorevi-apply-pane-sub {
-  font-size: 0.875rem;
-  color: #6b7280;
-  margin-bottom: 24px;
-}
-
-.zorevi-apply-field {
-  margin-bottom: 20px;
-}
-
-.zorevi-apply-field label {
-  display: block;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #374151;
-  margin-bottom: 8px;
-}
-
-.zorevi-apply-radio-row {
-  display: flex;
-  gap: 12px;
-}
-
-.zorevi-apply-radio-pill {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 16px;
+  gap: 7px;
+  padding: 7px 8px;
+  border: 1px solid #e8e1f1;
   border-radius: 12px;
-  border: 1px solid #e5e7eb;
-  cursor: pointer;
-  font-size: 0.85rem;
-  font-weight: 500;
-  transition: all 0.15s ease;
+  color: #777087;
+  background: #fff;
+  text-align: left;
+  font-size: 0.72rem;
+  font-weight: 650;
+  line-height: 1.2;
 }
 
-.zorevi-apply-radio-pill.selected {
-  border-color: #7c3aed;
-  background: #f5f0ff;
-  color: #7c3aed;
-  font-weight: 600;
+.zorevi-apply-steps button:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
 }
 
-.zorevi-apply-skills-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+.zorevi-apply-steps button.active {
+  border-color: #9c76c8;
+  color: #5d259f;
+  background: #f7f1ff;
 }
 
-.zorevi-apply-skill-checkbox {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 16px;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
-  background: #ffffff;
-  cursor: pointer;
-  font-size: 0.85rem;
-  transition: all 0.15s ease;
+.zorevi-apply-steps button.completed {
+  color: #2f785b;
+  border-color: #c9e6d9;
+  background: #f3fbf7;
 }
 
-.zorevi-apply-skill-checkbox.checked {
-  background: #f5f0ff;
-  border-color: #7c3aed;
-  color: #7c3aed;
-  font-weight: 600;
-}
-
-/* Dropzone */
-.zorevi-apply-upload-dropzone {
-  border: 2px dashed #ddd6fe;
-  background: #faf5ff;
-  border-radius: 16px;
-  padding: 40px 20px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-}
-
-.zorevi-apply-upload-dropzone h4 {
-  font-size: 0.95rem;
-  color: #1e1b4b;
-  margin: 0;
-}
-
-.zorevi-apply-upload-dropzone p {
-  font-size: 0.78rem;
-  color: #6b7280;
-  margin: 0 0 8px 0;
-}
-
-.zorevi-uploaded-pill {
+.zorevi-apply-steps button > span {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  background: #ecfdf5;
-  color: #065f46;
-  border: 1px solid #a7f3d0;
-  padding: 5px 12px;
-  border-radius: 9999px;
-  font-size: 0.75rem;
-  font-weight: 500;
+  justify-content: center;
+  border-radius: 50%;
+  color: #675a79;
+  background: #eee9f4;
+  font-size: 0.72rem;
+  font-weight: 800;
 }
 
-.zorevi-apply-doc-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px;
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  margin-bottom: 12px;
+.zorevi-apply-steps button.active > span {
+  color: #fff;
+  background: #7132bc;
 }
 
-.zorevi-apply-doc-row strong {
-  display: block;
-  font-size: 0.9rem;
-  color: #1e1b4b;
+.zorevi-apply-section-title {
+  margin: 0 0 6px;
+  color: #282044;
+  font-size: 1.06rem;
+  font-weight: 780;
 }
 
-.zorevi-apply-doc-row small {
-  font-size: 0.75rem;
-  color: #6b7280;
+.zorevi-apply-copy {
+  margin: 0 0 15px;
+  color: #746b84;
+  font-size: 0.82rem;
 }
 
-.zorevi-doc-status-badge {
-  background: #ecfdf5;
-  color: #059669;
-  border: 1px solid #a7f3d0;
-  padding: 4px 12px;
-  border-radius: 9999px;
-  font-size: 0.75rem;
-  font-weight: 600;
+.zorevi-apply-fieldset {
+  min-width: 0;
+  margin: 0 0 18px;
+  padding: 0;
+  border: 0;
 }
 
-.zorevi-apply-footer-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 32px;
-  padding-top: 20px;
-  border-top: 1px solid #f3f4f6;
-}
-
-/* Right Checklist Card */
-.zorevi-apply-checklist-card {
-  background: #ffffff;
-  border-radius: 20px;
-  border: 1px solid #e5e7eb;
-  padding: 24px;
-  height: fit-content;
-}
-
-.zorevi-checklist-title {
-  font-size: 1.1rem;
+.zorevi-apply-fieldset legend {
+  margin-bottom: 9px;
+  color: #302850;
+  font-size: 0.86rem;
   font-weight: 700;
-  color: #1e1b4b;
-  margin: 0 0 4px 0;
 }
 
-.zorevi-checklist-sub {
-  font-size: 0.8rem;
-  color: #6b7280;
-  margin-bottom: 20px;
+.zorevi-apply-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
-.zorevi-checklist-items {
-  list-style: none;
+.zorevi-apply-option {
+  min-height: 37px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 10px;
+  border: 1px solid #e0d7ec;
+  border-radius: 999px;
+  color: #5e566f;
+  background: #fff;
+  cursor: pointer;
+  font-size: 0.77rem;
+  line-height: 1.25;
+}
+
+.zorevi-apply-option:has(input:checked) {
+  border-color: #9970c8;
+  color: #5d259f;
+  background: #f7f1ff;
+}
+
+.zorevi-apply-option input {
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  accent-color: #7132bc;
+}
+
+.zorevi-apply-upload {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-}
-
-.zorevi-checklist-item {
-  display: flex;
   align-items: flex-start;
-  gap: 12px;
-  font-size: 0.85rem;
-}
-
-.zorevi-checklist-item.completed svg {
-  color: #10b981;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.zorevi-checklist-item strong {
-  display: block;
-  color: #1e1b4b;
-}
-
-.zorevi-checklist-item small {
-  color: #6b7280;
-  font-size: 0.75rem;
-}
-
-.zorevi-approval-timing-box {
-  margin-top: 24px;
-  padding: 16px;
-  background: #f5f0ff;
-  border: 1px solid #ddd6fe;
+  gap: 6px;
+  padding: 18px;
+  border: 1px dashed #cbb8e4;
   border-radius: 14px;
-  display: flex;
-  gap: 12px;
+  color: #7044a0;
+  background: #faf7ff;
 }
 
-.zorevi-approval-timing-box strong {
-  display: block;
-  font-size: 0.85rem;
-  color: #7c3aed;
-  margin-bottom: 4px;
+.zorevi-apply-upload > label {
+  color: #302850;
+  font-size: 0.9rem;
+  font-weight: 750;
 }
 
-.zorevi-approval-timing-box p {
-  font-size: 0.75rem;
-  color: #4b5563;
+.zorevi-apply-upload > p {
   margin: 0;
-  line-height: 1.4;
+  color: #756d84;
+  font-size: 0.77rem;
 }
 
-@media (max-width: 900px) {
-  .zorevi-apply-steps-bar {
+.zorevi-apply-upload input[type='file'] {
+  max-width: 100%;
+  margin-top: 5px;
+  color: #57496c;
+  font-size: 0.77rem;
+}
+
+.zorevi-apply-upload ul {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 5px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.zorevi-apply-upload li {
+  max-width: 100%;
+  overflow: hidden;
+  padding: 5px 9px;
+  border-radius: 999px;
+  color: #456a58;
+  background: #eaf7f0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.72rem;
+}
+
+.zorevi-apply-review {
+  display: grid;
+  gap: 0;
+  margin: 14px 0 18px;
+  border: 1px solid #ece6f2;
+  border-radius: 13px;
+  overflow: hidden;
+}
+
+.zorevi-apply-review > div {
+  display: grid;
+  grid-template-columns: minmax(110px, 0.36fr) minmax(0, 1fr);
+  gap: 10px;
+  padding: 10px 12px;
+  border-bottom: 1px solid #f0ebf5;
+  font-size: 0.78rem;
+}
+
+.zorevi-apply-review > div:last-child {
+  border-bottom: 0;
+}
+
+.zorevi-apply-review dt {
+  color: #6d627c;
+  font-weight: 700;
+}
+
+.zorevi-apply-review dd {
+  min-width: 0;
+  color: #302850;
+  overflow-wrap: anywhere;
+}
+
+.zorevi-apply-consent {
+  margin: 13px 0;
+}
+
+.zorevi-apply-review-note {
+  margin-top: 14px;
+  padding: 11px 12px;
+  border-radius: 10px;
+  color: #695b7d;
+  background: #f8f4fc;
+  font-size: 0.77rem;
+}
+
+.zorevi-apply-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 22px;
+  padding-top: 17px;
+  border-top: 1px solid #eee8f5;
+}
+
+.zorevi-apply-actions .zorevi-auth-submit {
+  width: auto;
+  min-width: 150px;
+}
+
+.zorevi-apply-secondary {
+  min-height: 45px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  color: #684493;
+  background: #f6f1fb;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.zorevi-apply-status {
+  text-align: center;
+}
+
+.zorevi-apply-status-icon {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  margin: 5px auto 16px;
+  border-radius: 50%;
+  color: #6f40a1;
+  background: #f2eafb;
+}
+
+.zorevi-apply-status--approved .zorevi-apply-status-icon {
+  color: #25764d;
+  background: #e8f7ef;
+}
+
+.zorevi-apply-status--revision_needed .zorevi-apply-status-icon {
+  color: #a64b37;
+  background: #fff0e9;
+}
+
+.zorevi-apply-status-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+  margin: 20px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.zorevi-apply-status-steps li {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  color: #8a8397;
+  font-size: 0.72rem;
+}
+
+.zorevi-apply-status-steps li span {
+  width: 25px;
+  height: 25px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: inherit;
+  background: #eeeaf2;
+  font-size: 0.72rem;
+  font-weight: 750;
+}
+
+.zorevi-apply-status-steps li.complete {
+  color: #5e3195;
+  font-weight: 700;
+}
+
+.zorevi-apply-status-steps li.complete span {
+  color: #fff;
+  background: #7642b2;
+}
+
+.zorevi-apply-status-message {
+  margin: 16px 0;
+  padding: 15px;
+  border: 1px solid #e7deef;
+  border-radius: 13px;
+  color: #625a73;
+  background: #fbf9fd;
+  text-align: left;
+  font-size: 0.84rem;
+  line-height: 1.55;
+}
+
+.zorevi-apply-status-message p {
+  margin: 0;
+}
+
+.zorevi-apply-demo-controls {
+  margin-top: 22px;
+  padding: 13px;
+  border: 1px dashed #d7cce3;
+  border-radius: 13px;
+  text-align: left;
+}
+
+.zorevi-apply-demo-controls > strong {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+  color: #635675;
+  font-size: 0.75rem;
+}
+
+.zorevi-apply-demo-controls > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.zorevi-apply-demo-controls button {
+  min-height: 34px;
+  padding: 6px 10px;
+  border: 1px solid #ded5e9;
+  border-radius: 999px;
+  color: #5f536f;
+  background: #fff;
+  font-size: 0.72rem;
+  font-weight: 650;
+}
+
+.zorevi-apply-demo-controls button[aria-pressed='true'] {
+  border-color: #9364c2;
+  color: #5d259f;
+  background: #f5effc;
+}
+
+@media (max-width: 760px) {
+  .zorevi-apply-steps {
+    grid-template-columns: repeat(4, minmax(80px, 1fr));
     overflow-x: auto;
+    padding-bottom: 3px;
   }
-  .zorevi-apply-body-grid {
-    grid-template-columns: 1fr;
+
+  .zorevi-apply-steps button {
+    min-height: 50px;
+    font-size: 0.65rem;
   }
 }
 
+@media (max-width: 480px) {
+  .zorevi-apply-steps {
+    gap: 5px;
+  }
+
+  .zorevi-apply-steps button {
+    display: grid;
+    justify-items: center;
+    gap: 3px;
+    padding: 5px 3px;
+    text-align: center;
+  }
+
+  .zorevi-apply-review > div {
+    grid-template-columns: 1fr;
+    gap: 3px;
+  }
+
+  .zorevi-apply-actions .zorevi-auth-submit {
+    min-width: 0;
+    padding-inline: 12px;
+  }
+}
