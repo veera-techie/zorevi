@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-import PasswordRecoveryPage from './PasswordRecoveryPage';
-
-export default function DesignerForgotPassword() {
-  return <PasswordRecoveryPage role="designer" />;
-}
-=======
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, ArrowLeft, CheckCircle2 } from 'lucide-react';
@@ -83,5 +76,3 @@ export default function DesignerForgotPassword() {
     </div>
   );
 }
-
->>>>>>> origin/sai

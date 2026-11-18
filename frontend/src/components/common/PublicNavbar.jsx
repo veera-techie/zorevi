@@ -58,16 +58,12 @@ export default function PublicNavbar() {
 
         <div className="navbar__center">
           <div className="navbar__city-selector" ref={cityRef}>
-<<<<<<< HEAD
             <button
               type="button"
               className="navbar__city-btn"
               aria-expanded={showCityDropdown}
               onClick={() => setShowCityDropdown(!showCityDropdown)}
             >
-=======
-            <button className="navbar__city-btn" onClick={() => setShowCityDropdown(!showCityDropdown)}>
->>>>>>> origin/sai
               <MapPin size={16} />
               <span>{selectedCity}</span>
               <ChevronDown size={14} />
@@ -84,29 +80,20 @@ export default function PublicNavbar() {
             )}
           </div>
 
-<<<<<<< HEAD
           <form className="navbar__search" onSubmit={handleSearch} role="search">
             <Search size={18} className="navbar__search-icon" aria-hidden="true" />
             <input type="text" placeholder="Search designers or styles..."
               aria-label="Search designers or styles"
-=======
-          <form className="navbar__search" onSubmit={handleSearch}>
-            <Search size={18} className="navbar__search-icon" />
-            <input type="text" placeholder="Search designers, malls, services or occasions..." 
->>>>>>> origin/sai
               value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
           </form>
         </div>
 
-<<<<<<< HEAD
         <nav className="navbar__public-links" aria-label="Main navigation">
           <Link to="/explore/designers">Explore</Link>
           <Link to="/how-it-works">How it works</Link>
           <Link to="/for-designers">For Designers</Link>
         </nav>
 
-=======
->>>>>>> origin/sai
         <div className="navbar__actions">
           {isAuthenticated ? (
             <>
@@ -151,7 +138,6 @@ export default function PublicNavbar() {
           )}
         </div>
 
-<<<<<<< HEAD
         <button
           type="button"
           className="navbar__hamburger"
@@ -160,15 +146,11 @@ export default function PublicNavbar() {
           aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         >
-=======
-        <button className="navbar__hamburger" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label="Toggle menu">
->>>>>>> origin/sai
           {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
 
       {mobileMenuOpen && (
-<<<<<<< HEAD
         <div className="navbar__mobile-menu" id="navbar-mobile-menu">
           <form className="navbar__mobile-search" onSubmit={handleSearch} role="search">
             <Search size={18} aria-hidden="true" />
@@ -181,23 +163,13 @@ export default function PublicNavbar() {
               {CITIES.map((city) => <option key={city} value={city}>{city}</option>)}
             </select>
           </label>
-=======
-        <div className="navbar__mobile-menu">
-          <form className="navbar__mobile-search" onSubmit={handleSearch}>
-            <Search size={18} />
-            <input type="text" placeholder="Search..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
-          </form>
->>>>>>> origin/sai
           <nav className="navbar__mobile-nav">
             <Link to="/">Home</Link>
             <Link to="/explore/designers">Explore Designers</Link>
             <Link to="/explore/malls">Nearby Malls</Link>
             <Link to="/categories">Fashion Categories</Link>
             <Link to="/how-it-works">How It Works</Link>
-<<<<<<< HEAD
             <Link to="/for-designers">For Designers</Link>
-=======
->>>>>>> origin/sai
             <Link to="/help">Help & Support</Link>
           </nav>
           {!isAuthenticated && (
