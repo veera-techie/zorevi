@@ -58,6 +58,7 @@
   min-width: 0;
 }
 
+<<<<<<< HEAD
 .navbar__public-links {
   display: flex;
   align-items: center;
@@ -79,6 +80,8 @@
   color: var(--color-primary);
 }
 
+=======
+>>>>>>> origin/sai
 .navbar__city-selector {
   position: relative;
   flex-shrink: 0;
@@ -341,6 +344,7 @@
   margin-bottom: var(--space-4);
 }
 
+<<<<<<< HEAD
 .navbar__mobile-city {
   display: flex;
   align-items: center;
@@ -361,6 +365,8 @@
   background: var(--color-bg);
 }
 
+=======
+>>>>>>> origin/sai
 .navbar__mobile-search input {
   flex: 1;
   border: none;
@@ -410,6 +416,7 @@
     height: 56px;
   }
 
+<<<<<<< HEAD
   @media (max-width: 900px) {
     .navbar__center,
     .navbar__public-links {
@@ -425,6 +432,8 @@
     }
   }
 
+=======
+>>>>>>> origin/sai
   .navbar__center {
     display: none;
   }

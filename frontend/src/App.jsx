@@ -17,8 +17,11 @@ import DesignerApply from './modules/authentication/pages/DesignerApply';
 import DesignerApplicationStatus from './modules/authentication/pages/DesignerApplicationStatus';
 import DesignerForgotPassword from './modules/authentication/pages/DesignerForgotPassword';
 import AdminLogin from './modules/authentication/pages/AdminLogin';
+<<<<<<< HEAD
 import AdminForgotPassword from './modules/authentication/pages/AdminForgotPassword';
 import AccountTypeSelection from './modules/authentication/pages/AccountTypeSelection';
+=======
+>>>>>>> origin/sai
 
 // Public & Customer Pages
 import LandingPage from './modules/customer/pages/LandingPage';
@@ -26,12 +29,15 @@ import PublicDesigners from './modules/customer/pages/PublicDesigners';
 import PublicDesignerProfile from './modules/customer/pages/PublicDesignerProfile';
 import PublicMalls from './modules/customer/pages/PublicMalls';
 import PublicMallDetails from './modules/customer/pages/PublicMallDetails';
+<<<<<<< HEAD
 import PublicDesignerDirectory from './modules/customer/pages/PublicDesignerDirectory';
 import PublicDesignerDetail from './modules/customer/pages/PublicDesignerDetail';
 import PublicMallDirectory from './modules/customer/pages/PublicMallDirectory';
 import PublicMallDetail from './modules/customer/pages/PublicMallDetail';
 import ForDesignersPage from './modules/customer/pages/ForDesignersPage';
 import LegalPage from './modules/customer/pages/LegalPage';
+=======
+>>>>>>> origin/sai
 import CategoriesPage from './modules/customer/pages/CategoriesPage';
 import HowItWorksPage from './modules/customer/pages/HowItWorksPage';
 import HelpPage from './modules/customer/pages/HelpPage';
@@ -81,6 +87,7 @@ function App() {
           ======================================================== */}
       <Route element={<PublicLayout />}>
         <Route path="/" element={<LandingPage />} />
+<<<<<<< HEAD
         <Route path="/explore/designers" element={<PublicDesignerDirectory />} />
         <Route path="/explore/designers/:designerId" element={<PublicDesignerDetail />} />
         <Route path="/designers/:id" element={<PublicDesignerDetail />} />
@@ -109,6 +116,30 @@ function App() {
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/admin/forgot-password" element={<AdminForgotPassword />} />
 
+=======
+        <Route path="/explore/designers" element={<PublicDesigners />} />
+        <Route path="/explore/designers/:designerId" element={<PublicDesignerProfile />} />
+        <Route path="/explore/malls" element={<PublicMalls />} />
+        <Route path="/explore/malls/:mallId" element={<PublicMallDetails />} />
+        <Route path="/categories" element={<CategoriesPage />} />
+        <Route path="/how-it-works" element={<HowItWorksPage />} />
+        <Route path="/help" element={<HelpPage />} />
+
+        {/* Public authentication and registration */}
+        <Route path="/customer/login" element={<CustomerLogin />} />
+        <Route path="/customer/register" element={<CustomerRegister />} />
+        <Route path="/customer/verify" element={<CustomerVerify />} />
+        <Route path="/customer/forgot-password" element={<CustomerForgotPassword />} />
+
+        <Route path="/designer/login" element={<DesignerLogin />} />
+        <Route path="/designer/apply" element={<DesignerApply />} />
+        <Route path="/designer/application-status" element={<DesignerApplicationStatus />} />
+        <Route path="/designer/forgot-password" element={<DesignerForgotPassword />} />
+
+        <Route path="/admin/login" element={<AdminLogin />} />
+      </Route>
+
+>>>>>>> origin/sai
       {/* ========================================================
           2. CUSTOMER AUTHENTICATED ROUTES
           ======================================================== */}
