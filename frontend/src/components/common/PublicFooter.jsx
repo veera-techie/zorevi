@@ -2,13 +2,18 @@ import { Link } from 'react-router-dom';
 import { Sparkles, Heart } from 'lucide-react';
 import './PublicFooter.css';
 
-export default function PublicFooter() {
+export default function PublicFooter({ role }) {
+  const isCustomer = role === 'customer';
+  const designersLink = isCustomer ? '/customer/designers' : '/explore/designers';
+  const mallsLink = isCustomer ? '/customer/malls' : '/explore/malls';
+  const bookingsLink = isCustomer ? '/customer/bookings' : '/how-it-works';
+
   return (
     <footer className="zorevi-footer">
       <div className="zorevi-footer__inner container">
         <div className="zorevi-footer__grid">
           <div className="zorevi-footer__brand-col">
-            <Link to="/" className="zorevi-footer__logo">
+            <Link to={isCustomer ? '/customer' : '/'} className="zorevi-footer__logo">
               <svg viewBox="0 0 32 32" fill="none" width="30" height="30">
                 <path d="M16 4C12 4 8 8 8 12c0 4 4 8 8 12 4-4 8-8 8-12 0-4-4-8-8-8z" fill="url(#footer-logo-g)"/>
                 <path d="M8 12c-4 0-6 2-6 4s2 4 6 4c2 0 4-2 6-4-2-2-4-4-6-4z" fill="url(#footer-logo-g)" opacity="0.8"/>
@@ -36,10 +41,10 @@ export default function PublicFooter() {
           <div className="zorevi-footer__col">
             <h4 className="zorevi-footer__title">Discover</h4>
             <ul className="zorevi-footer__links">
-              <li><Link to="/explore/designers">Explore Designers</Link></li>
-              <li><Link to="/explore/malls">Nearby Malls</Link></li>
+              <li><Link to={designersLink}>Explore Designers</Link></li>
+              <li><Link to={mallsLink}>Nearby Malls</Link></li>
               <li><Link to="/categories">Fashion Categories</Link></li>
-              <li><Link to="/how-it-works">How It Works</Link></li>
+              <li><Link to={bookingsLink}>{isCustomer ? 'My Bookings' : 'How It Works'}</Link></li>
               <li><Link to="/for-designers">For Designers</Link></li>
             </ul>
           </div>
@@ -57,8 +62,17 @@ export default function PublicFooter() {
             <h4 className="zorevi-footer__title">Support & Trust</h4>
             <ul className="zorevi-footer__links">
               <li><Link to="/help">Help Center</Link></li>
-              <li><Link to="/customer/login">Customer Sign In</Link></li>
-              <li><Link to="/customer/register">Create Account</Link></li>
+              {isCustomer ? (
+                <>
+                  <li><Link to="/customer/profile">My Profile</Link></li>
+                  <li><Link to="/customer/settings">Settings</Link></li>
+                </>
+              ) : (
+                <>
+                  <li><Link to="/customer/login">Customer Sign In</Link></li>
+                  <li><Link to="/customer/register">Create Account</Link></li>
+                </>
+              )}
             </ul>
           </div>
         </div>

@@ -1,10 +1,30 @@
 import { Link } from 'react-router-dom';
-import { Heart, Star, MapPin, CheckCircle2 } from 'lucide-react';
+import { Heart, Star, MapPin, CheckCircle2, Check, Briefcase, Shirt, Sparkles } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import ImageWithFallback from '../common/ImageWithFallback';
 import './Cards.css';
 
-export default function DesignerCard({ designer, onBook, showBookBtn = true, role = 'customer' }) {
+function getSpecializationIcon(title) {
+  const t = (title || '').toLowerCase();
+  if (t.includes('men') || t.includes('formal') || t.includes('casual')) {
+    return <Shirt size={14} className="dash-icon" />;
+  }
+  return (
+    <svg className="dash-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6 2l6 4 6-4" />
+      <path d="M12 6v3" />
+      <path d="M4 14l3-5h10l3 5-3 8H7l-3-8z" />
+    </svg>
+  );
+}
+
+export default function DesignerCard({
+  designer,
+  onBook,
+  showBookBtn = true,
+  role = 'customer',
+  variant = 'standard',
+}) {
   const { isInWishlist, toggleWishlist, addToast } = useApp();
   const isSaved = isInWishlist('designer', designer.id);
 
@@ -21,6 +41,67 @@ export default function DesignerCard({ designer, onBook, showBookBtn = true, rol
   const profileUrl = role === 'customer'
     ? `/customer/designers/${designer.id}`
     : `/explore/designers/${designer.id}`;
+
+  if (variant === 'dashboard') {
+    return (
+      <div className="zorevi-designer-card zorevi-designer-card--dashboard">
+        <div className="zorevi-designer-card__img-wrap">
+          <Link to={profileUrl} tabIndex={-1}>
+            <ImageWithFallback
+              src={designer.avatar}
+              alt={designer.name}
+              className="zorevi-designer-card__img"
+              fallbackType="designer"
+            />
+          </Link>
+          {designer.isVerified && (
+            <span className="zorevi-designer-card__verified-pill">
+              <Check size={12} strokeWidth={3} /> Verified
+            </span>
+          )}
+        </div>
+
+        <div className="zorevi-designer-card__dash-body">
+          <Link to={profileUrl} className="zorevi-designer-card__dash-name">
+            {designer.name}
+          </Link>
+
+          <div className="zorevi-designer-card__dash-details">
+            <div className="zorevi-designer-card__dash-row">
+              {getSpecializationIcon(designer.title)}
+              <span>{designer.title}</span>
+            </div>
+
+            <div className="zorevi-designer-card__dash-row">
+              <Briefcase size={14} className="dash-icon" />
+              <span>{designer.experience}</span>
+            </div>
+
+            <div className="zorevi-designer-card__dash-row">
+              <Star size={14} fill="#F59E0B" color="#F59E0B" className="dash-icon" />
+              <span className="rating-text">
+                <strong>{designer.rating}</strong> ({designer.reviewCount} reviews)
+              </span>
+            </div>
+
+            <div className="zorevi-designer-card__dash-row">
+              <MapPin size={14} className="dash-icon" />
+              <span>{designer.locality ? `${designer.locality} • ` : ''}{designer.distance || '2.4 km'}</span>
+            </div>
+          </div>
+
+          <div className="zorevi-designer-card__dash-price">
+            Starting at <strong>₹{designer.startingPrice ? designer.startingPrice.toLocaleString('en-IN') : '499'}</strong>
+          </div>
+
+          <Link to={profileUrl} className="zorevi-btn zorevi-btn--dash-view">
+            <span>View Profile</span>
+            <Sparkles size={14} />
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="zorevi-designer-card">

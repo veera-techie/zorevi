@@ -1,13 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, MapPin, Heart, Bell, ChevronDown, LogOut, User, Settings, Menu } from 'lucide-react';
+import { Search, MapPin, Heart, Bell, ChevronDown, LogOut, User, Settings, Menu, Home } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
 import { CITIES } from '../../constants';
 import { AAROHI_PROFILE_IMAGE } from '../../utils/aarohiProfileImage';
 import './DashboardHeader.css';
 
-export default function DashboardHeader({ onToggleSidebar, role = 'customer' }) {
+export default function DashboardHeader({ onToggleSidebar, profileDrawerOpen = false, role = 'customer' }) {
   const { user, logout } = useAuth();
   const { getUnreadCount, selectedCity, setSelectedCity } = useApp();
   const [searchQuery, setSearchQuery] = useState('');
@@ -47,20 +47,23 @@ export default function DashboardHeader({ onToggleSidebar, role = 'customer' }) 
   };
 
   return (
-    <header className="zorevi-dash-header">
+    <header className={`zorevi-dash-header ${role === 'customer' ? 'zorevi-dash-header--customer' : ''}`}>
       <div className="zorevi-dash-header__left">
-        <button
-          className="zorevi-dash-header__toggle-btn"
-          onClick={onToggleSidebar}
-          aria-label="Toggle navigation menu"
-        >
-          <Menu size={22} />
-        </button>
+        {role !== 'customer' && (
+          <button
+            type="button"
+            className="zorevi-dash-header__toggle-btn"
+            onClick={onToggleSidebar}
+            aria-label="Toggle navigation menu"
+          >
+            <Menu size={22} />
+          </button>
+        )}
 
         <Link to={`/${role}`} className="zorevi-dash-header__brand">
           <div className="zorevi-dash-header__logo-icon">
             {role === 'designer' ? <img src="/zorevi-butterfly-hd.svg" alt="" /> : (
-              <svg viewBox="0 0 32 32" fill="none" width="28" height="28">
+              <svg viewBox="0 0 32 32" fill="none" width="30" height="30">
                 <path d="M16 4C12 4 8 8 8 12c0 4 4 8 8 12 4-4 8-8 8-12 0-4-4-8-8-8z" fill="url(#dash-logo-g)"/>
                 <path d="M8 12c-4 0-6 2-6 4s2 4 6 4c2 0 4-2 6-4-2-2-4-4-6-4z" fill="url(#dash-logo-g)" opacity="0.8"/>
                 <path d="M24 12c4 0 6 2 6 4s-2 4-6 4c-2 0-4-2-6-4 2-2 4-4 6-4z" fill="url(#dash-logo-g)" opacity="0.8"/>
@@ -80,35 +83,77 @@ export default function DashboardHeader({ onToggleSidebar, role = 'customer' }) 
             </span>
           </div>
         </Link>
+
+        {role === 'customer' && (
+          <>
+            <div className="zorevi-dash-header__divider" aria-hidden="true" />
+            <Link to="/customer" className="zorevi-dash-header__home-link">
+              <Home size={18} /> <span>Home</span>
+            </Link>
+            <div className="zorevi-dash-header__city" ref={cityRef}>
+              <button
+                type="button"
+                className="zorevi-dash-header__city-btn"
+                onClick={() => setShowCityDropdown(!showCityDropdown)}
+                aria-label="Select city location"
+              >
+                <MapPin size={15} className="zorevi-dash-header__pin" />
+                <span>{selectedCity}</span>
+                <ChevronDown size={14} />
+              </button>
+              {showCityDropdown && (
+                <div className="zorevi-dash-header__city-dropdown">
+                  {CITIES.map((city) => (
+                    <button
+                      key={city}
+                      type="button"
+                      className={`zorevi-dash-header__city-item ${city === selectedCity ? 'active' : ''}`}
+                      onClick={() => {
+                        setSelectedCity(city);
+                        setShowCityDropdown(false);
+                      }}
+                    >
+                      {city}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </>
+        )}
       </div>
 
       <div className="zorevi-dash-header__center">
-        <div className="zorevi-dash-header__city" ref={cityRef}>
-          <button
-            className="zorevi-dash-header__city-btn"
-            onClick={() => setShowCityDropdown(!showCityDropdown)}
-          >
-            <MapPin size={15} className="zorevi-dash-header__pin" />
-            <span>{selectedCity}</span>
-            <ChevronDown size={13} />
-          </button>
-          {showCityDropdown && (
-            <div className="zorevi-dash-header__city-dropdown">
-              {CITIES.map((city) => (
-                <button
-                  key={city}
-                  className={`zorevi-dash-header__city-item ${city === selectedCity ? 'active' : ''}`}
-                  onClick={() => {
-                    setSelectedCity(city);
-                    setShowCityDropdown(false);
-                  }}
-                >
-                  {city}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+        {role !== 'customer' && (
+          <div className="zorevi-dash-header__city" ref={cityRef}>
+            <button
+              type="button"
+              className="zorevi-dash-header__city-btn"
+              onClick={() => setShowCityDropdown(!showCityDropdown)}
+            >
+              <MapPin size={15} className="zorevi-dash-header__pin" />
+              <span>{selectedCity}</span>
+              <ChevronDown size={13} />
+            </button>
+            {showCityDropdown && (
+              <div className="zorevi-dash-header__city-dropdown">
+                {CITIES.map((city) => (
+                  <button
+                    key={city}
+                    type="button"
+                    className={`zorevi-dash-header__city-item ${city === selectedCity ? 'active' : ''}`}
+                    onClick={() => {
+                      setSelectedCity(city);
+                      setShowCityDropdown(false);
+                    }}
+                  >
+                    {city}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         <form className="zorevi-dash-header__search" onSubmit={handleSearch}>
           <Search size={17} className="zorevi-dash-header__search-icon" />
@@ -158,8 +203,17 @@ export default function DashboardHeader({ onToggleSidebar, role = 'customer' }) 
 
         <div className="zorevi-dash-header__user" ref={userRef}>
           <button
+            type="button"
+            id={role === 'customer' ? 'customer-profile-trigger' : undefined}
             className="zorevi-dash-header__user-trigger"
-            onClick={() => setShowUserDropdown(!showUserDropdown)}
+            aria-label={role === 'customer' ? 'Open profile navigation' : 'Open account menu'}
+            aria-haspopup={role === 'customer' ? 'dialog' : 'menu'}
+            aria-expanded={role === 'customer' ? profileDrawerOpen : showUserDropdown}
+            aria-controls={role === 'customer' ? 'customer-profile-drawer' : undefined}
+            onClick={() => {
+              if (role === 'customer') onToggleSidebar?.();
+              else setShowUserDropdown(!showUserDropdown);
+            }}
           >
             <img
               src={user?.avatar || localAvatarFallback}
@@ -180,7 +234,7 @@ export default function DashboardHeader({ onToggleSidebar, role = 'customer' }) 
             <ChevronDown size={14} className="zorevi-dash-header__user-chevron" />
           </button>
 
-          {showUserDropdown && (
+          {showUserDropdown && role !== 'customer' && (
             <div className="zorevi-dash-header__user-dropdown">
               <div className="zorevi-dash-header__user-meta">
                 <strong>{user?.name || (role === 'designer' ? 'Aarohi Mehta' : role === 'admin' ? 'Priya Sharma' : 'Praveen Kumar')}</strong>

@@ -6,6 +6,10 @@
   background: var(--color-bg-secondary, #f9fafb);
 }
 
+.zorevi-layout--customer {
+  background: #faf7fd;
+}
+
 .zorevi-layout__body {
   display: flex;
   flex: 1;

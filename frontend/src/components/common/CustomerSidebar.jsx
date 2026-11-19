@@ -1,85 +1,143 @@
-import { NavLink, useNavigate } from 'react-router-dom';
-import {
-  Home, Compass, Users, Building2, Grid, Calendar, Heart,
-  Star, Bell, User, Settings, HelpCircle, LogOut, ArrowRight, Sparkles, X
-} from 'lucide-react';
+import { useEffect, useRef } from 'react';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { Calendar, HelpCircle, LogOut, Settings, User, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { useApp } from '../../context/AppContext';
 import './Sidebar.css';
+import './CustomerSidebar.css';
 
 export default function CustomerSidebar({ isOpen, onClose }) {
-  const { logout } = useAuth();
-  const { getUnreadCount } = useApp();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const unreadCount = getUnreadCount('customer');
+  const location = useLocation();
+  const drawerRef = useRef(null);
+  const closeButtonRef = useRef(null);
+
+  useEffect(() => {
+    if (!isOpen) return undefined;
+    closeButtonRef.current?.focus();
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        onClose();
+        return;
+      }
+
+      if (event.key !== 'Tab') return;
+      const focusable = drawerRef.current?.querySelectorAll('a[href], button:not([disabled])');
+      if (!focusable?.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    const handleOutsidePointerDown = (event) => {
+      const target = event.target;
+      if (
+        drawerRef.current?.contains(target)
+        || target.closest?.('#customer-profile-trigger')
+        || target.closest?.('.zorevi-customer-drawer-backdrop')
+      ) return;
+      onClose();
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('pointerdown', handleOutsidePointerDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('pointerdown', handleOutsidePointerDown);
+    };
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
+
+  const isProfileActive = location.pathname === '/customer/profile' || location.pathname === '/customer';
 
   const navItems = [
-    { label: 'Home', path: '/customer', icon: Home, end: true },
-    { label: 'Explore', path: '/customer/designers', icon: Compass },
-    { label: 'Nearby Designers', path: '/customer/designers', icon: Users },
-    { label: 'Nearby Malls', path: '/customer/malls', icon: Building2 },
-    { label: 'Fashion Categories', path: '/categories', icon: Grid },
+    { label: 'My Profile', path: '/customer/profile', icon: User, forceActive: isProfileActive },
     { label: 'My Bookings', path: '/customer/bookings', icon: Calendar },
-    { label: 'My Wishlist', path: '/customer/wishlist', icon: Heart },
-    { label: 'My Reviews', path: '/customer/reviews', icon: Star },
-    { label: 'Notifications', path: '/customer/notifications', icon: Bell, badge: unreadCount },
-    { label: 'My Profile', path: '/customer/profile', icon: User },
     { label: 'Settings', path: '/customer/settings', icon: Settings },
     { label: 'Help & Support', path: '/customer/support', icon: HelpCircle },
   ];
 
+  const handleLogout = () => {
+    onClose();
+    logout();
+    navigate('/');
+  };
+
   return (
     <>
-      {isOpen && <div className="zorevi-sidebar-backdrop" onClick={onClose}></div>}
-      <aside className={`zorevi-sidebar ${isOpen ? 'open' : ''}`}>
-        <div className="zorevi-sidebar__nav">
+      <button
+        type="button"
+        className="zorevi-customer-drawer-backdrop"
+        aria-label="Close profile navigation"
+        onClick={onClose}
+      />
+      <aside
+        ref={drawerRef}
+        id="customer-profile-drawer"
+        className="zorevi-customer-drawer"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Customer navigation"
+      >
+        <div className="zorevi-customer-drawer__header">
+          <div className="zorevi-customer-drawer__user-info">
+            <img
+              src={user?.avatar || '/images/customer-praveen.png'}
+              alt={user?.name || 'Praveen'}
+              className="zorevi-customer-drawer__avatar"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = '/images/customer-praveen.png';
+              }}
+            />
+            <div>
+              <h3 className="zorevi-customer-drawer__user-name">
+                Hi, {user?.name ? user.name.split(' ')[0] : 'Praveen'}
+              </h3>
+              <p className="zorevi-customer-drawer__user-role">Customer Account</p>
+            </div>
+          </div>
+          <button
+            ref={closeButtonRef}
+            type="button"
+            className="zorevi-customer-drawer__close"
+            aria-label="Close navigation drawer"
+            onClick={onClose}
+          >
+            <X size={20} />
+          </button>
+        </div>
+
+        <nav className="zorevi-customer-drawer__nav" aria-label="Profile navigation">
           {navItems.map((item) => {
             const Icon = item.icon;
             return (
               <NavLink
                 key={item.label}
                 to={item.path}
-                end={item.end}
-                className={({ isActive }) =>
-                  `zorevi-sidebar__item ${isActive ? 'active' : ''}`
-                }
+                className={({ isActive }) => `zorevi-customer-drawer__item ${(isActive || item.forceActive) ? 'is-selected' : ''}`}
                 onClick={onClose}
               >
-                <Icon size={18} />
+                <Icon size={19} aria-hidden="true" />
                 <span>{item.label}</span>
-                {item.badge > 0 && (
-                  <span className="zorevi-sidebar__badge">{item.badge}</span>
-                )}
               </NavLink>
             );
           })}
-
-          <div className="zorevi-sidebar__divider"></div>
-
-          <button
-            className="zorevi-sidebar__item"
-            onClick={() => {
-              logout();
-              if (onClose) onClose();
-              navigate('/');
-            }}
-          >
-            <LogOut size={18} />
+          <button type="button" className="zorevi-customer-drawer__item zorevi-customer-drawer__logout" onClick={handleLogout}>
+            <LogOut size={19} aria-hidden="true" />
             <span>Logout</span>
           </button>
-        </div>
-
-        <div className="zorevi-sidebar__promo">
-          <div className="zorevi-sidebar__promo-icon">
-            <Sparkles size={16} />
-          </div>
-          <div className="zorevi-sidebar__promo-title">Style your way with Zorevi</div>
-          <NavLink to="/customer/designers" className="zorevi-sidebar__promo-btn" onClick={onClose}>
-            Explore styles <ArrowRight size={12} />
-          </NavLink>
-        </div>
+        </nav>
       </aside>
     </>
   );
 }
-

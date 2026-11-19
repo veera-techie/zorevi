@@ -11,7 +11,7 @@ or imply their endorsement.
 | File | Used for |
 | --- | --- |
 | `zorevi-family-fashion.png` | Homepage hero; image supplied by the user for this project. |
-| `homepage-family.jpg` | Previous stock homepage hero image, retained but no longer displayed on the homepage. |
+| `homepage-family.jpg` | Illustrative stock image used as an alternate customer dashboard hero slide. |
 | `designer-aarohi.jpg` | Sample designer Aarohi Mehta preview and profile. |
 | `designer-sneha.jpg` | Sample designer Sneha Kapoor preview and profile. |
 | `designer-rohan.jpg` | Sample designer Rohan Verma preview and profile. |
@@ -24,7 +24,7 @@ or imply their endorsement.
 | `designer-dev.jpg` | Sample designer Dev Shah preview and profile. |
 | `designer-aisha.jpg` | Sample designer Aisha Khan preview and profile. |
 | `designer-vikram.jpg` | Sample designer Vikram Rao preview and profile. |
-| `category-bridal.jpg` | Bridal & groom category card and illustrative portfolio examples. |
+| `category-bridal.jpg` | Bridal & groom category card, illustrative portfolio examples, and customer dashboard hero slide. |
 | `category-men.jpg` | Men's styling category card and illustrative portfolio examples. |
 | `category-women.jpg` | Women's styling category card and illustrative portfolio examples. |
 | `category-kids.jpg` | Kids' styling category card and illustrative portfolio examples. |
