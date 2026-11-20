@@ -1,0 +1,568 @@
+/* ============================================
+   DESIGNER APPLICATION STATUS PAGE
+   Matches Zorevi Design System
+   ============================================ */
+
+.zorevi-status-page {
+  min-height: 100vh;
+  background: #faf7fd;
+  color: #1e1b4b;
+  font-family: var(--font-primary, 'Manrope', 'Segoe UI', sans-serif);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.zorevi-status-header {
+  height: 72px;
+  background: #ffffff;
+  border-bottom: 1px solid #ede9fe;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 clamp(20px, 4vw, 48px);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: 0 2px 12px rgba(124, 58, 237, 0.03);
+}
+
+.zorevi-status-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.zorevi-status-logo__text {
+  display: flex;
+  flex-direction: column;
+}
+
+.zorevi-status-logo__brand {
+  font-size: 1.35rem;
+  font-weight: 850;
+  color: #7c3aed;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.zorevi-status-logo__tagline {
+  font-size: 0.68rem;
+  color: #6b7280;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.zorevi-status-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.zorevi-status-header__help {
+  font-size: 0.85rem;
+  color: #6b7280;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.15s ease;
+}
+
+.zorevi-status-header__help:hover {
+  color: #7c3aed;
+}
+
+/* Main Container */
+.zorevi-status-container {
+  flex: 1;
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: clamp(24px, 4vw, 48px) 20px 60px;
+  box-sizing: border-box;
+}
+
+/* Main Status Card */
+.zorevi-status-card {
+  background: #ffffff;
+  border-radius: 24px;
+  border: 1px solid #ede9fe;
+  box-shadow: 0 12px 36px rgba(124, 58, 237, 0.06);
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+/* Card Header Banner */
+.zorevi-status-card__header {
+  padding: 32px 36px 28px;
+  background: linear-gradient(135deg, #fdfaff 0%, #f5effe 100%);
+  border-bottom: 1px solid #ede9fe;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.zorevi-status-card__header-left {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.zorevi-status-avatar {
+  width: 68px;
+  height: 68px;
+  border-radius: 20px;
+  object-fit: cover;
+  border: 3px solid #ffffff;
+  box-shadow: 0 6px 16px rgba(124, 58, 237, 0.15);
+  background: #ede9fe;
+}
+
+.zorevi-status-meta h1 {
+  font-size: 1.45rem;
+  font-weight: 850;
+  color: #1e1b4b;
+  margin: 0 0 6px 0;
+  letter-spacing: -0.02em;
+}
+
+.zorevi-status-meta-pills {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.zorevi-meta-pill {
+  font-size: 0.78rem;
+  font-weight: 650;
+  color: #6b7280;
+  background: rgba(255, 255, 255, 0.85);
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid #ddd6fe;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.zorevi-meta-pill.id-pill {
+  background: #f5f3ff;
+  color: #7c3aed;
+  border-color: #c4b5fd;
+}
+
+/* Status Pill Badge */
+.zorevi-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 750;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.zorevi-status-badge.pending {
+  background: #fef3c7;
+  color: #b45309;
+  border: 1px solid #fde68a;
+}
+
+.zorevi-status-badge.approved {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.zorevi-status-badge.changes_requested {
+  background: #dbeafe;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+/* Card Body */
+.zorevi-status-card__body {
+  padding: 36px;
+}
+
+/* Stepper Timeline */
+.zorevi-stepper {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  position: relative;
+  margin-bottom: 40px;
+}
+
+.zorevi-stepper::before {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 12%;
+  right: 12%;
+  height: 2px;
+  background: #e5e7eb;
+  z-index: 1;
+}
+
+.zorevi-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+.zorevi-step__circle {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #f3f4f6;
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 750;
+  font-size: 0.9rem;
+  border: 3px solid #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 12px;
+  transition: all 0.2s ease;
+}
+
+.zorevi-step.completed .zorevi-step__circle {
+  background: #10b981;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.zorevi-step.active .zorevi-step__circle {
+  background: #7c3aed;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+  animation: pulse-ring 2s infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(124, 58, 237, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(124, 58, 237, 0);
+  }
+}
+
+.zorevi-step__label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #1e1b4b;
+  margin-bottom: 4px;
+}
+
+.zorevi-step__date {
+  font-size: 0.74rem;
+  color: #6b7280;
+}
+
+/* Status Content Sections */
+.zorevi-status-section {
+  border-radius: 20px;
+  padding: 28px;
+  margin-bottom: 28px;
+}
+
+.zorevi-status-section.pending {
+  background: #faf5ff;
+  border: 1px solid #e9d5ff;
+}
+
+.zorevi-status-section.approved {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+}
+
+.zorevi-status-section.changes_requested {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+}
+
+.zorevi-status-section__header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.zorevi-status-section__icon-wrap {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.zorevi-status-section.pending .zorevi-status-section__icon-wrap {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.zorevi-status-section.approved .zorevi-status-section__icon-wrap {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.zorevi-status-section.changes_requested .zorevi-status-section__icon-wrap {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.zorevi-status-section__title {
+  margin: 0 0 4px 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #1e1b4b;
+}
+
+.zorevi-status-section__sub {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #6b7280;
+  line-height: 1.45;
+}
+
+/* Checklist Cards */
+.zorevi-checklist-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin: 20px 0;
+}
+
+.zorevi-checklist-item {
+  background: #ffffff;
+  border: 1px solid #ede9fe;
+  border-radius: 14px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.zorevi-checklist-item__icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.zorevi-checklist-item__icon.verified {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.zorevi-checklist-item__icon.reviewing {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.zorevi-checklist-item__info {
+  display: flex;
+  flex-direction: column;
+}
+
+.zorevi-checklist-item__title {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #1e1b4b;
+}
+
+.zorevi-checklist-item__desc {
+  font-size: 0.74rem;
+  color: #6b7280;
+}
+
+/* Action Banner */
+.zorevi-status-action-box {
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* Support Card */
+.zorevi-support-card {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid #ede9fe;
+  padding: 24px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.03);
+  flex-wrap: wrap;
+}
+
+.zorevi-support-card__left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.zorevi-support-card__icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #f5f0ff;
+  color: #7c3aed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.zorevi-support-card h4 {
+  margin: 0 0 4px 0;
+  font-size: 0.98rem;
+  font-weight: 750;
+  color: #1e1b4b;
+}
+
+.zorevi-support-card p {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #6b7280;
+}
+
+.zorevi-support-card__contacts {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.zorevi-support-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #4b5563;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.zorevi-support-pill:hover {
+  background: #f5f0ff;
+  border-color: #ddd6fe;
+  color: #7c3aed;
+}
+
+/* Interactive Simulator Bar */
+.zorevi-status-simulator {
+  background: #ffffff;
+  border: 1.5px dashed #c4b5fd;
+  border-radius: 18px;
+  padding: 18px 24px;
+  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.04);
+}
+
+.zorevi-status-simulator__label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #7c3aed;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 12px;
+}
+
+.zorevi-status-simulator__btns {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.zorevi-sim-btn {
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+}
+
+.zorevi-sim-btn.active {
+  background: #7c3aed;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+}
+
+.zorevi-sim-btn:not(.active) {
+  background: #f9fafb;
+  color: #4b5563;
+  border-color: #e5e7eb;
+}
+
+.zorevi-sim-btn:not(.active):hover {
+  background: #f5f0ff;
+  border-color: #ddd6fe;
+  color: #7c3aed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .zorevi-status-card__header {
+    flex-direction: column;
+    padding: 24px;
+  }
+  .zorevi-status-card__body {
+    padding: 24px;
+  }
+  .zorevi-stepper {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .zorevi-stepper::before {
+    display: none;
+  }
+  .zorevi-step {
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    text-align: left;
+  }
+  .zorevi-step__circle {
+    margin-bottom: 0;
+  }
+  .zorevi-checklist-grid {
+    grid-template-columns: 1fr;
+  }
+  .zorevi-support-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+

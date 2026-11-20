@@ -51,12 +51,60 @@
   gap: 12px;
 }
 
+.zorevi-customer-drawer__avatar-link {
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+}
+
 .zorevi-customer-drawer__avatar {
   width: 44px;
   height: 44px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid #ede9fe;
+  background: #ffffff;
+  padding: 2px;
+  display: block;
+  transition: transform 0.15s ease;
+}
+
+.zorevi-customer-drawer__avatar-link:hover .zorevi-customer-drawer__avatar {
+  transform: scale(1.05);
+  border-color: #c4b5fd;
+}
+
+.zorevi-customer-drawer__avatar-edit-badge {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #7c3aed;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.zorevi-customer-drawer__edit-link {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #7c3aed;
+  text-decoration: none;
+  background: #f5f0ff;
+  padding: 1px 7px;
+  border-radius: 6px;
+  border: 1px solid #ddd6fe;
+  transition: all 0.15s ease;
+}
+
+.zorevi-customer-drawer__edit-link:hover {
+  background: #ede9fe;
+  color: #6d28d9;
 }
 
 .zorevi-customer-drawer__user-name {

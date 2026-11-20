@@ -101,19 +101,7 @@ export default function PublicDesignerDetail() {
         </div>
       </section>
 
-      {!isCustomer ? (
-        <section className="public-profile-locked">
-          <div className="public-profile-locked__icon"><LockKeyhole size={21} /></div>
-          <div>
-            <h2>Full profile details are for customers</h2>
-            <p>Sign in to access the portfolio, complete services and pricing, reviews, availability, favorites and booking flow. Your preview remains available while you explore.</p>
-          </div>
-          <button type="button" className="zorevi-btn zorevi-btn--primary" onClick={() => { setDialogIntent('details'); setDialogOpen(true); }}>
-            See access options <ArrowRight size={15} />
-          </button>
-        </section>
-      ) : (
-        <div className="public-profile-sections">
+      <div className="public-profile-sections">
           <section className="public-detail-panel">
             <h2>About {designer.name}</h2>
             <p>{designer.bio}</p>
@@ -179,7 +167,6 @@ export default function PublicDesignerDetail() {
             <button type="button" className="zorevi-btn zorevi-btn--primary public-book-button" onClick={handleBook}>Start booking <ArrowRight size={16} /></button>
           </div>
         </div>
-      )}
 
       <CustomerAccessDialog
         designer={designer}

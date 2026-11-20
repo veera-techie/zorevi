@@ -1,22 +1,58 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import {
   Star, MapPin, CheckCircle2, Heart, Share2, Award, Sparkles,
   Calendar, Clock, ShieldCheck, ArrowRight, UserCheck, ChevronLeft
 } from 'lucide-react';
 import { mockDesigners, mockServices, mockReviews } from '../../../services/mockData';
+import { publicDesigners } from '../../../services/publicDiscoveryData';
 import BookingModal from '../../../components/cards/BookingModal';
+import CustomerAccessDialog from '../../../components/common/CustomerAccessDialog';
 import ImageWithFallback from '../../../components/common/ImageWithFallback';
+import { useAuth } from '../../../context/AuthContext';
 import { useApp } from '../../../context/AppContext';
 import './PublicDesignerProfile.css';
 
 export default function PublicDesignerProfile({ role = 'public' }) {
-  const { designerId } = useParams();
+  const { designerId, id } = useParams();
+  const currentId = id || designerId;
+  const { isCustomer } = useAuth();
   const { isInWishlist, toggleWishlist, addToast } = useApp();
 
-  const designer = mockDesigners.find((d) => d.id === designerId) || mockDesigners[1]; // default Sneha Kapoor
+  const rawDesigner = mockDesigners.find((d) => d.id === currentId)
+    || publicDesigners.find((d) => d.id === currentId)
+    || mockDesigners[0];
+
+  const designer = {
+    ...rawDesigner,
+    avatar: rawDesigner.avatar || rawDesigner.image || '/assets/images/designer-aarohi.jpg',
+    experience: rawDesigner.experience || `${rawDesigner.yearsExperience || 5} Years Experience`,
+    startingPrice: rawDesigner.startingPrice || 499,
+    portfolio: rawDesigner.portfolio?.length ? rawDesigner.portfolio : [
+      { id: 'p1', title: 'Bridal Elegance', image: '/assets/images/category-bridal.jpg', category: 'Bridal' },
+      { id: 'p2', title: 'Family Styling', image: '/assets/images/category-family.jpg', category: 'Family' },
+      { id: 'p3', title: 'Modern Classics', image: '/assets/images/category-western.jpg', category: 'Western' },
+      { id: 'p4', title: 'Contemporary Ethnic', image: '/assets/images/category-traditional.jpg', category: 'Ethnic' },
+    ],
+  };
+
   const [activeTab, setActiveTab] = useState('overview'); // overview, portfolio, services, reviews, availability
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  const [isAccessDialogOpen, setIsAccessDialogOpen] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'instant',
+    });
+    if (document.documentElement) {
+      document.documentElement.scrollTop = 0;
+    }
+    if (document.body) {
+      document.body.scrollTop = 0;
+    }
+  }, [currentId]);
 
   const isSaved = isInWishlist('designer', designer.id);
 
@@ -32,11 +68,19 @@ export default function PublicDesignerProfile({ role = 'public' }) {
     addToast(isSaved ? 'Removed from wishlist' : 'Saved to wishlist', 'info');
   };
 
+  const handleBookingClick = () => {
+    if (!isCustomer) {
+      setIsAccessDialogOpen(true);
+      return;
+    }
+    setIsBookingModalOpen(true);
+  };
+
   return (
     <div className="zorevi-designer-profile container">
       {/* Back button */}
       <div className="zorevi-profile-back-bar">
-        <Link to={role === 'customer' ? '/customer/designers' : '/explore/designers'} className="zorevi-profile-back-link">
+        <Link to={role === 'customer' ? '/customer/designers' : '/'} className="zorevi-profile-back-link">
           <ChevronLeft size={16} /> Back to Designers
         </Link>
       </div>
@@ -73,7 +117,7 @@ export default function PublicDesignerProfile({ role = 'public' }) {
               <div className="zorevi-profile-rating">
                 <Star size={15} fill="#F59E0B" color="#F59E0B" />
                 <strong>{designer.rating}</strong>
-                <span>({designer.reviewCount ? `${(designer.reviewCount / 1000).toFixed(1)}k` : '0'} reviews)</span>
+                <span>({designer.reviewCount ? (designer.reviewCount >= 1000 ? `${(designer.reviewCount / 1000).toFixed(1)}k` : designer.reviewCount) : '0'} reviews)</span>
               </div>
             </div>
 
@@ -114,7 +158,7 @@ export default function PublicDesignerProfile({ role = 'public' }) {
 
             <button
               className="zorevi-btn zorevi-btn--primary zorevi-btn--lg"
-              onClick={() => setIsBookingModalOpen(true)}
+              onClick={handleBookingClick}
             >
               Book a Styling Session <ArrowRight size={16} />
             </button>
@@ -296,7 +340,7 @@ export default function PublicDesignerProfile({ role = 'public' }) {
                     <span>Duration: {svc.duration}</span>
                     <button
                       className="zorevi-btn zorevi-btn--primary zorevi-btn--sm"
-                      onClick={() => setIsBookingModalOpen(true)}
+                      onClick={handleBookingClick}
                     >
                       Book This Service
                     </button>
@@ -358,6 +402,14 @@ export default function PublicDesignerProfile({ role = 'public' }) {
           </div>
         )}
       </div>
+
+      {/* Customer Access Dialog for unauthenticated guests */}
+      <CustomerAccessDialog
+        designer={designer}
+        intent="booking"
+        isOpen={isAccessDialogOpen}
+        onClose={() => setIsAccessDialogOpen(false)}
+      />
 
       {/* Booking Modal */}
       {isBookingModalOpen && (

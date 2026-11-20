@@ -90,8 +90,6 @@ export default function PublicNavbar() {
         </div>
 
         <nav className="navbar__public-links" aria-label="Main navigation">
-          <Link to="/explore/designers">Explore</Link>
-          <Link to="/how-it-works">How it works</Link>
           <Link to="/for-designers">For Designers</Link>
         </nav>
 
@@ -133,8 +131,7 @@ export default function PublicNavbar() {
             </>
           ) : (
             <div className="navbar__auth-btns">
-              <Link to="/customer/login" className="btn btn--outline btn--sm">Sign In</Link>
-              <Link to="/customer/register" className="btn btn--primary btn--sm">Create Account</Link>
+              <Link to="/customer/login" className="navbar__login-btn">Login</Link>
             </div>
           )}
         </div>
@@ -166,17 +163,14 @@ export default function PublicNavbar() {
           </label>
           <nav className="navbar__mobile-nav">
             <Link to="/">Home</Link>
-            <Link to="/explore/designers">Explore Designers</Link>
             <Link to="/explore/malls">Nearby Malls</Link>
             <Link to="/categories">Fashion Categories</Link>
-            <Link to="/how-it-works">How It Works</Link>
             <Link to="/for-designers">For Designers</Link>
             <Link to="/help">Help & Support</Link>
           </nav>
           {!isAuthenticated && (
             <div className="navbar__mobile-auth">
-              <Link to="/customer/login" className="btn btn--outline btn--full">Sign In</Link>
-              <Link to="/customer/register" className="btn btn--primary btn--full">Create Account</Link>
+              <Link to="/customer/login" className="navbar__login-btn navbar__login-btn--mobile">Login</Link>
             </div>
           )}
         </div>

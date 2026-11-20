@@ -1,154 +1,184 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, Eye, EyeOff, Sparkles, ArrowRight } from 'lucide-react';
+import { Mail, Sparkles, ArrowRight } from 'lucide-react';
 import { useAuth } from '../../../context/AuthContext';
 import { useApp } from '../../../context/AppContext';
-import ImageWithFallback from '../../../components/common/ImageWithFallback';
-import '../Auth.css';
+import {
+  AuthField,
+  AuthPasswordField,
+  AuthSubmit,
+  AuthDivider,
+  GoogleDemoButton,
+  AuthShell,
+} from '../AuthShell';
+
+const isEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
 export default function DesignerLogin() {
   const [email, setEmail] = useState('aarohi@zorevi.in');
   const [password, setPassword] = useState('Password123');
   const [showPassword, setShowPassword] = useState(false);
-  const { login, isLoading } = useAuth();
+  const [rememberMe, setRememberMe] = useState(true);
+  const [errors, setErrors] = useState({});
+  const [submitError, setSubmitError] = useState('');
+  const { login, loginWithGoogle, isLoading } = useAuth();
   const { addToast } = useApp();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const res = await login('designer', email, password);
-    if (res.success) {
-      addToast('Welcome back to your Designer Studio, Aarohi!', 'success');
-      navigate('/designer');
-    } else {
-      addToast('Invalid designer credentials', 'error');
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const nextErrors = {};
+
+    if (!email.trim()) {
+      nextErrors.email = 'Please enter your registered Gmail or email address.';
+    } else if (!isEmail(email.trim())) {
+      nextErrors.email = 'Please enter a valid email address.';
+    }
+
+    if (!password) {
+      nextErrors.password = 'Please enter your password.';
+    }
+
+    setErrors(nextErrors);
+    setSubmitError('');
+    if (Object.keys(nextErrors).length) return;
+
+    try {
+      const res = await login('designer', email.trim(), password);
+      if (res.success) {
+        addToast('Welcome back to your Designer Studio, Aarohi!', 'success');
+        navigate('/designer');
+      } else {
+        setSubmitError(res.error || 'Invalid designer credentials.');
+        addToast('Invalid designer credentials', 'error');
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Sign-in could not be completed.';
+      setSubmitError(message);
+      addToast(message, 'error');
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      const res = await loginWithGoogle('designer');
+      if (res.success) {
+        addToast('Welcome back to Designer Studio! Signed in with Google.', 'success');
+        navigate('/designer');
+      }
+    } catch (error) {
+      addToast('Google sign-in could not be completed.', 'error');
     }
   };
 
   return (
-    <div className="zorevi-auth-page">
-      {/* Left Designer Showcase */}
-      <div className="zorevi-auth-hero" style={{ background: 'linear-gradient(135deg, #FAF5FF 0%, #EDE9FE 100%)' }}>
-        <Link to="/" className="zorevi-auth-hero__logo">
-          <svg viewBox="0 0 32 32" fill="none" width="36" height="36">
-            <path d="M16 4C12 4 8 8 8 12c0 4 4 8 8 12 4-4 8-8 8-12 0-4-4-8-8-8z" fill="url(#des-login-logo)"/>
-            <path d="M8 12c-4 0-6 2-6 4s2 4 6 4c2 0 4-2 6-4-2-2-4-4-6-4z" fill="url(#des-login-logo)" opacity="0.8"/>
-            <path d="M24 12c4 0 6 2 6 4s-2 4-6 4c-2 0-4-2-6-4 2-2 4-4 6-4z" fill="url(#des-login-logo)" opacity="0.8"/>
-            <defs>
-              <linearGradient id="des-login-logo" x1="0" y1="0" x2="32" y2="32">
-                <stop stopColor="#7C3AED"/>
-                <stop offset="1" stopColor="#A855F7"/>
-              </linearGradient>
-            </defs>
-          </svg>
-          <div>
-            <span className="zorevi-auth-hero__brand">Zorevi</span>
-            <span className="zorevi-auth-hero__tagline">Designer Studio Portal</span>
-          </div>
-        </Link>
+    <AuthShell
+      image="/images/slide-fashion-design.jpg"
+      eyebrow="Designer Partner Studio"
+      tagline="Designer Studio Portal"
+      title={
+        <>
+          Grow Your
+          <br />
+          <span>Design Studio.</span>
+        </>
+      }
+      description="Manage your fashion bookings, collaborate with clients in malls, showcase your portfolio, and track your styling revenue."
+      motto={
+        <>
+          Trusted by 1,200+ Verified Stylists &amp; <span>Fashion Designers across India</span>
+        </>
+      }
+    >
+      <header className="zorevi-auth-form-header">
+        <div className="zorevi-auth-badge">
+          <Sparkles size={13} /> DESIGNER PARTNER PORTAL
+        </div>
+        <h2 className="zorevi-auth-form-title">Designer Sign In</h2>
+        <p className="zorevi-auth-form-sub">Sign in to access your studio dashboard and booking requests.</p>
+      </header>
 
-        <div className="zorevi-auth-hero__content">
-          <h1 className="zorevi-auth-hero__title">
-            Grow Your <br />
-            <span>Design Studio.</span>
-          </h1>
-          <p className="zorevi-auth-hero__desc">
-            Manage your fashion bookings, collaborate with clients in malls, showcase your portfolio, and track your styling revenue.
-          </p>
+      <form onSubmit={handleSubmit} noValidate>
+        {/* Email or Gmail */}
+        <AuthField
+          id="designer-email"
+          label="Registered Email address or Gmail"
+          icon={Mail}
+          type="email"
+          autoComplete="username"
+          inputMode="email"
+          placeholder="e.g. aarohi@zorevi.in"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          error={errors.email}
+          required
+        />
 
-          <div className="zorevi-auth-hero__img-container">
-            <ImageWithFallback
-              src="/images/designer-studio-hero.jpg"
-              alt="Designer Studio"
-              className="zorevi-auth-hero__img"
-              fallbackType="designer"
+        {/* Password */}
+        <AuthPasswordField
+          id="designer-password"
+          label="Password"
+          autoComplete="current-password"
+          placeholder="Enter your studio password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          showPassword={showPassword}
+          onTogglePassword={() => setShowPassword((visible) => !visible)}
+          error={errors.password}
+          required
+        />
+
+        <div className="zorevi-auth-row-between">
+          <label className="zorevi-auth-checkbox-label">
+            <input
+              type="checkbox"
+              checked={rememberMe}
+              onChange={(event) => setRememberMe(event.target.checked)}
             />
-          </div>
-        </div>
-
-        <div style={{ color: '#6B7280', fontSize: '0.8rem' }}>
-          Trusted by 1,200+ Verified Stylists & Fashion Designers across India
-        </div>
-      </div>
-
-      {/* Right Form */}
-      <div className="zorevi-auth-form-wrap">
-        <div className="zorevi-auth-form-header">
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#F5F0FF', color: '#7C3AED', padding: '4px 12px', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: '700', marginBottom: '8px' }}>
-            <Sparkles size={12} /> DESIGNER PARTNER PORTAL
-          </div>
-          <h2 className="zorevi-auth-form-title">Designer Sign In</h2>
-          <p className="zorevi-auth-form-sub">Sign in to access your studio dashboard and booking requests.</p>
-        </div>
-
-        <form onSubmit={handleSubmit}>
-          <div className="zorevi-auth-field">
-            <label>Registered Email or Phone</label>
-            <div className="zorevi-auth-input-wrap">
-              <Mail size={18} className="icon-left" />
-              <input
-                type="text"
-                placeholder="designer@zorevi.in"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-          </div>
-
-          <div className="zorevi-auth-field">
-            <label>Password</label>
-            <div className="zorevi-auth-input-wrap">
-              <Lock size={18} className="icon-left" />
-              <input
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Enter password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              <button
-                type="button"
-                className="zorevi-auth-toggle-pwd"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
-            </div>
-          </div>
-
-          <div className="zorevi-auth-row-between">
-            <label className="zorevi-auth-checkbox-label">
-              <input type="checkbox" defaultChecked />
-              <span>Keep me logged in</span>
-            </label>
-            <Link to="/designer/forgot-password" className="zorevi-auth-link">
-              Forgot password?
-            </Link>
-          </div>
-
-          <button
-            type="submit"
-            className="zorevi-btn zorevi-btn--primary zorevi-btn--full zorevi-btn--lg"
-            disabled={isLoading}
-          >
-            {isLoading ? 'Signing In...' : 'Sign In to Studio'}
-          </button>
-        </form>
-
-        <div className="zorevi-auth-footer-prompt" style={{ marginTop: '28px' }}>
-          Not yet a verified designer?{' '}
-          <Link to="/designer/apply" className="zorevi-auth-link">
-            Apply now to become a partner <ArrowRight size={14} style={{ display: 'inline', verticalAlign: 'middle' }} />
+            <span>Keep me logged in</span>
+          </label>
+          <Link to="/designer/forgot-password" className="zorevi-auth-link">
+            Forgot password?
           </Link>
         </div>
 
-        <div style={{ textAlign: 'center', marginTop: '12px' }}>
-          <Link to="/designer/application-status" style={{ fontSize: '0.8rem', color: '#6B7280', textDecoration: 'none' }}>
-            Check Application Status
-          </Link>
-        </div>
+        {submitError && <p className="zorevi-auth-error" role="alert">{submitError}</p>}
+
+        <AuthSubmit loading={isLoading}>Sign In to Studio</AuthSubmit>
+      </form>
+
+      <AuthDivider />
+
+      {/* Optional Gmail signin */}
+      <GoogleDemoButton action="sign in" onClick={handleGoogleLogin} />
+
+      <p className="zorevi-auth-footer-prompt">
+        Not yet a verified designer?{' '}
+        <Link to="/designer/apply" className="zorevi-auth-link">
+          Apply now to become a partner <ArrowRight size={13} style={{ display: 'inline', verticalAlign: 'middle' }} />
+        </Link>
+      </p>
+
+      <div className="zorevi-auth-status-cta">
+        <Link to="/designer/application-status" className="zorevi-auth-status-link">
+          Check Application Status
+        </Link>
       </div>
-    </div>
+
+      <div className="zorevi-auth-designer-cta">
+        Looking for customer account?{' '}
+        <Link to="/customer/login" className="zorevi-auth-link">
+          Customer sign in →
+        </Link>
+      </div>
+
+      <nav className="zorevi-auth-legal" aria-label="Legal and support">
+        <Link to="/terms">Terms &amp; Conditions</Link>
+        <span aria-hidden="true">·</span>
+        <Link to="/privacy">Privacy Policy</Link>
+        <span aria-hidden="true">·</span>
+        <Link to="/help">Help &amp; Support</Link>
+      </nav>
+    </AuthShell>
   );
 }

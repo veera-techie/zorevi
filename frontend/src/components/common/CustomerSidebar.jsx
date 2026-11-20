@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
-import { NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { Calendar, HelpCircle, LogOut, Settings, User, X } from 'lucide-react';
+import { NavLink, useNavigate, useLocation, Link } from 'react-router-dom';
+import { Calendar, HelpCircle, LogOut, Settings, User, X, Edit2 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import './Sidebar.css';
 import './CustomerSidebar.css';
@@ -90,20 +90,30 @@ export default function CustomerSidebar({ isOpen, onClose }) {
       >
         <div className="zorevi-customer-drawer__header">
           <div className="zorevi-customer-drawer__user-info">
-            <img
-              src={user?.avatar || '/images/customer-praveen.png'}
-              alt={user?.name || 'Praveen'}
-              className="zorevi-customer-drawer__avatar"
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = '/images/customer-praveen.png';
-              }}
-            />
+            <Link to="/customer/profile" onClick={onClose} className="zorevi-customer-drawer__avatar-link" title="Edit Profile & Photo">
+              <img
+                src={user?.avatar || '/zorevi-icon.svg'}
+                alt={user?.name || 'Customer'}
+                className="zorevi-customer-drawer__avatar"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = '/zorevi-icon.svg';
+                }}
+              />
+              <span className="zorevi-customer-drawer__avatar-edit-badge" title="Edit photo">
+                <Edit2 size={11} />
+              </span>
+            </Link>
             <div>
               <h3 className="zorevi-customer-drawer__user-name">
-                Hi, {user?.name ? user.name.split(' ')[0] : 'Praveen'}
+                {user?.name ? `Hi, ${user.name.split(' ')[0]}` : 'Hi, Customer'}
               </h3>
-              <p className="zorevi-customer-drawer__user-role">Customer Account</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <p className="zorevi-customer-drawer__user-role">Customer Account</p>
+                <Link to="/customer/profile" onClick={onClose} className="zorevi-customer-drawer__edit-link">
+                  Edit
+                </Link>
+              </div>
             </div>
           </div>
           <button

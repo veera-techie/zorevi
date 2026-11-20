@@ -1,18 +1,19 @@
-import { useState } from 'react';
-import { User, Mail, Phone, MapPin, Sparkles, Plus, Check, Save } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { User, Mail, Phone, MapPin, Sparkles, Plus, Check, Save, Camera, Edit2 } from 'lucide-react';
 import { useAuth } from '../../../context/AuthContext';
 import { useApp } from '../../../context/AppContext';
-import { STYLE_PREFERENCES, SPECIALIZATIONS } from '../../../constants';
-import ImageWithFallback from '../../../components/common/ImageWithFallback';
+import { STYLE_PREFERENCES } from '../../../constants';
 
 export default function CustomerProfile() {
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
   const { addToast } = useApp();
+  const fileInputRef = useRef(null);
 
   const [name, setName] = useState(user?.name || 'Praveen Kumar');
   const [email, setEmail] = useState(user?.email || 'praveen.kumar@email.com');
   const [phone, setPhone] = useState(user?.phone || '+91 98765 43210');
   const [city, setCity] = useState(user?.location || 'Hyderabad');
+  const [avatar, setAvatar] = useState(user?.avatar || '/zorevi-icon.svg');
   const [selectedStyles, setSelectedStyles] = useState(['Contemporary', 'Ethnic', 'Western']);
   const [addresses, setAddresses] = useState([
     { id: 1, label: 'Home', address: 'Flat 402, Gachibowli, Hyderabad – 500032' },
@@ -29,8 +30,42 @@ export default function CustomerProfile() {
     );
   };
 
+  const handlePhotoUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = reader.result;
+        setAvatar(result);
+        if (setUser) {
+          setUser((prev) => ({ ...(prev || {}), avatar: result }));
+        }
+        addToast('Profile photo updated successfully!', 'success');
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleResetLogo = () => {
+    setAvatar('/zorevi-icon.svg');
+    if (setUser) {
+      setUser((prev) => ({ ...(prev || {}), avatar: '/zorevi-icon.svg' }));
+    }
+    addToast('Reset avatar to Zorevi company logo.', 'info');
+  };
+
   const handleSaveProfile = (e) => {
     e.preventDefault();
+    if (setUser) {
+      setUser((prev) => ({
+        ...(prev || {}),
+        name,
+        email,
+        phone,
+        location: city,
+        avatar,
+      }));
+    }
     addToast('Profile and style preferences updated successfully!', 'success');
   };
 
@@ -56,17 +91,83 @@ export default function CustomerProfile() {
 
       <form onSubmit={handleSaveProfile}>
         {/* Personal Details Card */}
-        <div style={{ background: '#FFFFFF', borderRadius: '24px', border: '1px solid #F3F4F6', padding: '28px', boxShadow: '0 4px 16px rgba(0,0,0,0.03)', marginBottom: '24px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '24px' }}>
-            <img
-              src={user?.avatar || '/images/customer-praveen.png'}
-              alt={name}
-              onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/images/customer-praveen.png'; }}
-              style={{ width: '80px', height: '80px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #EDE9FE' }}
-            />
-            <div>
-              <h3 style={{ fontSize: '1.25rem', fontWeight: '800', color: '#1E1B4B', margin: 0 }}>{name}</h3>
-              <span style={{ fontSize: '0.82rem', color: '#6B7280' }}>Zorevi Customer Member</span>
+        <div style={{ background: '#FFFFFF', borderRadius: '24px', border: '1px solid #EDE9FE', padding: '28px', boxShadow: '0 4px 16px rgba(124, 58, 237, 0.04)', marginBottom: '24px' }}>
+          {/* Avatar & Edit Photo */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '24px', marginBottom: '28px', flexWrap: 'wrap' }}>
+            <div style={{ position: 'relative' }}>
+              <img
+                src={avatar || '/zorevi-icon.svg'}
+                alt={name}
+                onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/zorevi-icon.svg'; }}
+                style={{
+                  width: '88px',
+                  height: '88px',
+                  borderRadius: '50%',
+                  objectFit: avatar === '/zorevi-icon.svg' ? 'contain' : 'cover',
+                  background: '#ffffff',
+                  padding: avatar === '/zorevi-icon.svg' ? '6px' : '0',
+                  border: '3px solid #EDE9FE',
+                  boxShadow: '0 4px 16px rgba(124, 58, 237, 0.1)',
+                  display: 'block',
+                }}
+              />
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                style={{
+                  position: 'absolute',
+                  bottom: 0,
+                  right: 0,
+                  width: '30px',
+                  height: '30px',
+                  borderRadius: '50%',
+                  background: '#7C3AED',
+                  color: '#FFFFFF',
+                  border: '2px solid #FFFFFF',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+                  transition: 'transform 0.15s ease',
+                }}
+                title="Change profile picture"
+              >
+                <Camera size={14} />
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                style={{ display: 'none' }}
+                onChange={handlePhotoUpload}
+              />
+            </div>
+
+            <div style={{ flex: 1, minWidth: '220px' }}>
+              <h3 style={{ fontSize: '1.35rem', fontWeight: '800', color: '#1E1B4B', margin: '0 0 4px 0' }}>{name}</h3>
+              <span style={{ fontSize: '0.84rem', color: '#6B7280', display: 'block', marginBottom: '10px' }}>
+                Zorevi Customer Member • {city}
+              </span>
+
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <button
+                  type="button"
+                  className="zorevi-btn zorevi-btn--outline zorevi-btn--sm"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <Camera size={13} /> Change Photo
+                </button>
+                {avatar !== '/zorevi-icon.svg' && (
+                  <button
+                    type="button"
+                    className="zorevi-btn zorevi-btn--ghost zorevi-btn--sm"
+                    onClick={handleResetLogo}
+                  >
+                    Use Company Logo
+                  </button>
+                )}
+              </div>
             </div>
           </div>
 
@@ -118,9 +219,9 @@ export default function CustomerProfile() {
         </div>
 
         {/* Style Preferences */}
-        <div style={{ background: '#FFFFFF', borderRadius: '24px', border: '1px solid #F3F4F6', padding: '28px', boxShadow: '0 4px 16px rgba(0,0,0,0.03)', marginBottom: '24px' }}>
+        <div style={{ background: '#FFFFFF', borderRadius: '24px', border: '1px solid #EDE9FE', padding: '28px', boxShadow: '0 4px 16px rgba(124, 58, 237, 0.04)', marginBottom: '24px' }}>
           <h3 style={{ fontSize: '1.2rem', fontWeight: '700', color: '#1E1B4B', marginBottom: '8px' }}>
-            Preferred Styles & Aesthetics
+            Preferred Styles &amp; Aesthetics
           </h3>
           <p style={{ fontSize: '0.85rem', color: '#6B7280', marginBottom: '16px' }}>
             Designers will tailor outfit recommendations and store picks to these aesthetics.
@@ -141,10 +242,10 @@ export default function CustomerProfile() {
         </div>
 
         {/* Saved Addresses */}
-        <div style={{ background: '#FFFFFF', borderRadius: '24px', border: '1px solid #F3F4F6', padding: '28px', boxShadow: '0 4px 16px rgba(0,0,0,0.03)', marginBottom: '24px' }}>
+        <div style={{ background: '#FFFFFF', borderRadius: '24px', border: '1px solid #EDE9FE', padding: '28px', boxShadow: '0 4px 16px rgba(124, 58, 237, 0.04)', marginBottom: '24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
             <h3 style={{ fontSize: '1.2rem', fontWeight: '700', color: '#1E1B4B', margin: 0 }}>
-              Saved Addresses & Locations
+              Saved Addresses &amp; Locations
             </h3>
             <button
               type="button"
@@ -217,4 +318,3 @@ export default function CustomerProfile() {
     </div>
   );
 }
-

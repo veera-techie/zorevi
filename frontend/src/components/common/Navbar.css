@@ -306,7 +306,38 @@
 
 .navbar__auth-btns {
   display: flex;
+  align-items: center;
   gap: var(--space-2);
+}
+
+.navbar__login-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary-gradient, linear-gradient(135deg, #7c3aed 0%, #9333ea 100%));
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 650;
+  padding: 8px 22px;
+  border-radius: var(--radius-full, 9999px);
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.28);
+  transition: all 0.16s ease;
+  white-space: nowrap;
+}
+
+.navbar__login-btn:hover {
+  background: var(--color-primary-gradient-hover, linear-gradient(135deg, #6d28d9 0%, #7e22ce 100%));
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(124, 58, 237, 0.38);
+}
+
+.navbar__login-btn--mobile {
+  width: 100%;
+  padding: 12px;
+  border-radius: var(--radius-lg, 14px);
+  font-size: 0.95rem;
 }
 
 /* Hamburger */

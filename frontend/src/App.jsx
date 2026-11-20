@@ -68,6 +68,7 @@ import AdminServices from './modules/admin/pages/AdminServices';
 import AdminSupportReviews from './modules/admin/pages/AdminSupportReviews';
 
 // Shared Components
+import ScrollToTop from './components/common/ScrollToTop';
 import BookingChat from './modules/shared/BookingChat';
 import NotificationCenter from './modules/shared/NotificationCenter';
 import NotFoundPage from './modules/shared/NotFoundPage';
@@ -75,15 +76,17 @@ import ForbiddenPage from './modules/shared/ForbiddenPage';
 
 function App() {
   return (
-    <Routes>
+    <>
+      <ScrollToTop />
+      <Routes>
       {/* ========================================================
           1. PUBLIC ROUTES
           ======================================================== */}
       <Route element={<PublicLayout />}>
         <Route path="/" element={<LandingPage />} />
         <Route path="/explore/designers" element={<PublicDesignerDirectory />} />
-        <Route path="/explore/designers/:designerId" element={<PublicDesignerDetail />} />
-        <Route path="/designers/:id" element={<PublicDesignerDetail />} />
+        <Route path="/explore/designers/:designerId" element={<PublicDesignerProfile role="public" />} />
+        <Route path="/designers/:id" element={<PublicDesignerProfile role="public" />} />
         <Route path="/explore/malls" element={<PublicMallDirectory />} />
         <Route path="/explore/malls/:mallId" element={<PublicMallDetail />} />
         <Route path="/malls/:id" element={<PublicMallDetail />} />
@@ -185,6 +188,7 @@ function App() {
       <Route path="/403" element={<ForbiddenPage />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
+    </>
   );
 }
 

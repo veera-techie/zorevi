@@ -154,6 +154,8 @@
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid #ede9fe;
+  background: #ffffff;
+  padding: 2px;
 }
 
 .zorevi-dash-header--customer .zorevi-dash-header__user-name {

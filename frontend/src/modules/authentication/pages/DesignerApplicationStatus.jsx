@@ -1,15 +1,45 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Clock, CheckCircle2, AlertTriangle, ArrowRight, FileText, RefreshCw } from 'lucide-react';
+import {
+  Clock,
+  CheckCircle2,
+  AlertTriangle,
+  ArrowRight,
+  RefreshCw,
+  FileText,
+  Check,
+  ShieldCheck,
+  Mail,
+  Phone,
+  Sparkles,
+  MapPin,
+  HelpCircle,
+} from 'lucide-react';
 import { useAuth } from '../../../context/AuthContext';
 import { useApp } from '../../../context/AppContext';
-import '../Auth.css';
+import { AAROHI_PROFILE_IMAGE } from '../../../utils/aarohiProfileImage';
+import './DesignerApplicationStatus.css';
 
 export default function DesignerApplicationStatus() {
   const [status, setStatus] = useState('pending'); // 'pending', 'approved', 'changes_requested'
   const { login } = useAuth();
   const { addToast } = useApp();
   const navigate = useNavigate();
+
+  const savedApp = (() => {
+    try {
+      return JSON.parse(sessionStorage.getItem('zorevi_designer_application') || '{}');
+    } catch {
+      return {};
+    }
+  })();
+
+  const applicantName = savedApp.brandName || savedApp.fullName || 'Aarohi Mehta';
+  const applicantLocation = savedApp.city
+    ? `${savedApp.area ? `${savedApp.area}, ` : ''}${savedApp.city}`
+    : 'Banjara Hills, Hyderabad';
+  const applicantId = savedApp.applicationId || 'DZ-7812';
+  const submissionDate = savedApp.submissionDate || '16 Nov 2025';
 
   const handleSimulateApproved = () => {
     setStatus('approved');
@@ -27,109 +57,317 @@ export default function DesignerApplicationStatus() {
   };
 
   return (
-    <div className="zorevi-auth-page" style={{ justifyContent: 'center', alignItems: 'center', background: '#F5F0FF', padding: '24px' }}>
-      <div className="zorevi-auth-form-wrap" style={{ background: '#FFFFFF', borderRadius: '24px', boxShadow: '0 20px 40px rgba(124, 58, 237, 0.1)', padding: '40px', maxWidth: '580px', width: '100%' }}>
-        <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-          {status === 'pending' && (
-            <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: '#FFFBEB', color: '#F59E0B', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
-              <Clock size={32} />
-            </div>
-          )}
-          {status === 'approved' && (
-            <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: '#ECFDF5', color: '#10B981', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
-              <CheckCircle2 size={32} />
-            </div>
-          )}
-          {status === 'changes_requested' && (
-            <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: '#EFF6FF', color: '#3B82F6', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
-              <AlertTriangle size={32} />
-            </div>
-          )}
+    <div className="zorevi-status-page">
+      {/* Top Application Header */}
+      <header className="zorevi-status-header">
+        <Link to="/" className="zorevi-status-logo">
+          <svg viewBox="0 0 32 32" fill="none" width="34" height="34">
+            <path d="M16 4C12 4 8 8 8 12c0 4 4 8 8 12 4-4 8-8 8-12 0-4-4-8-8-8z" fill="url(#st-logo-g)" />
+            <path d="M8 12c-4 0-6 2-6 4s2 4 6 4c2 0 4-2 6-4-2-2-4-4-6-4z" fill="url(#st-logo-g)" opacity="0.8" />
+            <path d="M24 12c4 0 6 2 6 4s-2 4-6 4c-2 0-4-2-6-4 2-2 4-4 6-4z" fill="url(#st-logo-g)" opacity="0.8" />
+            <defs>
+              <linearGradient id="st-logo-g" x1="0" y1="0" x2="32" y2="32">
+                <stop stopColor="#7C3AED" />
+                <stop offset="1" stopColor="#A855F7" />
+              </linearGradient>
+            </defs>
+          </svg>
+          <div className="zorevi-status-logo__text">
+            <span className="zorevi-status-logo__brand">Zorevi</span>
+            <span className="zorevi-status-logo__tagline">Fashion for Everyone</span>
+          </div>
+        </Link>
 
-          <h2 className="zorevi-auth-form-title">
-            {status === 'pending' && 'Application Under Review'}
-            {status === 'approved' && 'Congratulations! You are Approved!'}
-            {status === 'changes_requested' && 'Additional Information Requested'}
-          </h2>
+        <div className="zorevi-status-header__actions">
+          <Link to="/help" className="zorevi-status-header__help">
+            <HelpCircle size={15} style={{ verticalAlign: 'middle', marginRight: '4px' }} />
+            Help &amp; Support
+          </Link>
+          <Link to="/designer/login" className="zorevi-btn zorevi-btn--outline zorevi-btn--sm">
+            Designer Login
+          </Link>
+        </div>
+      </header>
 
-          <p className="zorevi-auth-form-sub" style={{ marginTop: '8px' }}>
-            Application ID: <strong>DZ-7812</strong> • Submitted: 16 Nov 2025
-          </p>
+      {/* Main Content Area */}
+      <main className="zorevi-status-container">
+        <div className="zorevi-status-card">
+          {/* Card Header Banner */}
+          <div className="zorevi-status-card__header">
+            <div className="zorevi-status-card__header-left">
+              <img
+                src={savedApp.avatar || AAROHI_PROFILE_IMAGE}
+                alt={applicantName}
+                className="zorevi-status-avatar"
+              />
+              <div className="zorevi-status-meta">
+                <h1>{applicantName}</h1>
+                <div className="zorevi-status-meta-pills">
+                  <span className="zorevi-meta-pill id-pill">
+                    <FileText size={12} /> ID: {applicantId}
+                  </span>
+                  <span className="zorevi-meta-pill">
+                    <MapPin size={12} /> {applicantLocation}
+                  </span>
+                  <span className="zorevi-meta-pill">
+                    Submitted: {submissionDate}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Current Status Badge */}
+            <div>
+              {status === 'pending' && (
+                <span className="zorevi-status-badge pending">
+                  <Clock size={16} /> Under Review
+                </span>
+              )}
+              {status === 'approved' && (
+                <span className="zorevi-status-badge approved">
+                  <CheckCircle2 size={16} /> Approved &amp; Active
+                </span>
+              )}
+              {status === 'changes_requested' && (
+                <span className="zorevi-status-badge changes_requested">
+                  <AlertTriangle size={16} /> Action Required
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Card Body */}
+          <div className="zorevi-status-card__body">
+            {/* Visual Multi-step Timeline */}
+            <div className="zorevi-stepper" aria-label="Application Progress">
+              <div className="zorevi-step completed">
+                <div className="zorevi-step__circle">
+                  <Check size={20} strokeWidth={2.5} />
+                </div>
+                <span className="zorevi-step__label">Submitted</span>
+                <span className="zorevi-step__date">16 Nov 2025</span>
+              </div>
+
+              <div className={`zorevi-step ${status === 'approved' ? 'completed' : 'active'}`}>
+                <div className="zorevi-step__circle">
+                  {status === 'approved' ? <Check size={20} strokeWidth={2.5} /> : '2'}
+                </div>
+                <span className="zorevi-step__label">Portfolio &amp; ID</span>
+                <span className="zorevi-step__date">{status === 'approved' ? 'Verified' : 'In Review'}</span>
+              </div>
+
+              <div className={`zorevi-step ${status === 'approved' ? 'completed' : status === 'changes_requested' ? 'active' : ''}`}>
+                <div className="zorevi-step__circle">
+                  {status === 'approved' ? <Check size={20} strokeWidth={2.5} /> : '3'}
+                </div>
+                <span className="zorevi-step__label">Verification</span>
+                <span className="zorevi-step__date">{status === 'approved' ? 'Completed' : 'Pending'}</span>
+              </div>
+
+              <div className={`zorevi-step ${status === 'approved' ? 'completed' : ''}`}>
+                <div className="zorevi-step__circle">
+                  {status === 'approved' ? <Sparkles size={20} /> : '4'}
+                </div>
+                <span className="zorevi-step__label">Studio Live</span>
+                <span className="zorevi-step__date">{status === 'approved' ? 'Ready!' : 'Final Step'}</span>
+              </div>
+            </div>
+
+            {/* Dynamic Status Section */}
+            {status === 'pending' && (
+              <div className="zorevi-status-section pending">
+                <div className="zorevi-status-section__header">
+                  <div className="zorevi-status-section__icon-wrap">
+                    <Clock size={24} />
+                  </div>
+                  <div>
+                    <h3 className="zorevi-status-section__title">Application is Under Verification</h3>
+                    <p className="zorevi-status-section__sub">
+                      Our fashion onboarding team is reviewing your credentials, portfolio, and identity documents.
+                      Estimated turnaround is 24–48 hours.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Checklist */}
+                <div className="zorevi-checklist-grid">
+                  <div className="zorevi-checklist-item">
+                    <div className="zorevi-checklist-item__icon verified">
+                      <ShieldCheck size={16} />
+                    </div>
+                    <div className="zorevi-checklist-item__info">
+                      <span className="zorevi-checklist-item__title">Government ID Proof</span>
+                      <span className="zorevi-checklist-item__desc">Aadhaar card uploaded &amp; verified</span>
+                    </div>
+                  </div>
+
+                  <div className="zorevi-checklist-item">
+                    <div className="zorevi-checklist-item__icon verified">
+                      <ShieldCheck size={16} />
+                    </div>
+                    <div className="zorevi-checklist-item__info">
+                      <span className="zorevi-checklist-item__title">Studio / Business Proof</span>
+                      <span className="zorevi-checklist-item__desc">Boutique address in Banjara Hills</span>
+                    </div>
+                  </div>
+
+                  <div className="zorevi-checklist-item">
+                    <div className="zorevi-checklist-item__icon reviewing">
+                      <Clock size={16} />
+                    </div>
+                    <div className="zorevi-checklist-item__info">
+                      <span className="zorevi-checklist-item__title">Portfolio Review (8 Looks)</span>
+                      <span className="zorevi-checklist-item__desc">Fashion curator evaluation in progress</span>
+                    </div>
+                  </div>
+
+                  <div className="zorevi-checklist-item">
+                    <div className="zorevi-checklist-item__icon reviewing">
+                      <Clock size={16} />
+                    </div>
+                    <div className="zorevi-checklist-item__info">
+                      <span className="zorevi-checklist-item__title">Standard Package Onboarding</span>
+                      <span className="zorevi-checklist-item__desc">₹499 / 2 hours base consultation</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="zorevi-status-action-box">
+                  <Link to="/designer/apply" className="zorevi-btn zorevi-btn--outline zorevi-btn--sm">
+                    View Submitted Application
+                  </Link>
+                  <Link to="/help" className="zorevi-btn zorevi-btn--ghost zorevi-btn--sm">
+                    Have questions? Contact Concierge
+                  </Link>
+                </div>
+              </div>
+            )}
+
+            {status === 'approved' && (
+              <div className="zorevi-status-section approved">
+                <div className="zorevi-status-section__header">
+                  <div className="zorevi-status-section__icon-wrap">
+                    <CheckCircle2 size={26} />
+                  </div>
+                  <div>
+                    <h3 className="zorevi-status-section__title">Congratulations! Your Designer Studio is Active!</h3>
+                    <p className="zorevi-status-section__sub">
+                      Your credentials and portfolio have passed verification. You are now featured across Zorevi Hyderabad designer discovery and mall styling listings.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="zorevi-checklist-grid">
+                  <div className="zorevi-checklist-item">
+                    <div className="zorevi-checklist-item__icon verified">
+                      <Check size={16} />
+                    </div>
+                    <div className="zorevi-checklist-item__info">
+                      <span className="zorevi-checklist-item__title">Verified Badge Granted</span>
+                      <span className="zorevi-checklist-item__desc">Displaying on all customer search cards</span>
+                    </div>
+                  </div>
+
+                  <div className="zorevi-checklist-item">
+                    <div className="zorevi-checklist-item__icon verified">
+                      <Check size={16} />
+                    </div>
+                    <div className="zorevi-checklist-item__info">
+                      <span className="zorevi-checklist-item__title">Direct Booking Enabled</span>
+                      <span className="zorevi-checklist-item__desc">Customers can book 2-hour styling sessions</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="zorevi-status-action-box">
+                  <button
+                    type="button"
+                    className="zorevi-btn zorevi-btn--primary zorevi-btn--lg"
+                    onClick={handleEnterDashboard}
+                  >
+                    <span>Enter Designer Studio</span>
+                    <ArrowRight size={18} />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {status === 'changes_requested' && (
+              <div className="zorevi-status-section changes_requested">
+                <div className="zorevi-status-section__header">
+                  <div className="zorevi-status-section__icon-wrap">
+                    <AlertTriangle size={24} />
+                  </div>
+                  <div>
+                    <h3 className="zorevi-status-section__title">Note from Verification Concierge</h3>
+                    <p className="zorevi-status-section__sub">
+                      "Please upload a higher-resolution image for your Government ID (Aadhaar or PAN) and clarify your studio service radius in Hyderabad to complete verification."
+                    </p>
+                  </div>
+                </div>
+
+                <div className="zorevi-status-action-box">
+                  <Link to="/designer/apply" className="zorevi-btn zorevi-btn--primary">
+                    <span>Update Application Details</span>
+                    <ArrowRight size={16} />
+                  </Link>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Status Content */}
-        {status === 'pending' && (
-          <div style={{ background: '#FAF5FF', border: '1px solid #DDD6FE', borderRadius: '16px', padding: '20px', marginBottom: '24px' }}>
-            <h4 style={{ color: '#1E1B4B', fontSize: '0.95rem', marginBottom: '8px' }}>What happens next?</h4>
-            <ul style={{ fontSize: '0.82rem', color: '#4B5563', lineHeight: '1.6', paddingLeft: '18px', listStyleType: 'disc' }}>
-              <li>Our designer onboarding team is verifying your portfolio & ID documents.</li>
-              <li>Estimated turnaround time is 24–48 hours.</li>
-              <li>Once verified, your profile will be live on Zorevi discovery and mall listings.</li>
-            </ul>
+        {/* Support & Concierge Card */}
+        <div className="zorevi-support-card">
+          <div className="zorevi-support-card__left">
+            <div className="zorevi-support-card__icon">
+              <Mail size={22} />
+            </div>
+            <div>
+              <h4>Need assistance with your verification?</h4>
+              <p>Our designer onboarding team is available Mon–Sat, 9:00 AM – 7:00 PM IST.</p>
+            </div>
           </div>
-        )}
+          <div className="zorevi-support-card__contacts">
+            <a href="mailto:concierge@zorevi.in" className="zorevi-support-pill">
+              <Mail size={14} /> concierge@zorevi.in
+            </a>
+            <a href="tel:+919876543210" className="zorevi-support-pill">
+              <Phone size={14} /> +91 98765 43210
+            </a>
+          </div>
+        </div>
 
-        {status === 'approved' && (
-          <div style={{ background: '#ECFDF5', border: '1px solid #A7F3D0', borderRadius: '16px', padding: '20px', marginBottom: '24px' }}>
-            <h4 style={{ color: '#065F46', fontSize: '0.95rem', marginBottom: '8px' }}>Your Profile is Active!</h4>
-            <p style={{ fontSize: '0.85rem', color: '#047857', margin: 0, lineHeight: '1.5' }}>
-              You can now configure your styling services, set standard package rates (starting ₹499/2 hrs), and begin accepting customer bookings.
-            </p>
+        {/* Demo Simulator Toolbar */}
+        <div className="zorevi-status-simulator">
+          <div className="zorevi-status-simulator__label">
+            <RefreshCw size={13} /> Interactive Simulator: Test Different Approval States
+          </div>
+          <div className="zorevi-status-simulator__btns">
             <button
-              className="zorevi-btn zorevi-btn--primary zorevi-btn--full"
-              style={{ marginTop: '16px' }}
-              onClick={handleEnterDashboard}
-            >
-              Enter Designer Studio <ArrowRight size={16} />
-            </button>
-          </div>
-        )}
-
-        {status === 'changes_requested' && (
-          <div style={{ background: '#EFF6FF', border: '1px solid #BFDBFE', borderRadius: '16px', padding: '20px', marginBottom: '24px' }}>
-            <h4 style={{ color: '#1E40AF', fontSize: '0.95rem', marginBottom: '8px' }}>Note from Concierge Team</h4>
-            <p style={{ fontSize: '0.85rem', color: '#1D4ED8', marginBottom: '14px', lineHeight: '1.5' }}>
-              "Please upload a higher-resolution image for your Government ID and clarify your studio service radius in Hyderabad."
-            </p>
-            <Link to="/designer/apply" className="zorevi-btn zorevi-btn--primary zorevi-btn--full">
-              Update Application Details
-            </Link>
-          </div>
-        )}
-
-        {/* Demo Simulator Bar */}
-        <div style={{ padding: '14px', background: '#F9FAFB', borderRadius: '12px', border: '1px dashed #E5E7EB', marginBottom: '20px' }}>
-          <div style={{ fontSize: '0.75rem', fontWeight: '700', color: '#6B7280', textTransform: 'uppercase', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <RefreshCw size={12} /> Interactive Demo: Test Different Approval States
-          </div>
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <button
-              className={`zorevi-btn zorevi-btn--sm ${status === 'pending' ? 'zorevi-btn--primary' : 'zorevi-btn--outline'}`}
+              type="button"
+              className={`zorevi-sim-btn ${status === 'pending' ? 'active' : ''}`}
               onClick={() => setStatus('pending')}
             >
-              Pending
+              Pending (Under Review)
             </button>
             <button
-              className={`zorevi-btn zorevi-btn--sm ${status === 'approved' ? 'zorevi-btn--primary' : 'zorevi-btn--outline'}`}
+              type="button"
+              className={`zorevi-sim-btn ${status === 'approved' ? 'active' : ''}`}
               onClick={handleSimulateApproved}
             >
-              Approved
+              Approved (Studio Live)
             </button>
             <button
-              className={`zorevi-btn zorevi-btn--sm ${status === 'changes_requested' ? 'zorevi-btn--primary' : 'zorevi-btn--outline'}`}
+              type="button"
+              className={`zorevi-sim-btn ${status === 'changes_requested' ? 'active' : ''}`}
               onClick={handleSimulateChanges}
             >
               Changes Requested
             </button>
           </div>
         </div>
-
-        <div style={{ textAlign: 'center' }}>
-          <Link to="/designer/login" className="zorevi-auth-link" style={{ fontSize: '0.85rem' }}>
-            Back to Designer Login
-          </Link>
-        </div>
-      </div>
+      </main>
     </div>
   );
 }

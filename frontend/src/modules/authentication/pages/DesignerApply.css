@@ -243,9 +243,42 @@
   background: #ecfdf5;
   color: #065f46;
   border: 1px solid #a7f3d0;
-  padding: 5px 12px;
+  padding: 6px 12px;
   border-radius: 9999px;
   font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.zorevi-uploaded-remove-btn {
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 2px;
+  margin-left: 2px;
+  font-size: 1rem;
+  line-height: 1;
+  transition: color 150ms ease;
+}
+
+.zorevi-uploaded-remove-btn:hover {
+  color: #ef4444;
+}
+
+.zorevi-apply-row-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.zorevi-apply-error {
+  display: block;
+  color: #dc2626;
+  font-size: 0.78rem;
+  margin-top: 5px;
   font-weight: 500;
 }
 
@@ -253,10 +286,17 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 16px;
   padding: 16px;
   border: 1px solid #e5e7eb;
   border-radius: 14px;
   margin-bottom: 12px;
+  background: #ffffff;
+  transition: border-color 150ms ease;
+}
+
+.zorevi-apply-doc-row:hover {
+  border-color: #cbd5e1;
 }
 
 .zorevi-apply-doc-row strong {
@@ -271,13 +311,58 @@
 }
 
 .zorevi-doc-status-badge {
-  background: #ecfdf5;
-  color: #059669;
-  border: 1px solid #a7f3d0;
-  padding: 4px 12px;
+  background: #f3f4f6;
+  color: #4b5563;
+  border: 1px solid #e5e7eb;
+  padding: 5px 12px;
   border-radius: 9999px;
   font-size: 0.75rem;
   font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.zorevi-doc-status-badge.uploaded {
+  background: #ecfdf5;
+  color: #059669;
+  border-color: #a7f3d0;
+}
+
+.zorevi-apply-doc-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.zorevi-checklist-progress-wrap {
+  margin-bottom: 20px;
+}
+
+.zorevi-checklist-progress-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #4b5563;
+  margin-bottom: 6px;
+}
+
+.zorevi-checklist-progress-bar {
+  width: 100%;
+  height: 6px;
+  background: #f3f4f6;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.zorevi-checklist-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #7c3aed, #a855f7);
+  border-radius: 999px;
+  transition: width 240ms ease;
 }
 
 .zorevi-apply-footer-bar {

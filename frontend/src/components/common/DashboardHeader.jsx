@@ -22,7 +22,7 @@ export default function DashboardHeader({ onToggleSidebar, profileDrawerOpen = f
     ? AAROHI_PROFILE_IMAGE
     : role === 'admin'
       ? '/images/admin-priya.png'
-      : '/images/customer-praveen.png';
+      : '/zorevi-icon.svg';
 
   useEffect(() => {
     function handleClickOutside(e) {
@@ -227,7 +227,7 @@ export default function DashboardHeader({ onToggleSidebar, profileDrawerOpen = f
             <div className="zorevi-dash-header__user-label">
               <span className="zorevi-dash-header__user-name">
                 {role === 'customer'
-                  ? `Hi, ${user?.name ? user.name.split(' ')[0] : 'Praveen'}`
+                  ? (user?.name ? `Hi, ${user.name.split(' ')[0]}` : 'Hi, Customer')
                   : user?.name || (role === 'designer' ? 'Aarohi Mehta' : 'Priya Sharma')}
               </span>
             </div>

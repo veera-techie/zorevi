@@ -1132,7 +1132,7 @@ export const mockAuthUsers = {
     name: 'Praveen Kumar',
     email: 'praveen@zorevi.in',
     phone: '+91 98765 43210',
-    avatar: '/images/customer-praveen.png',
+    avatar: '/zorevi-icon.svg',
     role: 'customer',
     location: 'Hyderabad',
   },

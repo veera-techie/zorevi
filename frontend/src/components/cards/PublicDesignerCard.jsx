@@ -75,11 +75,7 @@ export default function PublicDesignerCard({ designer, onBook }) {
             <strong>₹{designer.startingPrice} <small>/ 2 hours</small></strong>
           </div>
           <div className="public-designer-card__actions">
-            {isCustomer ? (
-              <Link to={profileUrl} className="zorevi-btn zorevi-btn--outline">View details</Link>
-            ) : (
-              <button type="button" className="zorevi-btn zorevi-btn--outline" onClick={() => requestAccess('details')}>View details</button>
-            )}
+            <Link to={profileUrl} className="zorevi-btn zorevi-btn--outline">View details</Link>
             <button type="button" className="zorevi-btn zorevi-btn--primary public-book-button" onClick={handleBook}>Book now</button>
           </div>
         </div>

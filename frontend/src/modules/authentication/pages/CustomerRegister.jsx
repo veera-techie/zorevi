@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Mail, Phone, User } from 'lucide-react';
+import { Mail, User } from 'lucide-react';
+import { useAuth } from '../../../context/AuthContext';
 import { useApp } from '../../../context/AppContext';
-import { getSafeReturnTo, withReturnTo } from '../../../utils/authNavigation';
+import { getSafeReturnTo } from '../../../utils/authNavigation';
 import {
-  AuthDemoNotice,
   AuthField,
   AuthPasswordField,
   AuthSubmit,
@@ -13,115 +13,118 @@ import {
   AuthShell,
 } from '../AuthShell';
 
-const interests = ["Men's styling", "Women's styling", "Kids' styling", "Couple styling", "Family styling", "Personal styling", "Bridal styling"];
 const emailIsValid = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-const phoneIsValid = (value) => {
-  const digits = value.replace(/\D/g, '');
-  return /^\+?[\d\s()-]+$/.test(value) && digits.length >= 8 && digits.length <= 15;
-};
-const makeDemoCode = () => String(Math.floor(100000 + Math.random() * 900000));
 
 export default function CustomerRegister() {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [selectedInterests, setSelectedInterests] = useState([]);
   const [agreed, setAgreed] = useState(false);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const { register, loginWithGoogle } = useAuth();
   const { addToast } = useApp();
   const location = useLocation();
   const navigate = useNavigate();
   const returnTo = getSafeReturnTo(location.search);
 
-  const toggleInterest = (interest) => {
-    setSelectedInterests((current) => current.includes(interest)
-      ? current.filter((item) => item !== interest)
-      : [...current, interest]);
-  };
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     const nextErrors = {};
-    if (fullName.trim().length < 2) nextErrors.name = 'Enter your full name.';
-    if (!emailIsValid(email.trim())) nextErrors.email = 'Enter a valid email address.';
-    if (!phoneIsValid(phone)) nextErrors.phone = 'Enter a valid mobile number with country code if needed.';
-    if (password.length < 8 || !/[a-z]/.test(password) || !/[A-Z]/.test(password) || !/\d/.test(password)) {
-      nextErrors.password = 'Use at least 8 characters with an uppercase letter, a lowercase letter, and a number.';
+
+    if (fullName.trim().length < 2) {
+      nextErrors.name = 'Please enter your full name.';
     }
-    if (confirmPassword !== password) nextErrors.confirmPassword = 'Passwords do not match.';
-    if (!agreed) nextErrors.terms = 'Please accept the Terms & Conditions and Privacy Policy.';
+    if (!emailIsValid(email.trim())) {
+      nextErrors.email = 'Please enter a valid Gmail or email address.';
+    }
+    if (password.length < 6) {
+      nextErrors.password = 'Password must be at least 6 characters.';
+    }
+    if (confirmPassword !== password) {
+      nextErrors.confirmPassword = 'Passwords do not match.';
+    }
+    if (!agreed) {
+      nextErrors.terms = 'Please accept the Terms & Conditions and Privacy Policy.';
+    }
+
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length) return;
 
     setLoading(true);
     try {
-      await new Promise((resolve) => window.setTimeout(resolve, 300));
-      const code = makeDemoCode();
-      window.sessionStorage.setItem('zorevi.demo.verification', JSON.stringify({
-        code,
-        expiresAt: Date.now() + 10 * 60 * 1000,
-        returnTo,
-        profile: { name: fullName.trim(), email: email.trim(), phone: phone.trim(), interests: selectedInterests },
-      }));
-      addToast(`Demo verification code: ${code}. No email or SMS was sent.`, 'info', 8000);
-      navigate(withReturnTo('/customer/verify', returnTo));
+      const result = await register('customer', {
+        name: fullName.trim(),
+        email: email.trim(),
+      });
+
+      if (result.success) {
+        addToast(`Welcome to Zorevi, ${fullName.trim()}! Your account has been created.`, 'success');
+        navigate(returnTo || '/customer');
+      } else {
+        setErrors({ form: result.error || 'Could not create account.' });
+      }
     } catch (error) {
-      setErrors({ form: error instanceof Error ? error.message : 'Could not start the demo verification flow.' });
+      setErrors({ form: error instanceof Error ? error.message : 'Registration failed.' });
     } finally {
       setLoading(false);
     }
   };
 
+  const handleGoogleSignup = async () => {
+    try {
+      const result = await loginWithGoogle('customer');
+      if (result.success) {
+        addToast('Welcome to Zorevi! Successfully signed up with Google.', 'success');
+        navigate(returnTo || '/customer');
+      }
+    } catch (error) {
+      addToast('Google signup could not be completed.', 'error');
+    }
+  };
+
   return (
-    <AuthShell image="/images/auth-traditional-bride.jpg">
-      <div className="zorevi-auth-progress">Create your account · 1 of 2</div>
+    <AuthShell image="/images/family-shopping-fashion.jpg">
       <header className="zorevi-auth-form-header">
-        <h2 className="zorevi-auth-form-title">Create your account</h2>
-        <p className="zorevi-auth-form-sub">A little about you, then we’ll tailor Zorevi to your style.</p>
+        <h2 className="zorevi-auth-form-title">Create Your Zorevi Account</h2>
+        <p className="zorevi-auth-form-sub">It takes less than a minute to get started.</p>
       </header>
-      <AuthDemoNotice />
+
       <form onSubmit={handleSubmit} noValidate>
+        {/* Full Name */}
         <AuthField
           id="register-name"
-          label="Full name"
+          label="Full Name"
           icon={User}
           type="text"
           autoComplete="name"
-          placeholder="Your full name"
+          placeholder="Enter your full name"
           value={fullName}
           onChange={(event) => setFullName(event.target.value)}
           error={errors.name}
+          required
         />
+
+        {/* Gmail / Email */}
         <AuthField
           id="register-email"
-          label="Email address"
+          label="Email address or Gmail"
           icon={Mail}
           type="email"
           autoComplete="email"
-          placeholder="you@example.com"
+          placeholder="Enter your Gmail or email address"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           error={errors.email}
+          required
         />
-        <AuthField
-          id="register-phone"
-          label="Mobile number"
-          icon={Phone}
-          type="tel"
-          autoComplete="tel"
-          inputMode="tel"
-          placeholder="Include country code if needed"
-          value={phone}
-          onChange={(event) => setPhone(event.target.value)}
-          error={errors.phone}
-        />
+
+        {/* Password */}
         <AuthPasswordField
           id="register-password"
-          label="Create password"
+          label="Password"
           autoComplete="new-password"
           placeholder="Create a strong password"
           value={password}
@@ -129,51 +132,49 @@ export default function CustomerRegister() {
           showPassword={showPassword}
           onTogglePassword={() => setShowPassword((visible) => !visible)}
           error={errors.password}
-          aria-describedby={errors.password ? 'register-password-error' : 'register-password-hint'}
+          required
         />
-        <p className="zorevi-auth-note" id="register-password-hint">Password must be 8+ characters and include uppercase, lowercase, and a number.</p>
+
+        {/* Confirm Password */}
         <AuthPasswordField
           id="register-confirm-password"
-          label="Confirm password"
+          label="Confirm Password"
           autoComplete="new-password"
-          placeholder="Enter your password again"
+          placeholder="Re-enter your password"
           value={confirmPassword}
           onChange={(event) => setConfirmPassword(event.target.value)}
           showPassword={showPassword}
           onTogglePassword={() => setShowPassword((visible) => !visible)}
           error={errors.confirmPassword}
+          required
         />
 
-        <div className="zorevi-auth-field">
-          <label>What would you like styling for? <span className="zorevi-auth-note">(optional)</span></label>
-          <div className="zorevi-auth-chip-list">
-            {interests.map((interest) => (
-              <button
-                type="button"
-                key={interest}
-                className="zorevi-auth-chip"
-                aria-pressed={selectedInterests.includes(interest)}
-                onClick={() => toggleInterest(interest)}
-              >
-                {interest}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="zorevi-auth-field">
+        {/* Terms agreement */}
+        <div className="zorevi-auth-field" style={{ marginTop: '16px' }}>
           <label className="zorevi-auth-checkbox-label">
-            <input type="checkbox" checked={agreed} onChange={(event) => setAgreed(event.target.checked)} aria-invalid={Boolean(errors.terms)} />
-            <span>I agree to the <Link to="/terms" className="zorevi-auth-link">Terms &amp; Conditions</Link> and <Link to="/privacy" className="zorevi-auth-link">Privacy Policy</Link>.</span>
+            <input
+              type="checkbox"
+              checked={agreed}
+              onChange={(event) => setAgreed(event.target.checked)}
+              aria-invalid={Boolean(errors.terms)}
+            />
+            <span>
+              I agree to the <Link to="/terms" className="zorevi-auth-link">Terms &amp; Conditions</Link> and <Link to="/privacy" className="zorevi-auth-link">Privacy Policy</Link> of Zorevi.
+            </span>
           </label>
           {errors.terms && <span className="zorevi-auth-error" role="alert">{errors.terms}</span>}
         </div>
+
         {errors.form && <p className="zorevi-auth-error" role="alert">{errors.form}</p>}
-        <AuthSubmit loading={loading}>Create account</AuthSubmit>
+
+        <AuthSubmit loading={loading}>Create Account</AuthSubmit>
       </form>
 
       <AuthDivider />
-      <GoogleDemoButton action="sign-up" />
+
+      {/* Optional Gmail signup */}
+      <GoogleDemoButton action="sign up" onClick={handleGoogleSignup} />
+
       <p className="zorevi-auth-footer-prompt">
         Already have an account? <Link to="/customer/login" className="zorevi-auth-link">Sign in</Link>
       </p>

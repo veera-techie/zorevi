@@ -9,18 +9,51 @@ export function AuthProvider({ children }) {
 
   // Mock sign-in: accepts any email/password and logs in as the given role.
   // This is NOT production security – replace with real auth later.
-  const login = useCallback(async (role, _email, _password) => {
+  const login = useCallback(async (role, email, _password) => {
     setIsLoading(true);
     // Simulate network delay
-    await new Promise(r => setTimeout(r, 800));
+    await new Promise(r => setTimeout(r, 600));
     const mockUser = mockAuthUsers[role];
     if (mockUser) {
-      setUser(mockUser);
+      const activeUser = email ? { ...mockUser, email: email.includes('@') ? email : mockUser.email } : mockUser;
+      setUser(activeUser);
       setIsLoading(false);
-      return { success: true, user: mockUser };
+      return { success: true, user: activeUser };
     }
     setIsLoading(false);
     return { success: false, error: 'Invalid credentials' };
+  }, []);
+
+  // Mock registration: creates user session with given name/email
+  const register = useCallback(async (role = 'customer', userData = {}) => {
+    setIsLoading(true);
+    await new Promise(r => setTimeout(r, 600));
+    const baseUser = mockAuthUsers[role] || mockAuthUsers.customer;
+    const newUser = {
+      ...baseUser,
+      name: userData?.name || baseUser.name,
+      email: userData?.email || baseUser.email,
+      avatar: userData?.avatar || '/zorevi-icon.svg',
+    };
+    setUser(newUser);
+    setIsLoading(false);
+    return { success: true, user: newUser };
+  }, []);
+
+  // Mock Google sign-in
+  const loginWithGoogle = useCallback(async (role = 'customer') => {
+    setIsLoading(true);
+    await new Promise(r => setTimeout(r, 600));
+    const baseUser = mockAuthUsers[role] || mockAuthUsers.customer;
+    const googleUser = {
+      ...baseUser,
+      name: baseUser.name || 'Praveen Kumar',
+      email: 'praveen.kumar@gmail.com',
+      avatar: '/zorevi-icon.svg',
+    };
+    setUser(googleUser);
+    setIsLoading(false);
+    return { success: true, user: googleUser };
   }, []);
 
   const logout = useCallback(() => {
@@ -41,6 +74,8 @@ export function AuthProvider({ children }) {
       isDesigner,
       isAdmin,
       login,
+      register,
+      loginWithGoogle,
       logout,
       setUser,
     }}>
