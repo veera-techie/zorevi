@@ -5,6 +5,7 @@ import { SPECIALIZATIONS } from '../../../constants';
 import { useApp } from '../../../context/AppContext';
 import Modal from '../../../components/common/Modal';
 import { AAROHI_PROFILE_IMAGE, loadAarohiProfileImage } from '../../../utils/aarohiProfileImage';
+import { SAMPLE_DESIGNER_STORES, getDesignerStoreImages, getDesignerStoreNames, loadDesignerMallIds, saveDesignerMallIds } from '../designerStoreDefaults';
 import './DesignerPages.css';
 
 const loadSavedProfile = () => {
@@ -22,6 +23,7 @@ export default function DesignerProfile() {
   const { addToast } = useApp();
   const photoInputRef = useRef(null);
   const mallPhotoInputRef = useRef(null);
+  const storePhotoInputRef = useRef(null);
   const [savedProfile] = useState(loadSavedProfile);
   const [profileImage, setProfileImage] = useState(loadAarohiProfileImage);
 
@@ -33,12 +35,14 @@ export default function DesignerProfile() {
   const [bio, setBio] = useState(savedProfile.bio || designer.bio);
   const [selectedSpecializations, setSelectedSpecializations] = useState(savedProfile.specializations || designer.specializations || []);
   const [skills, setSkills] = useState(savedProfile.skills || designer.skills || []);
-  const [availableMallIds, setAvailableMallIds] = useState(savedProfile.availableMallIds || []);
+  const [availableMallIds, setAvailableMallIds] = useState(() => loadDesignerMallIds(savedProfile));
+  const [mallStoreNames, setMallStoreNames] = useState(() => getDesignerStoreNames(savedProfile));
+  const [mallStoreImages, setMallStoreImages] = useState(() => getDesignerStoreImages(savedProfile));
   const [socialAccounts, setSocialAccounts] = useState(savedProfile.socialAccounts || { instagram: '', facebook: '', pinterest: '' });
   const [mallOverrides, setMallOverrides] = useState(() => loadStoredJson('zorevi-designer-mall-overrides', {}));
   const [customMalls, setCustomMalls] = useState(() => loadStoredJson('zorevi-designer-custom-malls', []));
   const [editingMall, setEditingMall] = useState(null);
-  const [mallDraft, setMallDraft] = useState({ name: '', address: '', image: '', fashionStores: 1 });
+  const [mallDraft, setMallDraft] = useState({ name: '', address: '', image: '', fashionStores: 1, storeName: '', storeImage: '' });
   const [newSkill, setNewSkill] = useState('');
 
   const malls = [...mockMalls, ...customMalls].map((mall) => ({ ...mall, ...(mallOverrides[mall.id] || {}) }));
@@ -57,11 +61,20 @@ export default function DesignerProfile() {
   };
 
   const saveSocialAccounts = () => saveProfilePart({ socialAccounts }, 'Social media accounts saved.');
-  const saveMallLocations = () => saveProfilePart({ availableMallIds }, 'Mall locations saved to your profile.');
+  const saveMallLocations = () => {
+    try {
+      saveDesignerMallIds(availableMallIds);
+      const stored = loadSavedProfile();
+      localStorage.setItem('zorevi-designer-profile', JSON.stringify({ ...stored, availableMallIds, mallStoreNames, mallStoreImages, mallStoreNamesConfigured: true, mallStoreImagesConfigured: true }));
+      addToast('Fashion stores/malls saved to your profile.', 'success');
+    } catch {
+      addToast('Mall locations could not be saved in this browser.', 'error');
+    }
+  };
 
   const openMallEditor = (mall) => {
     setEditingMall(mall ? { id: mall.id, isCustom: customMalls.some((item) => item.id === mall.id) } : { id: `custom-${Date.now()}`, isCustom: true });
-    setMallDraft(mall ? { name: mall.name, address: mall.address, image: mall.image, fashionStores: mall.fashionStores || 1 } : { name: '', address: location, image: '/images/mall-lakeside.jpg', fashionStores: 1 });
+    setMallDraft(mall ? { name: mall.name, address: mall.address, image: mall.image, fashionStores: mall.fashionStores || 1, storeName: mallStoreNames[mall.id] || '', storeImage: mallStoreImages[mall.id] || SAMPLE_DESIGNER_STORES[mall.id]?.image || '/images/boutique-interior-minimal.jpg' } : { name: '', address: location, image: '/images/mall-lakeside.jpg', fashionStores: 1, storeName: '', storeImage: '' });
   };
 
   const saveMall = () => {
@@ -73,18 +86,53 @@ export default function DesignerProfile() {
     const nextOverrides = editingMall.isCustom ? mallOverrides : { ...mallOverrides, [editingMall.id]: nextMall };
     const nextCustomMalls = editingMall.isCustom ? [...customMalls.filter((mall) => mall.id !== editingMall.id), nextMall] : customMalls;
     const nextAvailableMallIds = availableMallIds.includes(nextMall.id) ? availableMallIds : [...availableMallIds, nextMall.id];
+    const nextMallStoreNames = { ...mallStoreNames };
+    if (mallDraft.storeName.trim()) nextMallStoreNames[nextMall.id] = mallDraft.storeName.trim();
+    else delete nextMallStoreNames[nextMall.id];
+    const nextMallStoreImages = { ...mallStoreImages };
+    if (mallDraft.storeImage) nextMallStoreImages[nextMall.id] = mallDraft.storeImage;
+    else if (!mallDraft.storeName.trim()) delete nextMallStoreImages[nextMall.id];
     try {
       localStorage.setItem('zorevi-designer-mall-overrides', JSON.stringify(nextOverrides));
       localStorage.setItem('zorevi-designer-custom-malls', JSON.stringify(nextCustomMalls));
-      localStorage.setItem('zorevi-designer-profile', JSON.stringify({ ...loadSavedProfile(), availableMallIds: nextAvailableMallIds }));
+      saveDesignerMallIds(nextAvailableMallIds);
+      localStorage.setItem('zorevi-designer-profile', JSON.stringify({ ...loadSavedProfile(), availableMallIds: nextAvailableMallIds, mallStoreNames: nextMallStoreNames, mallStoreImages: nextMallStoreImages, mallStoreNamesConfigured: true, mallStoreImagesConfigured: true }));
       setMallOverrides(nextOverrides);
       setCustomMalls(nextCustomMalls);
       setAvailableMallIds(nextAvailableMallIds);
+      setMallStoreNames(nextMallStoreNames);
+      setMallStoreImages(nextMallStoreImages);
       setEditingMall(null);
       addToast('Mall details and image saved.', 'success');
     } catch {
       addToast('The browser could not store this mall. Try a smaller image.', 'error');
     }
+  };
+
+  const handleStorePhotoChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      addToast('Choose an image file for your fashion store.', 'error');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const image = new Image();
+      image.onload = () => {
+        const scale = Math.min(1, 900 / Math.max(image.width, image.height));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(image.width * scale);
+        canvas.height = Math.round(image.height * scale);
+        canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height);
+        setMallDraft((current) => ({ ...current, storeImage: canvas.toDataURL('image/jpeg', 0.8) }));
+      };
+      image.onerror = () => addToast('Could not load that store image. Please try another file.', 'error');
+      image.src = reader.result;
+    };
+    reader.onerror = () => addToast('Could not load that store image. Please try another file.', 'error');
+    reader.readAsDataURL(file);
+    e.target.value = '';
   };
 
   const handleMallPhotoChange = (e) => {
@@ -129,8 +177,9 @@ export default function DesignerProfile() {
 
   const handleSave = (e) => {
     e.preventDefault();
-    const profile = { name, title, location, radius, experience, bio, specializations: selectedSpecializations, skills, availableMallIds, socialAccounts };
+    const profile = { name, title, location, radius, experience, bio, specializations: selectedSpecializations, skills, availableMallIds, mallStoreNames, mallStoreImages, mallStoreNamesConfigured: true, mallStoreImagesConfigured: true, socialAccounts };
     try {
+      saveDesignerMallIds(availableMallIds);
       localStorage.setItem('zorevi-designer-profile', JSON.stringify(profile));
     } catch {
       addToast('The browser could not save your profile. Try freeing local storage and save again.', 'error');
@@ -247,24 +296,24 @@ export default function DesignerProfile() {
 
         <div style={{ background: '#FFFFFF', borderRadius: '24px', border: '1px solid #F3F4F6', padding: '28px', boxShadow: '0 4px 16px rgba(0,0,0,0.03)', marginBottom: '24px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px', flexWrap: 'wrap' }}>
-            <div><h3 style={{ fontSize: '1.2rem', fontWeight: '700', color: '#1E1B4B', margin: '0 0 6px' }}>Mall locations</h3><p style={{ fontSize: '0.85rem', color: '#6B7280', margin: '0 0 16px' }}>Choose where clients can meet you. Edit each mall's details and photo, or add another location.</p></div>
-            <button type="button" className="zorevi-btn zorevi-btn--outline" onClick={() => openMallEditor(null)}><Plus size={15} /> Add a mall</button>
+            <div><h3 style={{ fontSize: '1.2rem', fontWeight: '700', color: '#1E1B4B', margin: '0 0 6px' }}>My Fashion Stores/Malls</h3><p style={{ fontSize: '0.85rem', color: '#6B7280', margin: '0 0 16px' }}>Choose where clients can meet you, and add the name of your store at each mall.</p></div>
+            <button type="button" className="zorevi-btn zorevi-btn--outline" onClick={() => openMallEditor(null)}><Plus size={15} /> Add a store/mall</button>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(245px, 1fr))', gap: '12px' }}>
             {availableMalls.map((mall) => (
               <article key={mall.id} style={{ overflow: 'hidden', border: availableMallIds.includes(mall.id) ? '1px solid #BFA9E8' : '1px solid #EEE9F5', borderRadius: '13px', background: availableMallIds.includes(mall.id) ? '#FAF8FE' : '#fff' }}>
-                <img src={mall.image} alt={mall.name} onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/images/mall-lakeside.jpg'; }} style={{ display: 'block', width: '100%', height: '118px', objectFit: 'cover', background: '#F3EEFB' }} />
+                <img src={mallStoreImages[mall.id] || SAMPLE_DESIGNER_STORES[mall.id]?.image || '/images/boutique-interior-minimal.jpg'} alt={`${mallStoreNames[mall.id] || 'Fashion'} boutique interior`} onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/images/boutique-interior-minimal.jpg'; }} style={{ display: 'block', width: '100%', height: '150px', objectFit: 'cover', background: '#F3EEFB' }} />
                 <div style={{ padding: '11px' }}>
                   <label style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', cursor: 'pointer' }}>
                     <input type="checkbox" checked={availableMallIds.includes(mall.id)} onChange={() => toggleMall(mall.id)} style={{ accentColor: '#7043C5', marginTop: '3px' }} />
-                    <span><strong style={{ display: 'block', color: '#30283C', fontSize: '0.84rem' }}>{mall.name}</strong><small style={{ display: 'block', color: '#817A89', fontSize: '0.72rem', marginTop: '3px' }}>{mall.address}</small><small style={{ display: 'block', color: '#7043C5', fontSize: '0.72rem', marginTop: '4px' }}>{mall.fashionStores} fashion stores</small></span>
+                    <span><strong style={{ display: 'block', color: '#30283C', fontSize: '0.84rem' }}>{mallStoreNames[mall.id] || 'Store name not set'}</strong><small style={{ display: 'block', color: '#7043C5', fontSize: '0.72rem', fontWeight: 600, marginTop: '3px' }}>At {mall.name}</small><small style={{ display: 'block', color: '#817A89', fontSize: '0.72rem', marginTop: '3px' }}>{mall.address}</small><small style={{ display: 'block', color: '#817A89', fontSize: '0.72rem', marginTop: '4px' }}>{mall.fashionStores} fashion stores in mall</small></span>
                   </label>
-                  <button type="button" onClick={() => openMallEditor(mall)} style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', margin: '10px 0 0 23px', padding: 0, border: 0, background: 'transparent', color: '#7043C5', fontSize: '0.74rem', fontWeight: 700, cursor: 'pointer' }}><Pencil size={12} /> Edit mall &amp; photo</button>
+                  <button type="button" onClick={() => openMallEditor(mall)} style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', margin: '10px 0 0 23px', padding: 0, border: 0, background: 'transparent', color: '#7043C5', fontSize: '0.74rem', fontWeight: 700, cursor: 'pointer' }}><Pencil size={12} /> Edit mall, store &amp; photo</button>
                 </div>
               </article>
             ))}
           </div>
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px' }}><button type="button" className="zorevi-btn zorevi-btn--primary" onClick={saveMallLocations}><Save size={15} /> Save mall locations</button></div>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px' }}><button type="button" className="zorevi-btn zorevi-btn--primary" onClick={saveMallLocations}><Save size={15} /> Save fashion stores/malls</button></div>
         </div>
 
         <div style={{ background: '#FFFFFF', borderRadius: '24px', border: '1px solid #F3F4F6', padding: '28px', boxShadow: '0 4px 16px rgba(0,0,0,0.03)', marginBottom: '24px' }}>
@@ -347,13 +396,21 @@ export default function DesignerProfile() {
         </div>
 
         {editingMall && (
-          <Modal isOpen={Boolean(editingMall)} onClose={() => setEditingMall(null)} title={editingMall.isCustom && !customMalls.some((mall) => mall.id === editingMall.id) ? 'Add mall location' : 'Edit mall location'} maxWidth="560px">
+          <Modal isOpen={Boolean(editingMall)} onClose={() => setEditingMall(null)} title={editingMall.isCustom && !customMalls.some((mall) => mall.id === editingMall.id) ? 'Add store/mall' : 'Edit store/mall'} maxWidth="560px">
             <div onKeyDown={(e) => { if (e.key === 'Enter') e.preventDefault(); }}>
-              <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '12px', background: '#F3EEFB', marginBottom: '14px' }}>
-                <img src={mallDraft.image} alt={mallDraft.name || 'Mall preview'} onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/images/mall-lakeside.jpg'; }} style={{ display: 'block', width: '100%', height: '190px', objectFit: 'cover' }} />
-                <button type="button" onClick={() => mallPhotoInputRef.current?.click()} className="zorevi-btn zorevi-btn--outline" style={{ position: 'absolute', right: '10px', bottom: '10px', background: '#fff' }}><Upload size={14} /> Change image</button>
-                <input ref={mallPhotoInputRef} type="file" accept="image/*" onChange={handleMallPhotoChange} style={{ display: 'none' }} />
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '14px' }}>
+                <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '12px', background: '#F3EEFB' }}>
+                  <img src={mallDraft.image} alt={mallDraft.name || 'Mall preview'} onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/images/mall-lakeside.jpg'; }} style={{ display: 'block', width: '100%', height: '130px', objectFit: 'cover' }} />
+                  <button type="button" onClick={() => mallPhotoInputRef.current?.click()} className="zorevi-btn zorevi-btn--outline" style={{ position: 'absolute', right: '6px', bottom: '6px', padding: '6px 8px', background: '#fff', fontSize: '0.7rem' }}><Upload size={12} /> Mall photo</button>
+                  <input ref={mallPhotoInputRef} type="file" accept="image/*" onChange={handleMallPhotoChange} style={{ display: 'none' }} />
+                </div>
+                <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '12px', background: '#F3EEFB' }}>
+                  <img src={mallDraft.storeImage || '/images/boutique-interior-minimal.jpg'} alt={mallDraft.storeName || 'Fashion store preview'} onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/images/boutique-interior-minimal.jpg'; }} style={{ display: 'block', width: '100%', height: '130px', objectFit: 'cover' }} />
+                  <button type="button" onClick={() => storePhotoInputRef.current?.click()} className="zorevi-btn zorevi-btn--outline" style={{ position: 'absolute', right: '6px', bottom: '6px', padding: '6px 8px', background: '#fff', fontSize: '0.7rem' }}><Upload size={12} /> Store photo</button>
+                  <input ref={storePhotoInputRef} type="file" accept="image/*" onChange={handleStorePhotoChange} style={{ display: 'none' }} />
+                </div>
               </div>
+              <div className="zorevi-auth-field"><label>Your store name</label><input className="zorevi-input" value={mallDraft.storeName} onChange={(e) => setMallDraft((current) => ({ ...current, storeName: e.target.value }))} placeholder="e.g. Aarohi Design Studio" /><small style={{ display: 'block', color: '#817A89', fontSize: '0.74rem', marginTop: '5px' }}>Add the store you own or run at this mall.</small></div>
               <div className="zorevi-auth-field"><label>Mall name *</label><input className="zorevi-input" value={mallDraft.name} onChange={(e) => setMallDraft((current) => ({ ...current, name: e.target.value }))} placeholder="e.g. City Centre Mall" /></div>
               <div className="zorevi-auth-field"><label>Address *</label><input className="zorevi-input" value={mallDraft.address} onChange={(e) => setMallDraft((current) => ({ ...current, address: e.target.value }))} placeholder="Area, city, postal code" /></div>
               <div className="zorevi-auth-field"><label>Fashion stores</label><input className="zorevi-input" type="number" min="1" value={mallDraft.fashionStores} onChange={(e) => setMallDraft((current) => ({ ...current, fashionStores: e.target.value }))} /></div>

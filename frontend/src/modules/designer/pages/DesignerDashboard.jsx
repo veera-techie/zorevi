@@ -8,6 +8,7 @@ import {
 import { mockDesigners, mockBookings, mockMalls } from '../../../services/mockData';
 import { useApp } from '../../../context/AppContext';
 import { AAROHI_PROFILE_IMAGE, loadAarohiProfileImage } from '../../../utils/aarohiProfileImage';
+import { SAMPLE_DESIGNER_STORES, getDesignerStoreImages, getDesignerStoreNames, loadDesignerMallIds, saveDesignerMallIds } from '../designerStoreDefaults';
 import './DesignerPages.css';
 
 const money = (value) => `₹${Number(value || 0).toLocaleString('en-IN')}`;
@@ -27,23 +28,32 @@ export default function DesignerDashboard() {
   const [savedProfile, setSavedProfile] = useState(loadSavedProfile);
   const [mallOverrides] = useState(() => loadStoredJson('zorevi-designer-mall-overrides', {}));
   const [customMalls] = useState(() => loadStoredJson('zorevi-designer-custom-malls', []));
-  const [selectedMallIds, setSelectedMallIds] = useState(savedProfile.availableMallIds || []);
-  const [draftMallIds, setDraftMallIds] = useState(savedProfile.availableMallIds || []);
+  const [selectedMallIds, setSelectedMallIds] = useState(() => loadDesignerMallIds(savedProfile));
+  const [draftMallIds, setDraftMallIds] = useState(() => loadDesignerMallIds(savedProfile));
   const [isEditingLocations, setIsEditingLocations] = useState(false);
   const designer = { ...mockDesigners[0], ...savedProfile };
   const profilePhoto = loadAarohiProfileImage();
   const availableMalls = [...mockMalls, ...customMalls].map((mall) => ({ ...mall, ...(mallOverrides[mall.id] || {}) })).filter((mall) => mall.fashionStores > 0);
   const selectedMalls = availableMalls.filter((mall) => selectedMallIds.includes(mall.id));
+  const storeNames = getDesignerStoreNames(savedProfile);
+  const storeImages = getDesignerStoreImages(savedProfile);
   const socialLinks = Object.entries(savedProfile.socialAccounts || {}).filter(([, url]) => url);
 
   const saveMallLocations = () => {
-    const updatedProfile = { ...savedProfile, availableMallIds: draftMallIds };
+    const idsToSave = [...draftMallIds];
+    const updatedProfile = { ...loadSavedProfile(), availableMallIds: idsToSave, mallStoreNames: storeNames, mallStoreImages: storeImages, mallStoreNamesConfigured: true, mallStoreImagesConfigured: true };
     try {
-      localStorage.setItem('zorevi-designer-profile', JSON.stringify(updatedProfile));
+      const saveMode = saveDesignerMallIds(idsToSave);
+      try { localStorage.setItem('zorevi-designer-profile', JSON.stringify(updatedProfile)); }
+      catch { /* Dedicated location storage remains authoritative if the full profile is over quota. */ }
       setSavedProfile(updatedProfile);
-      setSelectedMallIds(draftMallIds);
+      setDraftMallIds(idsToSave);
+      setSelectedMallIds(idsToSave);
       setIsEditingLocations(false);
-      addToast('Mall locations saved to your profile.', 'success');
+      const countMessage = `${idsToSave.length} location${idsToSave.length === 1 ? '' : 's'} saved`;
+      addToast(saveMode === 'session'
+        ? `${countMessage} for this browser session. Free browser storage to keep them after closing the browser.`
+        : `${countMessage} to your profile.`, saveMode === 'session' ? 'info' : 'success');
     } catch {
       addToast('Could not save mall locations in this browser.', 'error');
     }
@@ -95,7 +105,7 @@ export default function DesignerDashboard() {
             <div><h2>{designer.name} <BadgeCheck size={16} /></h2><p>{designer.title}</p><span><MapPin size={13} /> {designer.location} · {designer.serviceRadius}</span><span><Briefcase size={13} /> {designer.experience} experience</span><span><Star size={13} fill="currentColor" /> {designer.rating} <small>({designer.reviewCount.toLocaleString('en-IN')} reviews)</small></span></div>
           </div>
           {designer.bio && <p className="studio-profile__bio">{designer.bio}</p>}
-          {selectedMalls.length > 0 && <div className="studio-profile__mall-list"><small>Available at</small>{selectedMalls.slice(0, 2).map((mall) => <span key={mall.id}><img src={mall.image} alt="" onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/images/mall-lakeside.jpg'; }} /><small>{mall.name}</small></span>)}{selectedMalls.length > 2 && <b>+{selectedMalls.length - 2}</b>}</div>}
+          {selectedMalls.length > 0 && <div className="studio-profile__mall-list"><small>Available at</small>{selectedMalls.slice(0, 2).map((mall) => <span key={mall.id}><img src={storeImages[mall.id] || SAMPLE_DESIGNER_STORES[mall.id]?.image || '/images/boutique-interior-minimal.jpg'} alt="" onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/images/boutique-interior-minimal.jpg'; }} /><small>{storeNames[mall.id] || mall.name}</small></span>)}{selectedMalls.length > 2 && <b>+{selectedMalls.length - 2}</b>}</div>}
           <div className="studio-progress-label"><strong>Profile completion</strong><b>{designer.profileCompletion}%</b></div>
           <div className="studio-progress"><span style={{ width: `${designer.profileCompletion}%` }} /></div>
           <div className="studio-tags">{designer.specializations.slice(0, 3).map((item) => <span key={item}>{item}</span>)}</div>
@@ -133,10 +143,10 @@ export default function DesignerDashboard() {
           <button className="studio-text-link studio-malls__edit" onClick={() => { setDraftMallIds(selectedMallIds); setIsEditingLocations((open) => !open); }}><Pencil size={13} />{isEditingLocations ? 'Close editor' : 'Edit locations'}</button>
         </div>
         {isEditingLocations && <div className="studio-malls__editor">
-          {availableMalls.map((mall) => <label key={mall.id}><input type="checkbox" checked={draftMallIds.includes(mall.id)} onChange={() => setDraftMallIds((ids) => ids.includes(mall.id) ? ids.filter((id) => id !== mall.id) : [...ids, mall.id])} /><span><strong>{mall.name}</strong><small>{mall.address}</small></span></label>)}
-          <div className="studio-malls__actions"><button className="studio-malls__cancel" onClick={() => { setDraftMallIds(selectedMallIds); setIsEditingLocations(false); }}>Cancel</button><button className="studio-malls__save" onClick={saveMallLocations}>Save locations</button></div>
+          {availableMalls.map((mall) => <label key={mall.id}><input type="checkbox" name="mallLocationId" value={mall.id} checked={draftMallIds.includes(mall.id)} onChange={() => setDraftMallIds((ids) => ids.includes(mall.id) ? ids.filter((id) => id !== mall.id) : [...ids, mall.id])} /><span><strong>{storeNames[mall.id] || 'Store name not set'}</strong><small>{mall.name} · {mall.address}</small></span></label>)}
+          <div className="studio-malls__actions"><button type="button" className="studio-malls__cancel" onClick={() => { setDraftMallIds(selectedMallIds); setIsEditingLocations(false); }}>Cancel</button><button type="button" className="zorevi-btn zorevi-btn--primary" onClick={saveMallLocations}>Save locations</button></div>
         </div>}
-        {selectedMalls.length ? <div className="studio-malls__grid">{selectedMalls.map((mall) => <article className="studio-mall-card" key={mall.id}><img src={mall.image} alt={mall.name} onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/images/mall-lakeside.jpg'; }} /><div><strong>{mall.name}</strong><span><MapPin size={12} />{mall.address}</span><small>{mall.fashionStores} fashion stores</small></div></article>)}</div> : !isEditingLocations && <div className="studio-malls__empty">No mall locations selected yet. Choose the places where clients can meet you.</div>}
+        {selectedMalls.length ? <div className="studio-malls__grid">{selectedMalls.map((mall) => <article className="studio-mall-card" key={mall.id}><img src={storeImages[mall.id] || SAMPLE_DESIGNER_STORES[mall.id]?.image || '/images/boutique-interior-minimal.jpg'} alt={`${storeNames[mall.id] || 'Fashion'} boutique interior`} onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/images/boutique-interior-minimal.jpg'; }} /><div><strong>{storeNames[mall.id] || 'Store name not set'}</strong><span><MapPin size={12} />{mall.name}</span><small>{mall.address} · {mall.fashionStores} fashion stores</small></div></article>)}</div> : !isEditingLocations && <div className="studio-malls__empty">No mall locations selected yet. Choose the places where clients can meet you.</div>}
       </section>
 
       <section className="studio-card studio-bookings" aria-label="Recent booking activity">
