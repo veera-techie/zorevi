@@ -1,6 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { NavLink, useNavigate, useLocation, Link } from 'react-router-dom';
-import { Calendar, HelpCircle, LogOut, Settings, User, X, Edit2 } from 'lucide-react';
+import {
+  Calendar, HelpCircle, LogOut, Settings, User, X, Edit2,
+  LayoutDashboard, Search, Heart, Building2
+} from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import './Sidebar.css';
 import './CustomerSidebar.css';
@@ -57,11 +60,13 @@ export default function CustomerSidebar({ isOpen, onClose }) {
 
   if (!isOpen) return null;
 
-  const isProfileActive = location.pathname === '/customer/profile' || location.pathname === '/customer';
-
   const navItems = [
-    { label: 'My Profile', path: '/customer/profile', icon: User, forceActive: isProfileActive },
+    { label: 'Dashboard', path: '/customer', icon: LayoutDashboard },
+    { label: 'Find Designers', path: '/customer/designers', icon: Search },
+    { label: 'Fashion Hubs', path: '/customer/fashion-hubs', icon: Building2 },
     { label: 'My Bookings', path: '/customer/bookings', icon: Calendar },
+    { label: 'Saved Wishlist', path: '/customer/wishlist', icon: Heart },
+    { label: 'My Profile', path: '/customer/profile', icon: User },
     { label: 'Settings', path: '/customer/settings', icon: Settings },
     { label: 'Help & Support', path: '/customer/support', icon: HelpCircle },
   ];

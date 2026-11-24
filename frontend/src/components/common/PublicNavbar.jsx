@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Search, MapPin, Heart, Bell, ShoppingBag, Menu, X, ChevronDown, LogOut, User, Settings } from 'lucide-react';
+import { Search, Heart, Bell, ShoppingBag, Menu, X, ChevronDown, LogOut, User, Settings } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
-import { CITIES } from '../../constants';
+import HeaderLocationSelector from './HeaderLocationSelector';
 import { AAROHI_PROFILE_IMAGE } from '../../utils/aarohiProfileImage';
 import './Navbar.css';
 
@@ -32,8 +32,23 @@ export default function PublicNavbar() {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/explore/designers?search=${encodeURIComponent(searchQuery)}`);
+    const query = searchQuery.trim();
+    if (!query) return;
+
+    const lower = query.toLowerCase();
+    const isFashionHubSearch = [
+      'mall', 'hub', 'boutique', 'store', 'shop', 'outlet',
+      'ethnic', 'bridal', 'saree', 'jewelry', 'footwear', 'fashion',
+      'zara', 'h&m', 'sarath', 'inorbit', 'nexus', 'forum', 'manyavar',
+      'fabindia', 'neeru', 'mugadha', 'aldo', 'steve madden', 'lulu', 'gvk'
+    ].some((k) => lower.includes(k));
+
+    const isCurrentOnHubs = location.pathname.includes('mall') || location.pathname.includes('fashion-hub');
+
+    if (isCurrentOnHubs || isFashionHubSearch) {
+      navigate(`/explore/fashion-hubs?search=${encodeURIComponent(query)}`);
+    } else {
+      navigate(`/explore/designers?search=${encodeURIComponent(query)}`);
     }
   };
 
@@ -58,39 +73,39 @@ export default function PublicNavbar() {
         </Link>
 
         <div className="navbar__center">
-          <div className="navbar__city-selector" ref={cityRef}>
-            <button
-              type="button"
-              className="navbar__city-btn"
-              aria-expanded={showCityDropdown}
-              onClick={() => setShowCityDropdown(!showCityDropdown)}
-            >
-              <MapPin size={16} />
-              <span>{selectedCity}</span>
-              <ChevronDown size={14} />
-            </button>
-            {showCityDropdown && (
-              <div className="navbar__city-dropdown">
-                {CITIES.map(city => (
-                  <button key={city} className={`navbar__city-option ${city === selectedCity ? 'active' : ''}`}
-                    onClick={() => { setSelectedCity(city); setShowCityDropdown(false); }}>
-                    {city}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+          <HeaderLocationSelector />
 
           <form className="navbar__search" onSubmit={handleSearch} role="search">
             <Search size={18} className="navbar__search-icon" aria-hidden="true" />
-            <input type="text" placeholder="Search designers or styles..."
-              aria-label="Search designers or styles"
-              value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+            <input
+              type="text"
+              placeholder="Search designers, fashion hubs, styles..."
+              aria-label="Search designers, fashion hubs, styles"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </form>
         </div>
 
         <nav className="navbar__public-links" aria-label="Main navigation">
-          <Link to="/for-designers">For Designers</Link>
+          <Link
+            to="/explore/designers"
+            className={location.pathname.startsWith('/explore/designers') ? 'active' : ''}
+          >
+            Explore Designers
+          </Link>
+          <Link
+            to="/explore/fashion-hubs"
+            className={location.pathname.startsWith('/explore/fashion-hubs') ? 'active' : ''}
+          >
+            Fashion Hubs
+          </Link>
+          <Link
+            to="/for-designers"
+            className={location.pathname === '/for-designers' ? 'active' : ''}
+          >
+            For Designers
+          </Link>
         </nav>
 
         <div className="navbar__actions">
@@ -152,18 +167,21 @@ export default function PublicNavbar() {
         <div className="navbar__mobile-menu" id="navbar-mobile-menu">
           <form className="navbar__mobile-search" onSubmit={handleSearch} role="search">
             <Search size={18} aria-hidden="true" />
-            <input type="text" placeholder="Search designers or styles..." aria-label="Search designers or styles" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+            <input
+              type="text"
+              placeholder="Search designers, fashion hubs, styles..."
+              aria-label="Search designers, fashion hubs, styles"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </form>
-          <label className="navbar__mobile-city">
-            <MapPin size={16} aria-hidden="true" />
-            <span>Location</span>
-            <select value={selectedCity} onChange={(event) => setSelectedCity(event.target.value)}>
-              {CITIES.map((city) => <option key={city} value={city}>{city}</option>)}
-            </select>
-          </label>
+          <div style={{ marginBottom: '14px' }}>
+            <HeaderLocationSelector isMobile={true} />
+          </div>
           <nav className="navbar__mobile-nav">
             <Link to="/">Home</Link>
-            <Link to="/explore/malls">Nearby Malls</Link>
+            <Link to="/explore/designers">Explore Designers</Link>
+            <Link to="/explore/fashion-hubs">Fashion Hubs</Link>
             <Link to="/categories">Fashion Categories</Link>
             <Link to="/for-designers">For Designers</Link>
             <Link to="/help">Help & Support</Link>

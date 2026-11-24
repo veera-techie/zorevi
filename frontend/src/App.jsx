@@ -87,6 +87,9 @@ function App() {
         <Route path="/explore/designers" element={<PublicDesignerDirectory />} />
         <Route path="/explore/designers/:designerId" element={<PublicDesignerProfile role="public" />} />
         <Route path="/designers/:id" element={<PublicDesignerProfile role="public" />} />
+        <Route path="/explore/fashion-hubs" element={<PublicMalls role="public" />} />
+        <Route path="/explore/fashion-hubs/:hubId" element={<PublicMallDetails role="public" />} />
+        <Route path="/fashion-hubs/:id" element={<PublicMallDetails role="public" />} />
         <Route path="/explore/malls" element={<PublicMallDirectory />} />
         <Route path="/explore/malls/:mallId" element={<PublicMallDetail />} />
         <Route path="/malls/:id" element={<PublicMallDetail />} />
@@ -118,8 +121,10 @@ function App() {
         <Route index element={<CustomerHome />} />
         <Route path="designers" element={<PublicDesigners isCustomerView={true} />} />
         <Route path="designers/:designerId" element={<PublicDesignerProfile isCustomerView={true} />} />
-        <Route path="malls" element={<PublicMalls isCustomerView={true} />} />
-        <Route path="malls/:mallId" element={<PublicMallDetails isCustomerView={true} />} />
+        <Route path="fashion-hubs" element={<PublicMalls role="customer" isCustomerView={true} />} />
+        <Route path="fashion-hubs/:hubId" element={<PublicMallDetails role="customer" isCustomerView={true} />} />
+        <Route path="malls" element={<PublicMalls role="customer" isCustomerView={true} />} />
+        <Route path="malls/:mallId" element={<PublicMallDetails role="customer" isCustomerView={true} />} />
         <Route path="bookings" element={<CustomerBookings />} />
         <Route path="bookings/:bookingId" element={<CustomerBookingDetails />} />
         <Route path="bookings/:bookingId/messages" element={<BookingChat />} />

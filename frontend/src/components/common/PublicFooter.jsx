@@ -5,7 +5,7 @@ import './PublicFooter.css';
 export default function PublicFooter({ role }) {
   const isCustomer = role === 'customer';
   const designersLink = isCustomer ? '/customer/designers' : '/explore/designers';
-  const mallsLink = isCustomer ? '/customer/malls' : '/explore/malls';
+  const fashionHubsLink = isCustomer ? '/customer/fashion-hubs' : '/explore/fashion-hubs';
   const bookingsLink = isCustomer ? '/customer/bookings' : '/how-it-works';
 
   return (
@@ -31,7 +31,7 @@ export default function PublicFooter({ role }) {
               </div>
             </Link>
             <p className="zorevi-footer__desc">
-              Discover top fashion designers and malls, book personalized styling sessions, and elevate your personal wardrobe for any occasion.
+              Discover top fashion designers and fashion hubs, book personalized styling sessions, and elevate your personal wardrobe for any occasion.
             </p>
             <div className="zorevi-footer__badge">
               <Sparkles size={14} /> Standard package from ₹499 / 2 hours · custom services may cost more
@@ -42,7 +42,7 @@ export default function PublicFooter({ role }) {
             <h4 className="zorevi-footer__title">Discover</h4>
             <ul className="zorevi-footer__links">
               <li><Link to={designersLink}>Explore Designers</Link></li>
-              <li><Link to={mallsLink}>Nearby Malls</Link></li>
+              <li><Link to={fashionHubsLink}>Fashion Hubs</Link></li>
               <li><Link to="/categories">Fashion Categories</Link></li>
               <li><Link to={bookingsLink}>{isCustomer ? 'My Bookings' : 'How It Works'}</Link></li>
               <li><Link to="/for-designers">For Designers</Link></li>

@@ -8,8 +8,59 @@ import { useApp } from '../../../context/AppContext';
 import { discoveryCategories, discoveryDemoNotice, publicDesigners, publicMalls } from '../../../services/publicDiscoveryData';
 import './LandingPage.css';
 
+const SHOPPING_EXPERIENCES = [
+  {
+    id: 'family-fashion',
+    image: '/assets/images/zorevi-family-fashion.png',
+    alt: 'A South Asian family celebrating together in coordinated festive fashion with personal stylist',
+    badge: 'Standard starting package',
+    price: '499',
+    unit: '/ 2 hours',
+    title: 'Personal styling session',
+    note: 'Custom services may cost more.',
+    category: 'Family Styling',
+    objectPosition: 'right center',
+  },
+  {
+    id: 'wedding-sherwani',
+    image: '/assets/images/hero-exp-wedding-sherwani.jpg',
+    alt: 'Groom in royal wedding sherwani fitted by personal stylist with smiling parents in showroom',
+    badge: 'Bridal & Groom Couture',
+    price: '1,499',
+    unit: '/ session',
+    title: 'Wedding ensemble curation',
+    note: 'Complete lehenga & sherwani fitting.',
+    category: 'Wedding & Bridal',
+    objectPosition: 'center 18%',
+  },
+  {
+    id: 'suit-fitting',
+    image: '/assets/images/hero-exp-suit-fitting.jpg',
+    alt: 'Gentleman having dark navy luxury suit shoulders fitted by stylist in menswear boutique',
+    badge: 'Bespoke Tailoring & Suits',
+    price: '999',
+    unit: '/ session',
+    title: 'Executive wardrobe curation',
+    note: 'Fine fabrics & master tailoring.',
+    category: "Men's Luxury",
+    objectPosition: 'center 18%',
+  },
+  {
+    id: 'casual-shopping',
+    image: '/assets/images/hero-exp-casual-shopping.jpg',
+    alt: 'Man shopping for resort linen shirts with stylist in high-end boutique',
+    badge: 'Personal Shopping & Styling',
+    price: '499',
+    unit: '/ 2 hours',
+    title: 'Curated shopping walkthrough',
+    note: 'Effortless everyday & resort looks.',
+    category: 'Casual & Resort',
+    objectPosition: 'center 18%',
+  },
+];
+
 export default function LandingPage() {
-  const { selectedCity } = useApp();
+  const { selectedCity, userLocation } = useApp();
   const homeRef = useRef(null);
   const cursorRef = useRef(null);
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -17,6 +68,20 @@ export default function LandingPage() {
   const [sortBy, setSortBy] = useState('recommended');
   const [bookingDesigner, setBookingDesigner] = useState(null);
   const [bookingOpen, setBookingOpen] = useState(false);
+
+  // Shopping experience 2-second auto-slider state
+  const [currentExpSlide, setCurrentExpSlide] = useState(0);
+  const [isExpHovered, setIsExpHovered] = useState(false);
+  const [expProgressKey, setExpProgressKey] = useState(0);
+
+  useEffect(() => {
+    if (isExpHovered) return;
+    const timer = setInterval(() => {
+      setCurrentExpSlide((prev) => (prev + 1) % SHOPPING_EXPERIENCES.length);
+      setExpProgressKey((prev) => prev + 1);
+    }, 2000);
+    return () => clearInterval(timer);
+  }, [isExpHovered]);
 
   useEffect(() => {
     const home = homeRef.current;
@@ -94,32 +159,119 @@ export default function LandingPage() {
       </div>
       <div className="public-home__inner">
         <section className="public-hero" aria-labelledby="public-home-title">
+          {/* Left Column: Original Text & Actions Kept Intact (As Is) */}
           <div className="public-hero__copy">
-            <p className="discovery-eyebrow"><Sparkles size={15} /> PERSONAL STYLE, MADE MORE ACCESSIBLE</p>
-            <h1 id="public-home-title">Find your style with <span>Zorevi.</span></h1>
-            <p className="public-hero__description">Discover fashion designers and styling ideas for every person, identity and occasion.</p>
+            <p className="discovery-eyebrow">
+              <Sparkles size={15} /> PERSONAL STYLE, MADE MORE ACCESSIBLE
+            </p>
+            <h1 id="public-home-title">
+              Find your style with <span>Zorevi.</span>
+            </h1>
+            <p className="public-hero__description">
+              Discover fashion designers and styling ideas for every person, identity and occasion.
+            </p>
             <div className="public-hero__actions">
               <Link to="/explore/designers" className="zorevi-btn zorevi-btn--primary public-hero__primary">
                 Explore Designers <ArrowRight size={17} />
               </Link>
-              <Link to="/explore/malls" className="zorevi-btn zorevi-btn--outline">
-                <MapPin size={16} /> Find Nearby Malls
+              <Link to="/explore/fashion-hubs" className="zorevi-btn zorevi-btn--outline">
+                <MapPin size={16} /> Find Nearby Fashion Hubs
               </Link>
             </div>
-            <div className="public-hero__location"><MapPin size={15} /> Exploring {selectedCity} <small>Location is selected manually in this demo.</small></div>
+            <div className="public-hero__location">
+              <MapPin size={15} />
+              <span>
+                Exploring near <strong>{userLocation?.locality ? `${userLocation.locality}, ${userLocation.city || selectedCity}` : selectedCity}</strong>
+              </span>
+              {userLocation?.isDetected && (
+                <span className="public-hero__gps-pill" style={{ marginLeft: '6px', fontSize: '0.7rem', padding: '2px 7px', background: '#ECFDF5', color: '#059669', borderRadius: '999px', fontWeight: 600 }}>
+                  ✓ GPS Active
+                </span>
+              )}
+            </div>
           </div>
-          <div className="public-hero__visual">
-            <img src="/assets/images/zorevi-family-fashion.png" alt="A South Asian family celebrating together in coordinated festive fashion" />
-            <div className="public-price-card">
-              <span>Standard starting package</span>
-              <strong>₹499 <small>/ 2 hours</small></strong>
-              <p>Personal styling session</p>
-              <small>Custom services may cost more.</small>
+
+          {/* Right Column: Auto-scrolling Shopping Experiences (2-second interval) */}
+          <div
+            className="public-hero__visual public-hero__visual--carousel"
+            onMouseEnter={() => setIsExpHovered(true)}
+            onMouseLeave={() => setIsExpHovered(false)}
+            aria-label="Shopping Experience Showcase"
+          >
+            {/* Stacked Experience Slides */}
+            {SHOPPING_EXPERIENCES.map((exp, index) => {
+              const isActive = index === currentExpSlide;
+              return (
+                <div
+                  key={exp.id}
+                  className={`public-hero__exp-slide ${isActive ? 'is-active' : ''}`}
+                  aria-hidden={!isActive}
+                >
+                  <img
+                    src={exp.image}
+                    alt={exp.alt}
+                    className="public-hero__exp-image"
+                    style={{ objectPosition: exp.objectPosition || 'right center' }}
+                    loading={index === 0 ? 'eager' : 'lazy'}
+                  />
+                </div>
+              );
+            })}
+
+            {/* Live Category Tag Top */}
+            <div className="public-hero__exp-top-badge">
+              <span className="public-hero__exp-tag">
+                <Sparkles size={12} /> {SHOPPING_EXPERIENCES[currentExpSlide].category}
+              </span>
+              <span className="public-hero__exp-counter">
+                0{currentExpSlide + 1} / 0{SHOPPING_EXPERIENCES.length}
+              </span>
+            </div>
+
+            {/* Dynamic Floating Price & Experience Card */}
+            <div className="public-price-card public-price-card--animated" key={currentExpSlide}>
+              <span>{SHOPPING_EXPERIENCES[currentExpSlide].badge}</span>
+              <strong>
+                ₹{SHOPPING_EXPERIENCES[currentExpSlide].price} <small>{SHOPPING_EXPERIENCES[currentExpSlide].unit}</small>
+              </strong>
+              <p>{SHOPPING_EXPERIENCES[currentExpSlide].title}</p>
+              <small>{SHOPPING_EXPERIENCES[currentExpSlide].note}</small>
+            </div>
+
+            {/* 4 Interactive Progress Dots (2-second fill animation) */}
+            <div className="public-hero__exp-dots" role="tablist" aria-label="Shopping experiences">
+              {SHOPPING_EXPERIENCES.map((exp, index) => {
+                const isActive = index === currentExpSlide;
+                return (
+                  <button
+                    key={exp.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={isActive}
+                    aria-label={`Slide ${index + 1}: ${exp.category}`}
+                    className={`public-hero__exp-dot ${isActive ? 'is-active' : ''}`}
+                    onClick={() => {
+                      setCurrentExpSlide(index);
+                      setExpProgressKey((k) => k + 1);
+                    }}
+                  >
+                    {isActive && !isExpHovered && (
+                      <span
+                        key={expProgressKey}
+                        className="public-hero__exp-dot-fill"
+                        style={{ animationDuration: '2000ms' }}
+                      />
+                    )}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </section>
 
-        <p className="discovery-demo-notice public-home__notice" role="note">{discoveryDemoNotice} This prototype does not use GPS or a live marketplace service.</p>
+        <p className="discovery-demo-notice public-home__notice" role="note">
+          {discoveryDemoNotice} Live GPS & location search available in the header.
+        </p>
 
         <section className="public-discovery-section" aria-labelledby="public-designers-title">
           <div className="public-section-heading">
@@ -189,19 +341,19 @@ export default function LandingPage() {
           <div className="public-section-heading">
             <div>
               <p className="discovery-eyebrow">Plan a day out</p>
-              <h2 id="public-malls-title">Explore malls in {selectedCity}</h2>
+              <h2 id="public-malls-title">Explore fashion hubs in {selectedCity}</h2>
             </div>
-            <Link to="/explore/malls" className="public-section-link">See mall directory <ArrowRight size={15} /></Link>
+            <Link to="/explore/fashion-hubs" className="public-section-link">See fashion hubs directory <ArrowRight size={15} /></Link>
           </div>
-          <p className="public-section-subtitle">Venue details link to official mall websites. Photos below are illustrative and do not depict the named venues.</p>
+          <p className="public-section-subtitle">Discover premier shopping malls, designer boutiques, and luxury fashion destinations.</p>
           {selectedCity === 'Hyderabad' ? (
             <div className="public-mall-grid">
               {publicMalls.map((mall) => <PublicMallCard key={mall.id} mall={mall} />)}
             </div>
           ) : (
             <div className="discovery-empty discovery-empty--compact">
-              <p>The prototype mall directory currently has official-source entries for Hyderabad.</p>
-              <Link to="/explore/malls" className="zorevi-btn zorevi-btn--outline">Browse mall directory</Link>
+              <p>The prototype fashion hubs directory currently has official-source entries for Hyderabad.</p>
+              <Link to="/explore/fashion-hubs" className="zorevi-btn zorevi-btn--outline">Browse fashion hubs</Link>
             </div>
           )}
         </section>

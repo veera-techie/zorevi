@@ -1,0 +1,351 @@
+/* ============================================
+   ZOREVI HERO CAROUSEL – LUXURY AUTO-SLIDER
+   ============================================ */
+
+.zorevi-hero-carousel {
+  position: relative;
+  width: 100%;
+  margin: 0 0 36px 0;
+  user-select: none;
+}
+
+/* 16:9 Aspect Ratio Viewport */
+.zorevi-hero-carousel__viewport {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  min-height: 380px;
+  max-height: 640px;
+  border-radius: 28px;
+  overflow: hidden;
+  background: #0f0c20;
+  border: 1px solid rgba(138, 75, 230, 0.2);
+  box-shadow: 0 20px 50px rgba(46, 21, 92, 0.16), 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* Individual Slides (Stacked for cinematic cross-fade) */
+.zorevi-hero-carousel__slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(1.02);
+  transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.9s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.7s;
+  z-index: 1;
+}
+
+.zorevi-hero-carousel__slide.is-active {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+  z-index: 2;
+}
+
+.zorevi-hero-carousel__link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  text-decoration: none;
+}
+
+.zorevi-hero-carousel__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  display: block;
+}
+
+/* Navigation Arrows (< and >) */
+.zorevi-hero-carousel__nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(15, 12, 32, 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.25s ease;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.zorevi-hero-carousel:hover .zorevi-hero-carousel__nav-btn {
+  opacity: 1;
+}
+
+.zorevi-hero-carousel__nav-btn:hover {
+  background: rgba(124, 58, 237, 0.85);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-50%) scale(1.08);
+  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.5);
+}
+
+.zorevi-hero-carousel__nav-btn--prev {
+  left: 20px;
+}
+
+.zorevi-hero-carousel__nav-btn--next {
+  right: 20px;
+}
+
+/* Top Floating Controls (Play/Pause & 2s indicator) */
+.zorevi-hero-carousel__top-ctrls {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.zorevi-hero-carousel__play-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 13px;
+  border-radius: 999px;
+  background: rgba(15, 12, 32, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.zorevi-hero-carousel__play-toggle:hover {
+  background: rgba(124, 58, 237, 0.75);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+/* Bottom Navigation Bar with 4 Interactive Tabs */
+.zorevi-hero-carousel__bottom-bar {
+  position: absolute;
+  bottom: 18px;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  padding: 0 20px;
+  pointer-events: none;
+}
+
+.zorevi-hero-carousel__tabs {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(15, 12, 32, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  padding: 6px 10px;
+  border-radius: 999px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+  pointer-events: auto;
+}
+
+.zorevi-hero-carousel__tab-pill {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 15px;
+  border-radius: 999px;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.zorevi-hero-carousel__tab-pill:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.zorevi-hero-carousel__tab-pill.is-active {
+  color: #ffffff;
+  background: rgba(124, 58, 237, 0.45);
+  border: 1px solid rgba(168, 85, 247, 0.4);
+}
+
+.zorevi-hero-carousel__tab-number {
+  font-size: 0.68rem;
+  opacity: 0.75;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.05em;
+}
+
+.zorevi-hero-carousel__tab-text {
+  white-space: nowrap;
+}
+
+/* 2-Second Linear Progress Bar on Active Tab */
+.zorevi-hero-carousel__tab-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2.5px;
+  background: linear-gradient(90deg, #A855F7, #EC4899);
+  width: 0%;
+  animation-name: heroProgressFill;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+  border-radius: 999px;
+}
+
+@keyframes heroProgressFill {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+/* Sub-Hero Quick Bar: Location & Action Buttons */
+.zorevi-hero-carousel__quickbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px 24px;
+  background: #ffffff;
+  border: 1px solid #EFE8FA;
+  border-radius: 20px;
+  margin-top: 16px;
+  box-shadow: 0 4px 18px rgba(74, 35, 122, 0.04);
+}
+
+.zorevi-hero-carousel__location-tag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  color: #3b3252;
+}
+
+.zorevi-hero-carousel__loc-pin {
+  color: #7C3AED;
+  flex-shrink: 0;
+}
+
+.zorevi-hero-carousel__gps-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  background: #ECFDF5;
+  color: #059669;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  margin-left: 4px;
+}
+
+.zorevi-hero-carousel__actions-strip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.zorevi-hero-carousel__action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 18px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  border-radius: 12px;
+  text-decoration: none;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN FOR HERO CAROUSEL
+   ============================================ */
+
+@media (max-width: 900px) {
+  .zorevi-hero-carousel__viewport {
+    aspect-ratio: 16 / 10;
+    min-height: 320px;
+    border-radius: 20px;
+  }
+
+  .zorevi-hero-carousel__nav-btn {
+    opacity: 0.9;
+    width: 38px;
+    height: 38px;
+  }
+
+  .zorevi-hero-carousel__nav-btn--prev { left: 10px; }
+  .zorevi-hero-carousel__nav-btn--next { right: 10px; }
+
+  .zorevi-hero-carousel__tab-pill {
+    padding: 6px 10px;
+    font-size: 0.72rem;
+  }
+
+  .zorevi-hero-carousel__tab-number {
+    display: none;
+  }
+
+  .zorevi-hero-carousel__quickbar {
+    padding: 12px 16px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .zorevi-hero-carousel__actions-strip {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 600px) {
+  .zorevi-hero-carousel__viewport {
+    aspect-ratio: 4 / 3;
+    min-height: 280px;
+    border-radius: 16px;
+  }
+
+  .zorevi-hero-carousel__tabs {
+    padding: 4px 6px;
+    gap: 4px;
+  }
+
+  .zorevi-hero-carousel__tab-pill {
+    padding: 5px 8px;
+    font-size: 0.68rem;
+  }
+
+  .zorevi-hero-carousel__top-ctrls {
+    top: 10px;
+    right: 12px;
+  }
+
+  .zorevi-hero-carousel__bottom-bar {
+    bottom: 10px;
+  }
+}

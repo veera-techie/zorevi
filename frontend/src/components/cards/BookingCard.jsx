@@ -79,7 +79,7 @@ export default function BookingCard({
           </Link>
         )}
 
-        <Link to={detailsUrl} className="zorevi-btn zorevi-btn--primary zorevi-btn--sm">
+        <Link to={detailsUrl} onClick={() => window.scrollTo(0, 0)} className="zorevi-btn zorevi-btn--primary zorevi-btn--sm">
           View Details
         </Link>
 

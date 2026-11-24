@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
-import { User, CheckCircle2, Award, Sparkles, MapPin, Save, Plus, Camera, Pencil, Upload } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { User, CheckCircle2, Award, Sparkles, MapPin, Save, Plus, Camera, Pencil, Upload, ExternalLink } from 'lucide-react';
 import { mockDesigners, mockMalls } from '../../../services/mockData';
 import { SPECIALIZATIONS } from '../../../constants';
 import { useApp } from '../../../context/AppContext';
@@ -180,16 +181,27 @@ export default function DesignerProfile() {
 
   return (
     <div style={{ maxWidth: '900px', margin: '0 auto', width: '100%', paddingBottom: '60px' }}>
-      <div style={{ marginBottom: '24px' }}>
-        <h1 style={{ fontSize: '1.85rem', fontWeight: '800', color: '#1E1B4B', margin: '0 0 4px 0' }}>
-          Profile & Credentials Management
-        </h1>
-        <p style={{ fontSize: '0.85rem', color: '#6B7280', margin: 0 }}>
-          Keep your designer bio, service radius, and fashion credentials updated for clients.
-        </p>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
+        <div>
+          <h1 style={{ fontSize: '1.85rem', fontWeight: '800', color: '#1E1B4B', margin: '0 0 4px 0' }}>
+            Profile & Credentials Management
+          </h1>
+          <p style={{ fontSize: '0.85rem', color: '#6B7280', margin: 0 }}>
+            Keep your designer bio, service radius, and fashion credentials updated for clients.
+          </p>
+        </div>
+
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <Link to="/designers/des-001" target="_blank" className="zorevi-btn zorevi-btn--outline">
+            <ExternalLink size={15} /> Preview Profile
+          </Link>
+          <button type="submit" form="designer-profile-form" className="zorevi-btn zorevi-btn--primary">
+            <Save size={15} /> Save Changes
+          </button>
+        </div>
       </div>
 
-      <form onSubmit={handleSave}>
+      <form id="designer-profile-form" onSubmit={handleSave}>
         {/* Profile Card */}
         <div style={{ background: '#FFFFFF', borderRadius: '24px', border: '1px solid #F3F4F6', padding: '28px', boxShadow: '0 4px 16px rgba(0,0,0,0.03)', marginBottom: '24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '24px' }}>

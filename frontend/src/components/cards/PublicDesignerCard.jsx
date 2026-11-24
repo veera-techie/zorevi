@@ -13,6 +13,12 @@ export default function PublicDesignerCard({ designer, onBook }) {
   const isSaved = isCustomer && isInWishlist('designer', designer.id);
   const profileUrl = `/designers/${designer.id}`;
 
+  const handleScrollTop = () => {
+    window.scrollTo(0, 0);
+    if (document.documentElement) document.documentElement.scrollTop = 0;
+    if (document.body) document.body.scrollTop = 0;
+  };
+
   const requestAccess = (intent) => {
     setDialogIntent(intent);
     setDialogOpen(true);
@@ -39,7 +45,7 @@ export default function PublicDesignerCard({ designer, onBook }) {
     <>
       <article className="public-designer-card">
         <div className="public-designer-card__image-wrap">
-          <Link to={profileUrl} aria-label={`Preview ${designer.name}'s profile`}>
+          <Link to={profileUrl} onClick={handleScrollTop} aria-label={`Preview ${designer.name}'s profile`}>
             <img className="public-designer-card__image" src={designer.image} alt={`Illustrative stock portrait for demo profile ${designer.name}`} loading="lazy" />
           </Link>
           <span className="public-designer-card__verified"><CheckCircle2 size={13} /> Demo verified</span>
@@ -55,7 +61,7 @@ export default function PublicDesignerCard({ designer, onBook }) {
         </div>
         <div className="public-designer-card__content">
           <div className="public-designer-card__title-row">
-            <h3><Link to={profileUrl}>{designer.name}</Link></h3>
+            <h3><Link to={profileUrl} onClick={handleScrollTop}>{designer.name}</Link></h3>
             <span className="public-designer-card__rating" title="Illustrative demo rating">
               <Star size={14} fill="currentColor" /> {designer.rating.toFixed(1)}
             </span>
@@ -75,7 +81,7 @@ export default function PublicDesignerCard({ designer, onBook }) {
             <strong>₹{designer.startingPrice} <small>/ 2 hours</small></strong>
           </div>
           <div className="public-designer-card__actions">
-            <Link to={profileUrl} className="zorevi-btn zorevi-btn--outline">View details</Link>
+            <Link to={profileUrl} onClick={handleScrollTop} className="zorevi-btn zorevi-btn--outline">View details</Link>
             <button type="button" className="zorevi-btn zorevi-btn--primary public-book-button" onClick={handleBook}>Book now</button>
           </div>
         </div>

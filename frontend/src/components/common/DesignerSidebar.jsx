@@ -9,15 +9,20 @@ import './Sidebar.css';
 
 export default function DesignerSidebar({ isOpen, onClose }) {
   const { logout } = useAuth();
-  const { getUnreadCount } = useApp();
+  const { getUnreadCount, bookings } = useApp();
   const navigate = useNavigate();
+
+  const pendingRequestsCount = (bookings || []).filter(
+    (b) => b.status === 'Pending Confirmation' || b.status === 'Pending'
+  ).length;
+
   const navItems = [
     { label: 'Dashboard', path: '/designer', icon: LayoutDashboard, end: true },
-    { label: 'Profile & Portfolio', path: '/designer/profile', icon: UserRound },
-    { label: 'Services & Pricing', path: '/designer/services', icon: Tags },
+    { label: 'Booking Requests', path: '/designer/booking-requests', icon: CalendarCheck2, badge: pendingRequestsCount },
+    { label: 'My Bookings', path: '/designer/bookings', icon: CalendarCheck2 },
     { label: 'Availability', path: '/designer/availability', icon: CalendarDays },
-    { label: 'Booking Requests', path: '/designer/booking-requests', icon: CalendarCheck2, badge: 3 },
-    { label: 'Bookings', path: '/designer/bookings', icon: CalendarCheck2 },
+    { label: 'Services & Pricing', path: '/designer/services', icon: Tags },
+    { label: 'Profile & Portfolio', path: '/designer/profile', icon: UserRound },
     { label: 'Earnings', path: '/designer/earnings', icon: Wallet },
     { label: 'Reviews', path: '/designer/reviews', icon: Star },
     { label: 'Notifications', path: '/designer/notifications', icon: Bell, badge: getUnreadCount('designer') },

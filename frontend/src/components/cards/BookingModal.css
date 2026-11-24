@@ -1,11 +1,28 @@
-/* Booking Modal Styles */
+/* ========================================================
+   ZOREVI BOOKING MODAL - 9-STEP WORKFLOW DESIGN SYSTEM
+   Matches Zorevi Premium Fashion-Tech Aesthetic
+   ======================================================== */
 
-.zorevi-booking-steps {
+.zorevi-booking-modal-body {
+  padding: 8px 4px 16px;
+  color: #1e1b4b;
+  font-family: inherit;
+}
+
+/* Stepper Bar */
+.zorevi-booking-stepper-wrap {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin-bottom: 24px;
+  justify-content: space-between;
+  padding: 0 4px 18px;
+  border-bottom: 1px solid #f3f4f6;
+  margin-bottom: 22px;
+}
+
+.zorevi-booking-steps-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .zorevi-booking-step-dot {
@@ -19,463 +36,1556 @@
   justify-content: center;
   font-size: 0.8rem;
   font-weight: 700;
+  cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .zorevi-booking-step-dot.active {
-  background: var(--color-primary, #7c3aed);
+  background: #7c3aed;
   color: #ffffff;
   transform: scale(1.1);
-  box-shadow: 0 4px 10px rgba(124, 58, 237, 0.3);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.35);
 }
 
 .zorevi-booking-step-dot.completed {
   background: #ecfdf5;
-  color: #10b981;
+  color: #059669;
+  border: 1px solid #a7f3d0;
+}
+
+.zorevi-booking-step-badge span {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #7c3aed;
+  background: #f5f0ff;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  border: 1px solid #ddd6fe;
+}
+
+/* Step Header */
+.zorevi-step-header {
+  margin-bottom: 20px;
 }
 
 .zorevi-step-title {
-  font-size: 1.15rem;
-  font-weight: 700;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #1e1b4b;
+  margin: 0 0 6px 0;
+  letter-spacing: -0.02em;
+}
+
+.zorevi-step-desc {
+  font-size: 0.88rem;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Step Actions Bottom */
+.zorevi-step-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 26px;
+  padding-top: 20px;
+  border-top: 1px solid #f3f4f6;
+}
+
+.zorevi-step-actions.centered {
+  justify-content: center;
+  gap: 16px;
+}
+
+/* ========================================================
+   STEP 1: OCCASIONS GRID
+   ======================================================== */
+.zorevi-occasions-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  max-height: 440px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.zorevi-occasion-card {
+  border-radius: 16px;
+  border: 1.5px solid #e5e7eb;
+  background: #ffffff;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.zorevi-occasion-card:hover {
+  border-color: #c4b5fd;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.08);
+}
+
+.zorevi-occasion-card.selected {
+  border-color: #7c3aed;
+  background: #faf5ff;
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.25);
+}
+
+.zorevi-occasion-card__img-box {
+  position: relative;
+  width: 100%;
+  height: 110px;
+  overflow: hidden;
+  background: #f3f4f6;
+}
+
+.zorevi-occasion-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.zorevi-occasion-card:hover .zorevi-occasion-card__img {
+  transform: scale(1.05);
+}
+
+.zorevi-occasion-card__check {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #7c3aed;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.zorevi-occasion-card__info {
+  padding: 10px 12px;
+}
+
+.zorevi-occasion-card__info strong {
+  display: block;
+  font-size: 0.92rem;
+  color: #1e1b4b;
+  margin-bottom: 2px;
+}
+
+.zorevi-occasion-card__info span {
+  display: block;
+  font-size: 0.75rem;
+  color: #6b7280;
+  line-height: 1.35;
+}
+
+/* ========================================================
+   STEP 2: RELATED SERVICES LIST
+   ======================================================== */
+.zorevi-services-dynamic-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.zorevi-service-select-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1.5px solid #e5e7eb;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.zorevi-service-select-row:hover {
+  border-color: #c4b5fd;
+  background: #faf5ff;
+}
+
+.zorevi-service-select-row.selected {
+  border-color: #7c3aed;
+  background: #f5f0ff;
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+}
+
+.zorevi-service-select-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.zorevi-checkbox-fake {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 2px solid #d1d5db;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+  color: #ffffff;
+}
+
+.zorevi-checkbox-fake.checked {
+  background: #7c3aed;
+  border-color: #7c3aed;
+}
+
+.zorevi-service-select-box strong {
+  display: block;
+  font-size: 0.95rem;
   color: #1e1b4b;
   margin-bottom: 4px;
 }
 
-.zorevi-step-desc {
-  font-size: 0.85rem;
-  color: #6b7280;
-  margin-bottom: 20px;
-}
-
-.zorevi-form-label {
-  display: block;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #374151;
-  margin-bottom: 8px;
-}
-
-.zorevi-designer-select-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.zorevi-designer-select-card {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px;
-  border-radius: 14px;
-  border: 1px solid #e5e7eb;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.zorevi-designer-select-card:hover {
-  border-color: #ddd6fe;
-  background: #faf5ff;
-}
-
-.zorevi-designer-select-card.selected {
-  border-color: #7c3aed;
-  background: #f5f0ff;
-  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
-}
-
-.zorevi-designer-select-img {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.zorevi-designer-select-info strong {
-  display: block;
-  font-size: 0.9rem;
-  color: #1e1b4b;
-}
-
-.zorevi-designer-select-info span {
-  display: block;
-  font-size: 0.75rem;
-  color: #6b7280;
-}
-
-.zorevi-designer-select-info small {
-  font-size: 0.75rem;
-  color: #7c3aed;
-  font-weight: 600;
-}
-
-/* Service Grid */
-.zorevi-service-select-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.zorevi-service-card {
-  padding: 14px;
-  border-radius: 14px;
-  border: 1px solid #e5e7eb;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.zorevi-service-card:hover {
-  border-color: #ddd6fe;
-}
-
-.zorevi-service-card.selected {
-  border-color: #7c3aed;
-  background: #f5f0ff;
-  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
-}
-
-.zorevi-service-card__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 6px;
-}
-
-.zorevi-service-card__price {
-  font-weight: 700;
-  color: #7c3aed;
-}
-
-.zorevi-service-card p {
+.zorevi-service-select-box p {
+  margin: 0 0 6px 0;
   font-size: 0.8rem;
   color: #6b7280;
-  margin-bottom: 6px;
   line-height: 1.4;
 }
 
-.zorevi-service-card small {
+.zorevi-service-est-time {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  color: #7c3aed;
+  font-weight: 600;
+}
+
+.zorevi-service-select-price {
+  text-align: right;
+  flex-shrink: 0;
+  padding-left: 16px;
+}
+
+.zorevi-service-select-price span {
+  display: block;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #7c3aed;
+}
+
+.zorevi-service-select-price small {
   font-size: 0.72rem;
   color: #9ca3af;
 }
 
-/* Chips */
-.zorevi-chip-group {
+.zorevi-total-fee-preview {
+  margin-top: 18px;
+  padding: 12px 18px;
+  background: #f5f0ff;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #ede9fe;
+}
+
+.zorevi-total-fee-preview span {
+  font-size: 0.88rem;
+  color: #4b5563;
+  font-weight: 600;
+}
+
+.zorevi-total-fee-preview strong {
+  font-size: 1.25rem;
+  color: #7c3aed;
+}
+
+/* ========================================================
+   STEP 3: CATEGORY GRID
+   ======================================================== */
+.zorevi-category-select-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.zorevi-category-option-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 18px;
+  border: 1.5px solid #e5e7eb;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.16s ease;
+  overflow: hidden;
+}
+
+.zorevi-category-option-card:hover {
+  border-color: #c4b5fd;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.08);
+}
+
+.zorevi-category-option-card.selected {
+  border-color: #7c3aed;
+  background: #faf5ff;
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+}
+
+.zorevi-category-option-img {
+  width: 72px;
+  height: 72px;
+  border-radius: 12px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.zorevi-category-option-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.cat-icon-badge {
+  font-size: 1.1rem;
+}
+
+.zorevi-category-option-top h4 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e1b4b;
+}
+
+.zorevi-category-option-content p {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #6b7280;
+  line-height: 1.35;
+}
+
+.zorevi-category-selected-check {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #7c3aed;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ========================================================
+   STEP 4: PREFERENCES FORM
+   ======================================================== */
+.zorevi-pref-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.zorevi-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.zorevi-form-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #374151;
+}
+
+.zorevi-pref-chips {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
-.zorevi-chip {
-  padding: 8px 14px;
+.zorevi-pref-chip {
+  padding: 8px 16px;
   border-radius: 9999px;
-  border: 1px solid #e5e7eb;
+  border: 1.5px solid #e5e7eb;
   background: #ffffff;
   color: #4b5563;
-  font-size: 0.8rem;
-  font-weight: 500;
+  font-size: 0.82rem;
+  font-weight: 600;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
   transition: all 0.15s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
 }
 
-.zorevi-chip:hover {
-  border-color: #ddd6fe;
+.zorevi-pref-chip:hover {
+  border-color: #c4b5fd;
   color: #7c3aed;
 }
 
-.zorevi-chip.active {
-  background: #f5f0ff;
+.zorevi-pref-chip.active {
+  background: #7c3aed;
   border-color: #7c3aed;
-  color: #7c3aed;
-  font-weight: 600;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.25);
 }
 
-/* Counter */
-.zorevi-counter {
-  display: inline-flex;
-  align-items: center;
-  gap: 16px;
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 6px 12px;
-}
-
-.zorevi-counter-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
-  background: #ffffff;
-  font-size: 1.1rem;
-  font-weight: 700;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.zorevi-counter-btn:hover {
-  background: #f3f4f6;
-}
-
-.zorevi-counter-val {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 600;
-  color: #1e1b4b;
-}
-
-.zorevi-textarea,
-.zorevi-input {
+.zorevi-input,
+.zorevi-select,
+.zorevi-textarea {
   width: 100%;
   padding: 10px 14px;
-  border: 1px solid #e5e7eb;
   border-radius: 12px;
-  font-size: 0.875rem;
+  border: 1.5px solid #e5e7eb;
+  background: #ffffff;
+  font-size: 0.88rem;
   color: #1e1b4b;
   font-family: inherit;
-  transition: all 0.15s ease;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease;
 }
 
-.zorevi-textarea:focus,
-.zorevi-input:focus {
+.zorevi-input:focus,
+.zorevi-select:focus,
+.zorevi-textarea:focus {
   outline: none;
   border-color: #7c3aed;
   box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
 }
 
-.zorevi-form-grid-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-.zorevi-input-icon-wrap {
-  position: relative;
+.zorevi-ref-upload-box {
   display: flex;
   align-items: center;
-}
-
-.zorevi-input-icon-wrap svg {
-  position: absolute;
-  left: 12px;
-  color: #9ca3af;
-  pointer-events: none;
-}
-
-.zorevi-input-icon-wrap input,
-.zorevi-input-icon-wrap select {
-  padding-left: 36px;
-}
-
-.zorevi-duration-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
-}
-
-.zorevi-duration-btn {
-  padding: 10px;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
-  background: #ffffff;
-  font-weight: 600;
-  font-size: 0.8rem;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-radius: 14px;
+  border: 2px dashed #ddd6fe;
+  background: #faf5ff;
   cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  position: relative;
+  transition: all 0.15s ease;
 }
 
-.zorevi-duration-btn.active {
+.zorevi-ref-upload-box:hover {
   background: #f5f0ff;
   border-color: #7c3aed;
+}
+
+.zorevi-ref-upload-box.has-file {
+  background: #ecfdf5;
+  border-color: #10b981;
+  border-style: solid;
+}
+
+.zorevi-ref-upload-box strong {
+  display: block;
+  font-size: 0.88rem;
+  color: #1e1b4b;
+}
+
+.zorevi-ref-upload-box small {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+/* ========================================================
+   STEP 5: SHOPPING BUDGET
+   ======================================================== */
+.zorevi-budget-notice-callout {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 18px;
+  background: #f5f0ff;
+  border: 1.5px solid #ddd6fe;
+  border-radius: 16px;
+  margin-bottom: 20px;
+}
+
+.zorevi-budget-notice-callout strong {
+  display: block;
+  font-size: 0.9rem;
+  color: #7c3aed;
+  margin-bottom: 2px;
+}
+
+.zorevi-budget-notice-callout p {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #4b5563;
+  line-height: 1.45;
+}
+
+.zorevi-budgets-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.zorevi-budget-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1.5px solid #e5e7eb;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.zorevi-budget-card:hover {
+  border-color: #c4b5fd;
+  background: #faf5ff;
+}
+
+.zorevi-budget-card.selected {
+  border-color: #7c3aed;
+  background: #f5f0ff;
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+}
+
+.zorevi-budget-card__radio {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #d1d5db;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.radio-dot.checked {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #7c3aed;
+}
+
+.zorevi-budget-card strong {
+  display: block;
+  font-size: 0.95rem;
+  color: #1e1b4b;
+  margin-bottom: 2px;
+}
+
+.zorevi-budget-card span {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.zorevi-custom-budget-input-wrap {
+  margin-top: 14px;
+  padding: 16px;
+  background: #faf5ff;
+  border-radius: 14px;
+  border: 1px solid #ede9fe;
+}
+
+.zorevi-input-prefix-box {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.zorevi-input-prefix-box span {
+  position: absolute;
+  left: 14px;
+  font-size: 1rem;
+  font-weight: 700;
   color: #7c3aed;
 }
 
-.zorevi-pop-badge {
-  font-size: 0.6rem;
-  background: #7c3aed;
-  color: white;
-  padding: 2px 6px;
-  border-radius: 9999px;
+.zorevi-input-prefix-box input {
+  padding-left: 32px;
 }
 
-/* Location Selector */
-.zorevi-location-type-row {
-  display: flex;
+/* ========================================================
+   STEP 6: DATE AND TIME
+   ======================================================== */
+.zorevi-meeting-type-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 10px;
 }
 
-.zorevi-location-tab {
-  flex: 1;
+.zorevi-meeting-type-btn {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 12px;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1.5px solid #e5e7eb;
   background: #ffffff;
+  color: #4b5563;
+  font-size: 0.82rem;
   font-weight: 600;
-  font-size: 0.875rem;
   cursor: pointer;
+  transition: all 0.15s ease;
 }
 
-.zorevi-location-tab.active {
+.zorevi-meeting-type-btn.active {
+  border-color: #7c3aed;
+  background: #f5f0ff;
+  color: #7c3aed;
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+}
+
+.zorevi-datetime-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 14px;
+}
+
+.zorevi-date-slots-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.zorevi-date-slot-btn {
+  flex: 1;
+  min-width: 90px;
+  padding: 10px;
+  border-radius: 14px;
+  border: 1.5px solid #e5e7eb;
+  background: #ffffff;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.zorevi-date-slot-btn span {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #1e1b4b;
+}
+
+.zorevi-date-slot-btn small {
+  font-size: 0.72rem;
+  color: #6b7280;
+}
+
+.zorevi-date-slot-btn.active {
+  background: #7c3aed;
+  border-color: #7c3aed;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+}
+
+.zorevi-date-slot-btn.active span,
+.zorevi-date-slot-btn.active small {
+  color: #ffffff;
+}
+
+.zorevi-time-slots-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.zorevi-time-slot-btn {
+  padding: 10px;
+  border-radius: 12px;
+  border: 1.5px solid #e5e7eb;
+  background: #ffffff;
+  color: #374151;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s ease;
+}
+
+.zorevi-time-slot-btn.active {
   background: #f5f0ff;
   border-color: #7c3aed;
   color: #7c3aed;
+  font-weight: 700;
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
 }
 
-.zorevi-mall-select-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-height: 200px;
-  overflow-y: auto;
+/* ========================================================
+   STEP 7: SUMMARY CARD
+   ======================================================== */
+.zorevi-summary-card {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1.5px solid #ede9fe;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.05);
 }
 
-.zorevi-mall-select-item {
+.zorevi-summary-designer-header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 14px;
-  border-radius: 10px;
-  border: 1px solid #e5e7eb;
-  cursor: pointer;
-}
-
-.zorevi-mall-select-item.selected {
-  background: #f5f0ff;
-  border-color: #7c3aed;
-}
-
-.zorevi-mall-select-item strong {
-  display: block;
-  font-size: 0.875rem;
-}
-
-.zorevi-mall-select-item small {
-  color: #6b7280;
-  font-size: 0.75rem;
-}
-
-.zorevi-online-box {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 16px;
-  border-radius: 14px;
-  background: #f5f0ff;
-  border: 1px solid #ddd6fe;
-}
-
-.zorevi-online-box strong {
-  display: block;
-  font-size: 0.9rem;
-  color: #1e1b4b;
-  margin-bottom: 4px;
-}
-
-.zorevi-online-box p {
-  font-size: 0.8rem;
-  color: #4b5563;
-  line-height: 1.4;
-  margin: 0;
-}
-
-/* Quote Card */
-.zorevi-quote-card {
-  background: #f9fafb;
-  border-radius: 14px;
-  padding: 16px;
-  border: 1px solid #e5e7eb;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f3f4f6;
   margin-bottom: 16px;
 }
 
-.zorevi-quote-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 0;
-  font-size: 0.85rem;
-  color: #4b5563;
-  border-bottom: 1px dashed #e5e7eb;
+.zorevi-summary-designer-avatar {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ddd6fe;
 }
 
-.zorevi-quote-row:last-child {
-  border-bottom: none;
-}
-
-.zorevi-quote-row--total {
-  font-size: 1.1rem;
-  color: #1e1b4b;
-  padding-top: 12px;
-  border-top: 1px solid #e5e7eb;
-}
-
-.zorevi-cancellation-terms {
-  background: #ecfdf5;
-  border: 1px solid #a7f3d0;
-  padding: 14px;
-  border-radius: 12px;
-  margin-bottom: 14px;
-}
-
-.zorevi-cancellation-terms__title {
+.designer-title-row {
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #065f46;
-  font-size: 0.85rem;
-  margin-bottom: 4px;
 }
 
-.zorevi-cancellation-terms p {
-  font-size: 0.8rem;
-  color: #047857;
-  margin: 0;
-  line-height: 1.4;
+.designer-title-row strong {
+  font-size: 1.1rem;
+  color: #1e1b4b;
 }
 
-.zorevi-pricing-note {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  font-size: 0.75rem;
+.zorevi-summary-designer-header span {
+  display: block;
+  font-size: 0.82rem;
   color: #6b7280;
-  line-height: 1.4;
-}
-
-.zorevi-pricing-note svg {
-  color: #7c3aed;
-  flex-shrink: 0;
   margin-top: 2px;
 }
 
-.zorevi-booking-footer {
+.zorevi-location-sub {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.75rem;
+  color: #7c3aed;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.zorevi-summary-breakdown {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.zorevi-summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.summary-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-weight: 600;
+}
+
+.summary-val {
+  font-size: 0.92rem;
+  color: #1e1b4b;
+}
+
+.summary-services-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.summary-service-tag {
+  background: #f5f0ff;
+  color: #7c3aed;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid #ddd6fe;
+}
+
+.zorevi-summary-fee-box {
+  background: #f8fafc;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  padding: 16px;
+}
+
+.fee-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 24px;
-  padding-top: 16px;
-  border-top: 1px solid #f3f4f6;
+  margin-bottom: 10px;
 }
 
-@media (max-width: 640px) {
-  .zorevi-designer-select-grid,
-  .zorevi-service-select-grid,
-  .zorevi-form-grid-2 {
+.fee-row span {
+  font-size: 0.9rem;
+  color: #334155;
+  font-weight: 600;
+}
+
+.fee-row strong {
+  font-size: 1.3rem;
+  color: #7c3aed;
+}
+
+.fee-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: #059669;
+  line-height: 1.45;
+  background: #ecfdf5;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #a7f3d0;
+}
+
+/* ========================================================
+   STEP 8 & 9: STATUS SCREENS & ADVANCE PAYMENT
+   ======================================================== */
+.zorevi-step-status-pane {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 16px 8px;
+}
+
+.zorevi-status-icon-wrap {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+
+.zorevi-status-icon-wrap.pending {
+  background: #fef3c7;
+  border: 2px solid #fde68a;
+}
+
+.zorevi-status-icon-wrap.confirmed {
+  background: #d1fae5;
+  border: 2px solid #a7f3d0;
+}
+
+.zorevi-status-title {
+  font-size: 1.55rem;
+  font-weight: 850;
+  color: #1e1b4b;
+  margin: 0 0 8px 0;
+}
+
+.zorevi-status-badge {
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 4px 14px;
+  border-radius: 9999px;
+  margin-bottom: 14px;
+}
+
+.zorevi-status-badge.pending {
+  background: #fffbeb;
+  color: #d97706;
+  border: 1px solid #fde68a;
+}
+
+.zorevi-status-badge.confirmed {
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid #a7f3d0;
+}
+
+.zorevi-status-lead {
+  font-size: 0.92rem;
+  color: #4b5563;
+  max-width: 480px;
+  line-height: 1.5;
+  margin: 0 0 20px 0;
+}
+
+.zorevi-status-info-card {
+  width: 100%;
+  max-width: 500px;
+  background: #f8fafc;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  padding: 16px 20px;
+  margin-bottom: 22px;
+  text-align: left;
+}
+
+.status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 0.86rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.status-row:last-child {
+  border-bottom: none;
+}
+
+.status-row span {
+  color: #64748b;
+}
+
+.status-row strong {
+  color: #1e1b4b;
+}
+
+/* Workflow mini timeline */
+.zorevi-workflow-timeline-mini {
+  width: 100%;
+  max-width: 500px;
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.zorevi-workflow-timeline-mini h4 {
+  font-size: 0.88rem;
+  color: #1e1b4b;
+  margin: 0 0 12px 0;
+}
+
+.timeline-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.timeline-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 0.82rem;
+}
+
+.timeline-num {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+.timeline-step.done .timeline-num {
+  background: #10b981;
+  color: #ffffff;
+}
+
+.timeline-step.current .timeline-num {
+  background: #f59e0b;
+  color: #ffffff;
+}
+
+.timeline-step.pending .timeline-num {
+  background: #e2e8f0;
+  color: #94a3b8;
+}
+
+.timeline-step strong {
+  display: block;
+  color: #1e1b4b;
+}
+
+.timeline-step span {
+  color: #64748b;
+}
+
+/* ========================================================
+   ADVANCE PAYMENT BREAKDOWN (STEP 9)
+   ======================================================== */
+.zorevi-advance-payment-pane .confirmed-header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ecfdf5;
+  color: #059669;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: 1px solid #a7f3d0;
+  margin-bottom: 10px;
+}
+
+.zorevi-payment-breakdown-card {
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1.5px solid #ede9fe;
+  padding: 20px;
+  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.05);
+}
+
+.breakdown-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #f3f4f6;
+  margin-bottom: 16px;
+}
+
+.breakdown-header strong {
+  display: block;
+  font-size: 1rem;
+  color: #1e1b4b;
+}
+
+.breakdown-header span {
+  font-size: 0.82rem;
+  color: #7c3aed;
+  font-weight: 600;
+}
+
+.breakdown-date {
+  font-size: 0.85rem !important;
+  color: #6b7280 !important;
+}
+
+.breakdown-calculation {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.calc-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.88rem;
+}
+
+.calc-row.highlight {
+  background: #f5f0ff;
+  border-radius: 12px;
+  padding: 12px 16px;
+  border: 1.5px solid #ddd6fe;
+}
+
+.calc-row.highlight strong {
+  color: #1e1b4b;
+}
+
+.calc-row.highlight small {
+  display: block;
+  font-size: 0.74rem;
+  color: #6b7280;
+}
+
+.advance-bold {
+  font-size: 1.4rem !important;
+  color: #7c3aed !important;
+  font-weight: 900;
+}
+
+.calc-row.muted {
+  padding: 6px 16px;
+  color: #64748b;
+  font-size: 0.84rem;
+}
+
+.calc-row.muted small {
+  display: block;
+  font-size: 0.72rem;
+  color: #94a3b8;
+}
+
+.zorevi-pay-methods-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.zorevi-pay-method-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 10px;
+  border-radius: 14px;
+  border: 1.5px solid #e5e7eb;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.zorevi-pay-method-btn .pay-icon {
+  font-size: 1.4rem;
+}
+
+.zorevi-pay-method-btn.active {
+  border-color: #7c3aed;
+  background: #f5f0ff;
+  color: #7c3aed;
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+}
+
+.zorevi-secure-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: #059669;
+  margin-top: 14px;
+  font-weight: 600;
+}
+
+.zorevi-btn--pay {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3) !important;
+}
+
+.zorevi-btn--pay:hover {
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4) !important;
+}
+
+/* ========================================================
+   UNIFIED SINGLE-FORM BOOKING STYLES
+   ======================================================== */
+
+.zorevi-single-booking-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-height: 74vh;
+  overflow-y: auto;
+  padding: 4px 6px 16px 2px;
+  scrollbar-width: thin;
+  scrollbar-color: #ddd6fe transparent;
+}
+
+.zorevi-single-booking-form::-webkit-scrollbar {
+  width: 5px;
+}
+
+.zorevi-single-booking-form::-webkit-scrollbar-thumb {
+  background: #ddd6fe;
+  border-radius: 9999px;
+}
+
+/* Designer Header Banner */
+.zorevi-booking-designer-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, #f5f0ff 0%, #faf5ff 100%);
+  border: 1px solid #ddd6fe;
+  border-radius: 18px;
+}
+
+.zorevi-booking-banner-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #7c3aed;
+  flex-shrink: 0;
+}
+
+.zorevi-booking-banner-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.zorevi-booking-banner-rate {
+  text-align: right;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Form Sections */
+.zorevi-form-section {
+  background: #ffffff;
+  border: 1px solid #ede9fe;
+  border-radius: 18px;
+  padding: 18px 20px;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.03);
+}
+
+.zorevi-section-title-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.zorevi-section-badge {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #7c3aed;
+  color: #ffffff;
+  font-size: 0.76rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.zorevi-section-title {
+  font-size: 1.05rem;
+  font-weight: 750;
+  color: #1e1b4b;
+  margin: 0;
+}
+
+.zorevi-section-sub {
+  font-size: 0.78rem;
+  color: #6b7280;
+  display: block;
+  margin-top: 2px;
+}
+
+/* Occasions Horizontal Scroll / Wrap */
+.zorevi-occasions-chip-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.zorevi-pill-btn {
+  padding: 8px 16px;
+  border-radius: 9999px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  color: #4b5563;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.zorevi-pill-btn:hover {
+  border-color: #c4b5fd;
+  color: #7c3aed;
+  background: #fdf4ff;
+}
+
+.zorevi-pill-btn.is-active {
+  background: #7c3aed;
+  color: #ffffff;
+  border-color: #7c3aed;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.28);
+}
+
+/* Services Compact Grid */
+.zorevi-services-compact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 10px;
+}
+
+.zorevi-service-compact-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1.5px solid #f3f4f6;
+  background: #fdfdff;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.zorevi-service-compact-card:hover {
+  border-color: #ddd6fe;
+  background: #faf5ff;
+}
+
+.zorevi-service-compact-card.is-selected {
+  border-color: #7c3aed;
+  background: #fbf7ff;
+  box-shadow: 0 2px 10px rgba(124, 58, 237, 0.08);
+}
+
+.zorevi-service-checkbox {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 1.5px solid #d1d5db;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+  transition: all 0.14s ease;
+}
+
+.zorevi-service-compact-card.is-selected .zorevi-service-checkbox {
+  background: #7c3aed;
+  border-color: #7c3aed;
+}
+
+.zorevi-service-compact-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.zorevi-service-compact-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 3px;
+}
+
+.zorevi-service-compact-head strong {
+  font-size: 0.86rem;
+  color: #1e1b4b;
+}
+
+.zorevi-service-price-pill {
+  background: #f5f0ff;
+  color: #7c3aed;
+  font-size: 0.78rem;
+  font-weight: 750;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  border: 1px solid #ddd6fe;
+}
+
+.zorevi-service-compact-body p {
+  font-size: 0.74rem;
+  color: #6b7280;
+  line-height: 1.4;
+  margin: 0 0 4px 0;
+}
+
+.zorevi-service-duration {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #9ca3af;
+}
+
+/* Category Pills Row */
+.zorevi-category-pills-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.zorevi-cat-pill-btn {
+  padding: 9px 18px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  font-size: 0.84rem;
+  font-weight: 650;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.zorevi-cat-pill-btn:hover {
+  border-color: #c4b5fd;
+  color: #7c3aed;
+}
+
+.zorevi-cat-pill-btn.is-active {
+  background: #f5f0ff;
+  border-color: #7c3aed;
+  color: #7c3aed;
+  font-weight: 750;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.15);
+}
+
+/* Budget Chips */
+.zorevi-budget-chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.zorevi-budget-chip-btn {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 14px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+}
+
+.zorevi-budget-chip-btn strong {
+  font-size: 0.84rem;
+  color: #1e1b4b;
+}
+
+.zorevi-budget-chip-btn small {
+  font-size: 0.7rem;
+  color: #6b7280;
+}
+
+.zorevi-budget-chip-btn:hover {
+  border-color: #c4b5fd;
+}
+
+.zorevi-budget-chip-btn.is-active {
+  background: #f5f0ff;
+  border-color: #7c3aed;
+}
+
+.zorevi-budget-chip-btn.is-active strong {
+  color: #7c3aed;
+}
+
+/* Time Slot Sections */
+.zorevi-time-section {
+  margin-bottom: 12px;
+}
+
+.zorevi-time-heading {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 6px;
+}
+
+.zorevi-slots-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.zorevi-time-chip {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #374151;
+  font-size: 0.78rem;
+  font-weight: 650;
+  cursor: pointer;
+  transition: all 0.14s ease;
+}
+
+.zorevi-time-chip:hover {
+  border-color: #c4b5fd;
+  color: #7c3aed;
+  background: #fdf4ff;
+}
+
+.zorevi-time-chip.is-active {
+  background: #7c3aed;
+  color: #ffffff;
+  border-color: #7c3aed;
+  box-shadow: 0 2px 6px rgba(124, 58, 237, 0.25);
+}
+
+/* Live Fee & Summary Card */
+.zorevi-form-fee-summary-card {
+  background: linear-gradient(135deg, #ffffff 0%, #faf5ff 100%);
+  border: 1.5px solid #ddd6fe;
+  border-radius: 18px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.06);
+}
+
+.zorevi-fee-summary-details {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.zorevi-fee-summary-amount {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.zorevi-fee-summary-amount span {
+  display: block;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+}
+
+.zorevi-fee-summary-amount strong {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 850;
+  color: #7c3aed;
+}
+
+.zorevi-fee-summary-advance-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 14px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 12px;
+  font-size: 0.78rem;
+  color: #065f46;
+  line-height: 1.4;
+}
+
+/* Responsive adjustments */
+@media (max-width: 700px) {
+  .zorevi-occasions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .zorevi-category-select-grid,
+  .zorevi-budgets-grid,
+  .zorevi-summary-breakdown {
     grid-template-columns: 1fr;
   }
-  .zorevi-duration-grid {
-    grid-template-columns: repeat(3, 1fr);
+  .zorevi-meeting-type-tabs,
+  .zorevi-pay-methods-grid {
+    grid-template-columns: 1fr;
   }
 }
 

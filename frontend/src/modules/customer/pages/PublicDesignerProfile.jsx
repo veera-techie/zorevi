@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useLayoutEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import {
   Star, MapPin, CheckCircle2, Heart, Share2, Award, Sparkles,
@@ -40,18 +40,33 @@ export default function PublicDesignerProfile({ role = 'public' }) {
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [isAccessDialogOpen, setIsAccessDialogOpen] = useState(false);
 
-  useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: 'instant',
+  useLayoutEffect(() => {
+    const html = document.documentElement;
+    const prevBehavior = html ? html.style.scrollBehavior : '';
+    if (html) html.style.scrollBehavior = 'auto';
+
+    window.scrollTo(0, 0);
+    if (document.documentElement) document.documentElement.scrollTop = 0;
+    if (document.body) document.body.scrollTop = 0;
+
+    const rAF = requestAnimationFrame(() => {
+      window.scrollTo(0, 0);
+      if (document.documentElement) document.documentElement.scrollTop = 0;
+      if (document.body) document.body.scrollTop = 0;
+      if (html) html.style.scrollBehavior = prevBehavior;
     });
-    if (document.documentElement) {
-      document.documentElement.scrollTop = 0;
-    }
-    if (document.body) {
-      document.body.scrollTop = 0;
-    }
+
+    const timer = setTimeout(() => {
+      window.scrollTo(0, 0);
+      if (document.documentElement) document.documentElement.scrollTop = 0;
+      if (document.body) document.body.scrollTop = 0;
+    }, 50);
+
+    return () => {
+      cancelAnimationFrame(rAF);
+      clearTimeout(timer);
+      if (html) html.style.scrollBehavior = prevBehavior;
+    };
   }, [currentId]);
 
   const isSaved = isInWishlist('designer', designer.id);
@@ -192,7 +207,8 @@ export default function PublicDesignerProfile({ role = 'public' }) {
       <div className="zorevi-profile-tab-content">
         {/* Overview Tab */}
         {activeTab === 'overview' && (
-          <div className="zorevi-profile-overview-grid">
+          <>
+            <div className="zorevi-profile-overview-grid">
             <div className="zorevi-overview-left">
               {/* About */}
               <div className="zorevi-card zorevi-profile-section-card">
@@ -299,6 +315,26 @@ export default function PublicDesignerProfile({ role = 'public' }) {
               </div>
             </div>
           </div>
+
+          {/* Dedicated Book a Styling Session Banner */}
+          <div className="zorevi-profile-book-banner">
+            <div className="book-banner-copy">
+              <span className="book-banner-eyebrow">READY TO ELEVATE YOUR LOOK?</span>
+              <h3>Book a Personalized Styling Session with {designer.name}</h3>
+              <p>Choose your occasion, collaborate on your outfit aesthetic, and shop with confidence. Consultation starts at just ₹{designer.startingPrice || 499}.</p>
+            </div>
+            <div className="book-banner-action">
+              <div className="book-price-tag">
+                <span>Starting from</span>
+                <strong>₹{designer.startingPrice || 499}</strong>
+              </div>
+              <button className="zorevi-btn zorevi-btn--hero-primary" onClick={handleBookingClick}>
+                <span>Book Now</span>
+                <ArrowRight size={16} />
+              </button>
+            </div>
+          </div>
+        </>
         )}
 
         {/* Portfolio Tab */}
@@ -410,6 +446,28 @@ export default function PublicDesignerProfile({ role = 'public' }) {
         isOpen={isAccessDialogOpen}
         onClose={() => setIsAccessDialogOpen(false)}
       />
+
+      {/* Sticky Bottom Bar for instant booking access */}
+      <aside className="zorevi-profile-sticky-footer" aria-label="Book styling session">
+        <div className="container sticky-footer-inner">
+          <div className="sticky-footer-info">
+            <ImageWithFallback
+              src={designer.avatar}
+              alt={designer.name}
+              className="sticky-footer-avatar"
+              fallbackType="designer"
+            />
+            <div>
+              <strong>{designer.name}</strong>
+              <span>{designer.title} • Starts ₹{designer.startingPrice || 499}</span>
+            </div>
+          </div>
+          <button className="zorevi-btn zorevi-btn--primary" onClick={handleBookingClick}>
+            <span>Book Styling Session</span>
+            <ArrowRight size={15} />
+          </button>
+        </div>
+      </aside>
 
       {/* Booking Modal */}
       {isBookingModalOpen && (

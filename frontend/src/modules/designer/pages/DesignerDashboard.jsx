@@ -23,7 +23,7 @@ const loadStoredJson = (key, fallback) => {
 };
 
 export default function DesignerDashboard() {
-  const { addToast } = useApp();
+  const { bookings: appBookings, addToast, acceptBookingRequest } = useApp();
   const [savedProfile, setSavedProfile] = useState(loadSavedProfile);
   const [mallOverrides] = useState(() => loadStoredJson('zorevi-designer-mall-overrides', {}));
   const [customMalls] = useState(() => loadStoredJson('zorevi-designer-custom-malls', []));
@@ -48,19 +48,26 @@ export default function DesignerDashboard() {
       addToast('Could not save mall locations in this browser.', 'error');
     }
   };
-  const bookings = mockBookings.slice(0, 4);
+
+  const sharedBookings = appBookings || mockBookings;
+  const pendingRequests = sharedBookings.filter((b) => b.status === 'Pending Confirmation' || b.status === 'Pending');
+  const awaitingAdvance = sharedBookings.filter((b) => b.status === 'Awaiting Payment');
+  const upcomingBookings = sharedBookings.filter((b) => b.status === 'Confirmed' || b.status === 'Upcoming');
+  const completedBookings = sharedBookings.filter((b) => b.status === 'Completed');
+
   const photos = [
     { title: 'Bridal Elegance', image: '/images/portfolio-bridal-hd.jpg' },
     { title: 'Modern Classics', image: '/images/portfolio-classics-hd.jpg' },
     { title: 'Family Styling', image: '/images/portfolio-family-hd.jpg' },
   ];
+
   const metrics = [
-    { label: 'Total bookings', value: designer.totalBookings, change: '+12.8%', icon: CalendarDays },
-    { label: 'Upcoming bookings', value: String(designer.upcomingBookings).padStart(2, '0'), note: 'Scheduled', icon: Clock3 },
-    { label: 'Completed bookings', value: designer.completedBookings, change: '+8.2%', icon: CheckCircle2 },
-    { label: 'Total earnings', value: money(designer.totalEarnings), change: '+18.4%', icon: Banknote },
-    { label: 'Average rating', value: `${designer.rating}/5`, rating: true, icon: Star },
-    { label: 'Profile views', value: designer.profileViews.toLocaleString('en-IN'), change: '+24.6%', icon: Eye },
+    { label: 'Pending Requests', value: String(pendingRequests.length).padStart(2, '0'), note: `${awaitingAdvance.length} awaiting advance`, icon: CalendarDays },
+    { label: 'Upcoming Bookings', value: String(upcomingBookings.length).padStart(2, '0'), note: 'Confirmed sessions', icon: Clock3 },
+    { label: 'Completed Bookings', value: String(completedBookings.length + designer.completedBookings), change: '+8.2%', icon: CheckCircle2 },
+    { label: 'Total Earnings', value: money(designer.totalEarnings), change: '+18.4%', icon: Banknote },
+    { label: 'Average Rating', value: `${designer.rating}/5`, rating: true, icon: Star },
+    { label: 'Profile Views', value: designer.profileViews.toLocaleString('en-IN'), change: '+24.6%', icon: Eye },
   ];
 
   return (
@@ -142,7 +149,7 @@ export default function DesignerDashboard() {
       <section className="studio-card studio-bookings" aria-label="Recent booking activity">
         <div className="studio-card__heading studio-bookings__heading"><div><span className="studio-kicker">KEEP THINGS MOVING</span><h2>Recent booking activity</h2><p>Stay up to date with your styling sessions and client requests.</p></div><Link to="/designer/bookings" className="studio-text-link">View all bookings <ArrowRight size={14} /></Link></div>
         <div className="studio-table-scroll"><table><thead><tr><th>Customer</th><th>Service</th><th>Date</th><th>Amount</th><th>Status</th><th /></tr></thead><tbody>
-          {bookings.map((booking) => <tr key={booking.id}><td><div className="studio-customer"><span>{booking.customerName.split(' ').map((part) => part[0]).join('').slice(0, 2)}</span><strong>{booking.customerName}</strong></div></td><td>{booking.service}</td><td>{new Date(`${booking.date}T00:00:00`).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })} · {booking.startTime}</td><td className="studio-amount">{money(booking.amount)}</td><td><span className={`studio-booking-status ${booking.status.toLowerCase()}`}>{booking.status}</span></td><td><Link to="/designer/bookings" className="studio-row-link" aria-label={`View ${booking.customerName}'s booking`}><ArrowRight size={15} /></Link></td></tr>)}
+          {sharedBookings.slice(0, 5).map((booking) => <tr key={booking.id}><td><div className="studio-customer"><span>{(booking.customerName || 'Customer').split(' ').map((part) => part[0]).join('').slice(0, 2)}</span><strong>{booking.customerName || 'Customer'}</strong></div></td><td>{booking.occasion || booking.service}</td><td>{booking.date} · {booking.time || booking.startTime}</td><td className="studio-amount">{money(booking.designerFee || booking.amount)}</td><td><span className={`studio-booking-status ${(booking.status || '').toLowerCase().replace(/\s+/g, '-')}`}>{booking.status}</span></td><td><Link to="/designer/booking-requests" className="studio-row-link" aria-label={`View ${booking.customerName}'s booking`}><ArrowRight size={15} /></Link></td></tr>)}
         </tbody></table></div>
       </section>
 

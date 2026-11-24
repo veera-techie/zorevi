@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Search, MapPin, Heart, Bell, ChevronDown, LogOut, User, Settings, Menu, Home } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
+import HeaderLocationSelector from './HeaderLocationSelector';
 import { CITIES } from '../../constants';
 import { AAROHI_PROFILE_IMAGE } from '../../utils/aarohiProfileImage';
 import './DashboardHeader.css';
@@ -15,6 +16,7 @@ export default function DashboardHeader({ onToggleSidebar, profileDrawerOpen = f
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const cityRef = useRef(null);
   const userRef = useRef(null);
+  const location = useLocation();
   const navigate = useNavigate();
 
   const unreadCount = getUnreadCount(role);
@@ -35,14 +37,30 @@ export default function DashboardHeader({ onToggleSidebar, profileDrawerOpen = f
 
   const handleSearch = (e) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      if (role === 'customer') {
-        navigate(`/customer/designers?search=${encodeURIComponent(searchQuery)}`);
-      } else if (role === 'designer') {
-        navigate(`/designer/bookings?search=${encodeURIComponent(searchQuery)}`);
+    const query = searchQuery.trim();
+    if (!query) return;
+
+    if (role === 'customer') {
+      const lower = query.toLowerCase();
+      const isFashionHubSearch = [
+        'mall', 'hub', 'boutique', 'store', 'shop', 'outlet',
+        'ethnic', 'bridal', 'saree', 'footwear', 'fashion', 'zara',
+        'h&m', 'sarath', 'inorbit', 'nexus', 'forum', 'manyavar',
+        'fabindia', 'neeru', 'mugadha', 'aldo', 'steve madden',
+        'lulu', 'gvk', 'shopping'
+      ].some((k) => lower.includes(k));
+
+      const isCurrentOnHubs = location.pathname.includes('mall') || location.pathname.includes('fashion-hub');
+
+      if (isCurrentOnHubs || isFashionHubSearch) {
+        navigate(`/customer/fashion-hubs?search=${encodeURIComponent(query)}`);
       } else {
-        navigate(`/admin/customers?search=${encodeURIComponent(searchQuery)}`);
+        navigate(`/customer/designers?search=${encodeURIComponent(query)}`);
       }
+    } else if (role === 'designer') {
+      navigate(`/designer/bookings?search=${encodeURIComponent(query)}`);
+    } else {
+      navigate(`/admin/customers?search=${encodeURIComponent(query)}`);
     }
   };
 
@@ -90,34 +108,8 @@ export default function DashboardHeader({ onToggleSidebar, profileDrawerOpen = f
             <Link to="/customer" className="zorevi-dash-header__home-link">
               <Home size={18} /> <span>Home</span>
             </Link>
-            <div className="zorevi-dash-header__city" ref={cityRef}>
-              <button
-                type="button"
-                className="zorevi-dash-header__city-btn"
-                onClick={() => setShowCityDropdown(!showCityDropdown)}
-                aria-label="Select city location"
-              >
-                <MapPin size={15} className="zorevi-dash-header__pin" />
-                <span>{selectedCity}</span>
-                <ChevronDown size={14} />
-              </button>
-              {showCityDropdown && (
-                <div className="zorevi-dash-header__city-dropdown">
-                  {CITIES.map((city) => (
-                    <button
-                      key={city}
-                      type="button"
-                      className={`zorevi-dash-header__city-item ${city === selectedCity ? 'active' : ''}`}
-                      onClick={() => {
-                        setSelectedCity(city);
-                        setShowCityDropdown(false);
-                      }}
-                    >
-                      {city}
-                    </button>
-                  ))}
-                </div>
-              )}
+            <div className="zorevi-dash-header__location-wrap">
+              <HeaderLocationSelector />
             </div>
           </>
         )}

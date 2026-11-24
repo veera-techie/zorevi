@@ -489,21 +489,128 @@
   cursor: pointer;
 }
 
+/* Book Banner at bottom of Overview */
+.zorevi-profile-book-banner {
+  margin-top: 28px;
+  background: linear-gradient(135deg, #f5f0ff 0%, #ede9fe 100%);
+  border: 1.5px solid #ddd6fe;
+  border-radius: 24px;
+  padding: 28px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  box-shadow: 0 6px 24px rgba(124, 58, 237, 0.06);
+}
+
+.book-banner-eyebrow {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #7c3aed;
+  margin-bottom: 6px;
+}
+
+.book-banner-copy h3 {
+  font-size: 1.45rem;
+  font-weight: 850;
+  color: #1e1b4b;
+  margin: 0 0 8px 0;
+  letter-spacing: -0.02em;
+}
+
+.book-banner-copy p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #4b5563;
+  max-width: 580px;
+  line-height: 1.5;
+}
+
+.book-banner-action {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-shrink: 0;
+}
+
+.book-price-tag {
+  text-align: right;
+}
+
+.book-price-tag span {
+  display: block;
+  font-size: 0.72rem;
+  color: #6b7280;
+  text-transform: uppercase;
+}
+
+.book-price-tag strong {
+  display: block;
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #7c3aed;
+}
+
+/* Sticky Bottom Booking Bar */
+.zorevi-profile-sticky-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid #ede9fe;
+  padding: 12px 20px;
+  z-index: 100;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.sticky-footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.sticky-footer-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sticky-footer-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid #ddd6fe;
+}
+
+.sticky-footer-info strong {
+  display: block;
+  font-size: 0.95rem;
+  color: #1e1b4b;
+}
+
+.sticky-footer-info span {
+  font-size: 0.78rem;
+  color: #6b7280;
+}
+
 @media (max-width: 992px) {
-  .zorevi-profile-hero__grid {
+  .zorevi-profile-book-banner {
     flex-direction: column;
     align-items: flex-start;
+    padding: 24px;
   }
-  .zorevi-profile-actions-col {
-    align-items: flex-start;
+  .book-banner-action {
     width: 100%;
-  }
-  .zorevi-profile-overview-grid {
-    grid-template-columns: 1fr;
-  }
-  .zorevi-portfolio-full-grid,
-  .zorevi-services-full-grid {
-    grid-template-columns: 1fr;
+    justify-content: space-between;
   }
 }
+
 

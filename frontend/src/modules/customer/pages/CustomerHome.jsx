@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight,
@@ -14,12 +14,21 @@ import {
   Scissors,
   Sparkles,
   Building2,
+  Calendar,
+  Clock,
+  AlertCircle,
+  CreditCard,
+  ShieldCheck,
+  Search,
 } from 'lucide-react';
 import DesignerCard from '../../../components/cards/DesignerCard';
-import MallCard from '../../../components/cards/MallCard';
+import FashionHubCard from '../../../components/cards/FashionHubCard';
+import BookingModal from '../../../components/cards/BookingModal';
 import { useApp } from '../../../context/AppContext';
+import { useAuth } from '../../../context/AuthContext';
 import { CATEGORIES, PRICE_BASE, PRICE_DURATION_HOURS } from '../../../constants';
 import { mockDesigners, mockMalls } from '../../../services/mockData';
+import { searchFashionHubs } from '../../../services/fashionHubsService';
 import './CustomerHome.css';
 
 const heroSlides = [
@@ -56,10 +65,12 @@ function matchesCategory(designer, category) {
   const terms = categoryTerms[category] || [];
   const title = (designer.title || '').toLowerCase();
   if (terms.some((term) => title.includes(term.toLowerCase()))) return true;
-  return designer.specializations?.some((specialization) => {
-    const value = specialization.toLowerCase();
-    return terms.some((term) => value.includes(term.toLowerCase()) || term.toLowerCase().includes(value));
-  }) || false;
+  return (
+    designer.specializations?.some((specialization) => {
+      const value = specialization.toLowerCase();
+      return terms.some((term) => value.includes(term.toLowerCase()) || term.toLowerCase().includes(value));
+    }) || false
+  );
 }
 
 function getCategoryIcon(id) {
@@ -92,10 +103,13 @@ function getCategoryIcon(id) {
 }
 
 export default function CustomerHome() {
-  const { selectedCity } = useApp();
+  const { selectedCity, bookings, wishlist, userLocation } = useApp();
+  const { user } = useAuth();
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [activeHeroSlide, setActiveHeroSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [activeBookingForPayment, setActiveBookingForPayment] = useState(null);
+  const [isPayModalOpen, setIsPayModalOpen] = useState(false);
   const timerRef = useRef(null);
 
   const cityDesigners = mockDesigners.filter((designer) => designer.location === selectedCity);
@@ -104,8 +118,26 @@ export default function CustomerHome() {
     .filter((designer) => matchesCategory(designer, selectedCategory))
     .slice(0, 4);
 
-  const cityMalls = mockMalls.filter((mall) => (mall.location || '').toLowerCase() === selectedCity.toLowerCase());
-  const displayMalls = cityMalls.length > 0 ? cityMalls.slice(0, 4) : mockMalls.slice(0, 4);
+  const displayFashionHubs = useMemo(() => {
+    const results = searchFashionHubs({
+      lat: userLocation?.lat || 17.4319,
+      lng: userLocation?.lng || 78.4073,
+      radiusKm: 30,
+      limit: 4,
+    });
+    return results.hubs.length > 0 ? results.hubs : searchFashionHubs({ limit: 4 }).hubs;
+  }, [userLocation]);
+
+  // Active bookings requiring attention (Awaiting Payment or Pending Confirmation)
+  const pendingOrAwaitingBookings = (bookings || []).filter(
+    (b) => b.status === 'Awaiting Payment' || b.status === 'Pending Confirmation' || b.status === 'Alternative Proposed'
+  );
+  const latestActiveBooking = pendingOrAwaitingBookings[0] || null;
+
+  // Saved designers
+  const savedDesigners = mockDesigners.filter((d) =>
+    wishlist?.some((w) => w.type === 'designer' && w.itemId === d.id)
+  );
 
   const activeSlide = heroSlides[activeHeroSlide];
 
@@ -121,9 +153,79 @@ export default function CustomerHome() {
     return () => clearInterval(timerRef.current);
   }, [isPaused]);
 
+  const handleOpenAdvancePay = (booking) => {
+    setActiveBookingForPayment(booking);
+    setIsPayModalOpen(true);
+  };
+
   return (
     <div className="customer-dashboard-home">
-      {/* HERO SECTION */}
+      {/* 1. PERSONALIZED WELCOME GREETING */}
+      <div className="customer-home-welcome-bar">
+        <div className="customer-home-welcome-text">
+          <h2>Welcome back, {user?.name?.split(' ')[0] || 'Praveen'}! 👋</h2>
+          <p>Explore top personal fashion designers, shopping malls, and upcoming styling appointments in {selectedCity}.</p>
+        </div>
+        <div className="customer-home-welcome-actions">
+          <Link to="/customer/bookings" className="zorevi-btn zorevi-btn--ghost zorevi-btn--sm">
+            <Calendar size={14} /> My Bookings ({(bookings || []).length})
+          </Link>
+          <Link to="/customer/designers" className="zorevi-btn zorevi-btn--primary zorevi-btn--sm">
+            <Search size={14} /> Find Designers
+          </Link>
+        </div>
+      </div>
+
+      {/* 2. ACTIVE BOOKING STATUS SNAPSHOT (If any pending or awaiting payment) */}
+      {latestActiveBooking && (
+        <div className={`customer-home-alert-banner ${latestActiveBooking.status === 'Awaiting Payment' ? 'awaiting' : 'pending'}`}>
+          <div className="alert-content-left">
+            <div className="alert-icon-box">
+              {latestActiveBooking.status === 'Awaiting Payment' ? (
+                <CreditCard size={22} color="#059669" />
+              ) : (
+                <Clock size={22} color="#D97706" />
+              )}
+            </div>
+            <div>
+              <div className="alert-title-row">
+                <strong>
+                  {latestActiveBooking.status === 'Awaiting Payment'
+                    ? `Designer Accepted! 30% Advance Due for Booking #${latestActiveBooking.id}`
+                    : `Inquiry Pending Review with ${latestActiveBooking.designerName}`}
+                </strong>
+                <span className={`alert-badge ${latestActiveBooking.status === 'Awaiting Payment' ? 'awaiting' : 'pending'}`}>
+                  {latestActiveBooking.status}
+                </span>
+              </div>
+              <p>
+                {latestActiveBooking.status === 'Awaiting Payment'
+                  ? `${latestActiveBooking.designerName} confirmed availability for ${latestActiveBooking.occasion} (${latestActiveBooking.date} at ${latestActiveBooking.time}). Pay 30% advance (₹${Math.round((latestActiveBooking.designerFee || 999) * 0.3)}) to confirm.`
+                  : `Your request for ${latestActiveBooking.occasion} is awaiting confirmation. We will notify you once accepted.`}
+              </p>
+            </div>
+          </div>
+
+          <div className="alert-content-right">
+            {latestActiveBooking.status === 'Awaiting Payment' ? (
+              <button
+                type="button"
+                className="zorevi-btn zorevi-btn--pay-pulse"
+                onClick={() => handleOpenAdvancePay(latestActiveBooking)}
+              >
+                <span>Pay 30% Advance (₹{Math.round((latestActiveBooking.designerFee || 999) * 0.3)})</span>
+                <ArrowRight size={15} />
+              </button>
+            ) : (
+              <Link to="/customer/bookings" className="zorevi-btn zorevi-btn--outline zorevi-btn--sm">
+                View Status
+              </Link>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* 3. HERO PROMOTIONAL BANNER */}
       <section className="customer-home-hero" aria-labelledby="customer-home-title">
         <div className="customer-home-hero__copy">
           <h1 id="customer-home-title">
@@ -211,7 +313,7 @@ export default function CustomerHome() {
         </div>
       </section>
 
-      {/* CATEGORIES ROW */}
+      {/* 4. CATEGORIES ROW */}
       <nav className="customer-home-categories" aria-label="Styling categories">
         {CATEGORIES.map((category) => (
           <button
@@ -227,7 +329,7 @@ export default function CustomerHome() {
         ))}
       </nav>
 
-      {/* NEARBY DESIGNERS SECTION */}
+      {/* 5. NEARBY DESIGNERS SECTION */}
       <section className="customer-home-designers" aria-labelledby="customer-home-designers-title">
         <div className="customer-home-section-heading">
           <div className="customer-home-heading-title">
@@ -260,25 +362,66 @@ export default function CustomerHome() {
         )}
       </section>
 
-      {/* NEARBY SHOPPING MALLS SECTION */}
+      {/* 6. NEARBY FASHION HUBS SECTION */}
       <section className="customer-home-malls" aria-labelledby="customer-home-malls-title">
         <div className="customer-home-section-heading">
           <div className="customer-home-heading-title">
             <Building2 size={22} className="crown-icon" />
-            <h2 id="customer-home-malls-title">Nearby Shopping Malls in {selectedCity}</h2>
+            <h2 id="customer-home-malls-title">Nearby Fashion Hubs in {userLocation?.locality || selectedCity}</h2>
           </div>
-          <Link to="/customer/malls" className="customer-home-section-heading__view-all">
+          <Link to="/customer/fashion-hubs" className="customer-home-section-heading__view-all">
             <span>View all</span>
             <ArrowRight size={17} />
           </Link>
         </div>
 
         <div className="customer-home-malls__grid">
-          {displayMalls.map((mall) => (
-            <MallCard key={mall.id} mall={mall} role="customer" />
+          {displayFashionHubs.map((hub) => (
+            <FashionHubCard key={hub.id} hub={hub} role="customer" />
           ))}
         </div>
       </section>
+
+      {/* 7. SAVED / FAVOURITE DESIGNERS (If any) */}
+      {savedDesigners.length > 0 && (
+        <section className="customer-home-saved" style={{ marginTop: '44px' }}>
+          <div className="customer-home-section-heading">
+            <div className="customer-home-heading-title">
+              <Heart size={22} color="#EC4899" />
+              <h2>Your Saved Designers</h2>
+            </div>
+            <Link to="/customer/wishlist" className="customer-home-section-heading__view-all">
+              <span>View wishlist</span>
+              <ArrowRight size={17} />
+            </Link>
+          </div>
+
+          <div className="customer-home-designers__grid">
+            {savedDesigners.slice(0, 4).map((designer) => (
+              <DesignerCard
+                key={designer.id}
+                designer={designer}
+                role="customer"
+                variant="dashboard"
+                showBookBtn={false}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Advance Payment Modal (Triggered when clicking Pay 30% Advance on dashboard banner) */}
+      {isPayModalOpen && activeBookingForPayment && (
+        <BookingModal
+          isOpen={isPayModalOpen}
+          onClose={() => {
+            setIsPayModalOpen(false);
+            setActiveBookingForPayment(null);
+          }}
+          bookingToPay={activeBookingForPayment}
+          initialStep={9}
+        />
+      )}
     </div>
   );
 }

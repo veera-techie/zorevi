@@ -28,6 +28,12 @@ export default function DesignerCard({
   const { isInWishlist, toggleWishlist, addToast } = useApp();
   const isSaved = isInWishlist('designer', designer.id);
 
+  const handleScrollTop = () => {
+    window.scrollTo(0, 0);
+    if (document.documentElement) document.documentElement.scrollTop = 0;
+    if (document.body) document.body.scrollTop = 0;
+  };
+
   const handleWishlistClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -46,7 +52,7 @@ export default function DesignerCard({
     return (
       <div className="zorevi-designer-card zorevi-designer-card--dashboard">
         <div className="zorevi-designer-card__img-wrap">
-          <Link to={profileUrl} tabIndex={-1}>
+          <Link to={profileUrl} onClick={handleScrollTop} tabIndex={-1}>
             <ImageWithFallback
               src={designer.avatar}
               alt={designer.name}
@@ -62,7 +68,7 @@ export default function DesignerCard({
         </div>
 
         <div className="zorevi-designer-card__dash-body">
-          <Link to={profileUrl} className="zorevi-designer-card__dash-name">
+          <Link to={profileUrl} onClick={handleScrollTop} className="zorevi-designer-card__dash-name">
             {designer.name}
           </Link>
 
@@ -94,7 +100,7 @@ export default function DesignerCard({
             Starting at <strong>₹{designer.startingPrice ? designer.startingPrice.toLocaleString('en-IN') : '499'}</strong>
           </div>
 
-          <Link to={profileUrl} className="zorevi-btn zorevi-btn--dash-view">
+          <Link to={profileUrl} onClick={handleScrollTop} className="zorevi-btn zorevi-btn--dash-view">
             <span>View Profile</span>
             <Sparkles size={14} />
           </Link>
@@ -106,7 +112,7 @@ export default function DesignerCard({
   return (
     <div className="zorevi-designer-card">
       <div className="zorevi-designer-card__img-wrap">
-        <Link to={profileUrl}>
+        <Link to={profileUrl} onClick={handleScrollTop}>
           <ImageWithFallback
             src={designer.avatar}
             alt={designer.name}
@@ -127,7 +133,7 @@ export default function DesignerCard({
         <div className="zorevi-designer-card__header">
           <div>
             <div className="zorevi-designer-card__name-row">
-              <Link to={profileUrl} className="zorevi-designer-card__name">
+              <Link to={profileUrl} onClick={handleScrollTop} className="zorevi-designer-card__name">
                 {designer.name}
               </Link>
               {designer.isVerified && (
@@ -170,7 +176,7 @@ export default function DesignerCard({
           </div>
 
           <div className="zorevi-designer-card__actions">
-            <Link to={profileUrl} className="zorevi-btn zorevi-btn--outline zorevi-btn--sm">
+            <Link to={profileUrl} onClick={handleScrollTop} className="zorevi-btn zorevi-btn--outline zorevi-btn--sm">
               View Profile
             </Link>
             {showBookBtn && (
