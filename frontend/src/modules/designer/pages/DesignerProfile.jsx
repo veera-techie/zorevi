@@ -425,17 +425,19 @@ export default function DesignerProfile() {
         {editingMall && (
           <Modal isOpen={Boolean(editingMall)} onClose={() => setEditingMall(null)} title={editingMall.isCustom && !customMalls.some((mall) => mall.id === editingMall.id) ? 'Add store/mall' : 'Edit store/mall'} maxWidth="560px">
             <div onKeyDown={(e) => { if (e.key === 'Enter') e.preventDefault(); }}>
-              <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '12px', background: '#F3EEFB', marginBottom: '14px' }}>
-                <img src={mallDraft.image} alt={mallDraft.name || 'Mall preview'} onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/images/mall-lakeside.jpg'; }} style={{ display: 'block', width: '100%', height: '190px', objectFit: 'cover' }} />
-                <button type="button" onClick={() => mallPhotoInputRef.current?.click()} className="zorevi-btn zorevi-btn--outline" style={{ position: 'absolute', right: '10px', bottom: '10px', background: '#fff' }}><Upload size={14} /> Change image</button>
-                <input ref={mallPhotoInputRef} type="file" accept="image/*" onChange={handleMallPhotoChange} style={{ display: 'none' }} />
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '14px' }}>
+                <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '12px', background: '#F3EEFB' }}>
+                  <img src={mallDraft.image} alt={mallDraft.name || 'Mall preview'} onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/images/mall-lakeside.jpg'; }} style={{ display: 'block', width: '100%', height: '130px', objectFit: 'cover' }} />
+                  <button type="button" onClick={() => mallPhotoInputRef.current?.click()} className="zorevi-btn zorevi-btn--outline" style={{ position: 'absolute', right: '6px', bottom: '6px', padding: '6px 8px', background: '#fff', fontSize: '0.7rem' }}><Upload size={12} /> Mall photo</button>
+                  <input ref={mallPhotoInputRef} type="file" accept="image/*" onChange={handleMallPhotoChange} style={{ display: 'none' }} />
+                </div>
+                <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '12px', background: '#F3EEFB' }}>
+                  <img src={mallDraft.storeImage || '/images/boutique-interior-minimal.jpg'} alt={mallDraft.storeName || 'Fashion store preview'} onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/images/boutique-interior-minimal.jpg'; }} style={{ display: 'block', width: '100%', height: '130px', objectFit: 'cover' }} />
+                  <button type="button" onClick={() => storePhotoInputRef.current?.click()} className="zorevi-btn zorevi-btn--outline" style={{ position: 'absolute', right: '6px', bottom: '6px', padding: '6px 8px', background: '#fff', fontSize: '0.7rem' }}><Upload size={12} /> Store photo</button>
+                  <input ref={storePhotoInputRef} type="file" accept="image/*" onChange={handleStorePhotoChange} style={{ display: 'none' }} />
+                </div>
               </div>
               <div className="zorevi-auth-field"><label>Your store name</label><input className="zorevi-input" value={mallDraft.storeName} onChange={(e) => setMallDraft((current) => ({ ...current, storeName: e.target.value }))} placeholder="e.g. Aarohi Design Studio" /><small style={{ display: 'block', color: '#817A89', fontSize: '0.74rem', marginTop: '5px' }}>Add the store you own or run at this mall.</small></div>
-              <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '12px', background: '#F3EEFB', marginBottom: '14px' }}>
-                <img src={mallDraft.storeImage || '/images/boutique-interior-minimal.jpg'} alt={mallDraft.storeName || 'Fashion store preview'} onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/images/boutique-interior-minimal.jpg'; }} style={{ display: 'block', width: '100%', height: '160px', objectFit: 'cover' }} />
-                <button type="button" onClick={() => storePhotoInputRef.current?.click()} className="zorevi-btn zorevi-btn--outline" style={{ position: 'absolute', right: '10px', bottom: '10px', background: '#fff' }}><Upload size={14} /> Change store photo</button>
-                <input ref={storePhotoInputRef} type="file" accept="image/*" onChange={handleStorePhotoChange} style={{ display: 'none' }} />
-              </div>
               <div className="zorevi-auth-field"><label>Mall name *</label><input className="zorevi-input" value={mallDraft.name} onChange={(e) => setMallDraft((current) => ({ ...current, name: e.target.value }))} placeholder="e.g. City Centre Mall" /></div>
               <div className="zorevi-auth-field"><label>Address *</label><input className="zorevi-input" value={mallDraft.address} onChange={(e) => setMallDraft((current) => ({ ...current, address: e.target.value }))} placeholder="Area, city, postal code" /></div>
               <div className="zorevi-auth-field"><label>Fashion stores</label><input className="zorevi-input" type="number" min="1" value={mallDraft.fashionStores} onChange={(e) => setMallDraft((current) => ({ ...current, fashionStores: e.target.value }))} /></div>

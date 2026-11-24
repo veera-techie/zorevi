@@ -38,11 +38,10 @@ export default function DesignerDashboard() {
   const selectedMalls = availableMalls.filter((mall) => selectedMallIds.includes(mall.id));
   const storeNames = getDesignerStoreNames(savedProfile);
   const storeImages = getDesignerStoreImages(savedProfile);
-
   const saveMallLocations = () => {
     try {
       const idsToSave = [...draftMallIds];
-      const updatedProfile = { ...loadSavedProfile(), availableMallIds: idsToSave };
+      const updatedProfile = { ...loadSavedProfile(), availableMallIds: idsToSave, mallStoreNames: storeNames, mallStoreImages: storeImages, mallStoreNamesConfigured: true, mallStoreImagesConfigured: true };
       const saveMode = saveDesignerMallIds(idsToSave);
       try { localStorage.setItem('zorevi-designer-profile', JSON.stringify(updatedProfile)); }
       catch { /* The dedicated location key remains saved if the profile is over storage quota. */ }

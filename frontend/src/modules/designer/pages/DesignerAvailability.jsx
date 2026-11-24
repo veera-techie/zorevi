@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Calendar as CalendarIcon, Clock, Check, X,
   Plus, Edit2, AlertCircle, Sparkles, ChevronDown, ChevronLeft, ChevronRight
