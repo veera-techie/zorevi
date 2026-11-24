@@ -4,6 +4,7 @@ import { CheckCircle2, Heart, MapPin, Star } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
 import CustomerAccessDialog from '../common/CustomerAccessDialog';
+import SocialProfileLinks from '../common/SocialProfileLinks';
 
 export default function PublicDesignerCard({ designer, onBook }) {
   const { isCustomer } = useAuth();
@@ -76,6 +77,7 @@ export default function PublicDesignerCard({ designer, onBook }) {
               <span key={specialization}>{specialization}</span>
             ))}
           </div>
+          <SocialProfileLinks className="public-designer-card__social-links" accounts={designer.socialAccounts} owner={designer.name} />
           <div className="public-designer-card__price">
             <span>Sample starting price</span>
             <strong>₹{designer.startingPrice} <small>/ 2 hours</small></strong>

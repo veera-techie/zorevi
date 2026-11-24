@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, MapPin, Search, Sparkles } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, MapPin, Search, Sparkles } from 'lucide-react';
 import BookingModal from '../../../components/cards/BookingModal';
 import PublicDesignerCard from '../../../components/cards/PublicDesignerCard';
 import PublicMallCard from '../../../components/cards/PublicMallCard';
@@ -13,11 +13,6 @@ const SHOPPING_EXPERIENCES = [
     id: 'family-fashion',
     image: '/assets/images/zorevi-family-fashion.png',
     alt: 'A South Asian family celebrating together in coordinated festive fashion with personal stylist',
-    badge: 'Standard starting package',
-    price: '499',
-    unit: '/ 2 hours',
-    title: 'Personal styling session',
-    note: 'Custom services may cost more.',
     category: 'Family Styling',
     objectPosition: 'right center',
   },
@@ -25,11 +20,6 @@ const SHOPPING_EXPERIENCES = [
     id: 'wedding-sherwani',
     image: '/assets/images/hero-exp-wedding-sherwani.jpg',
     alt: 'Groom in royal wedding sherwani fitted by personal stylist with smiling parents in showroom',
-    badge: 'Bridal & Groom Couture',
-    price: '1,499',
-    unit: '/ session',
-    title: 'Wedding ensemble curation',
-    note: 'Complete lehenga & sherwani fitting.',
     category: 'Wedding & Bridal',
     objectPosition: 'center 18%',
   },
@@ -37,11 +27,6 @@ const SHOPPING_EXPERIENCES = [
     id: 'suit-fitting',
     image: '/assets/images/hero-exp-suit-fitting.jpg',
     alt: 'Gentleman having dark navy luxury suit shoulders fitted by stylist in menswear boutique',
-    badge: 'Bespoke Tailoring & Suits',
-    price: '999',
-    unit: '/ session',
-    title: 'Executive wardrobe curation',
-    note: 'Fine fabrics & master tailoring.',
     category: "Men's Luxury",
     objectPosition: 'center 18%',
   },
@@ -49,15 +34,40 @@ const SHOPPING_EXPERIENCES = [
     id: 'casual-shopping',
     image: '/assets/images/hero-exp-casual-shopping.jpg',
     alt: 'Man shopping for resort linen shirts with stylist in high-end boutique',
-    badge: 'Personal Shopping & Styling',
-    price: '499',
-    unit: '/ 2 hours',
-    title: 'Curated shopping walkthrough',
-    note: 'Effortless everyday & resort looks.',
     category: 'Casual & Resort',
     objectPosition: 'center 18%',
   },
 ];
+
+const FEATURED_FASHION_PLACES = [
+  {
+    id: 'fashion-store',
+    name: 'Fashion Store',
+    kind: 'Fashion store',
+    location: 'Hyderabad, Telangana',
+    image: '/assets/images/hero-exp-casual-shopping.jpg',
+    imageAlt: 'A customer and stylist browsing clothing in a fashion store',
+    mapQuery: 'fashion store',
+  },
+  {
+    id: 'designer-boutique',
+    name: 'Designer Boutique',
+    kind: 'Designer boutique',
+    location: 'Hyderabad, Telangana',
+    image: '/assets/images/hero-slide-family-shopping.jpg',
+    imageAlt: 'A family shopping inside a designer fashion boutique',
+    mapQuery: 'designer boutique',
+  },
+];
+
+const loadSavedDesignerSocialAccounts = () => {
+  try {
+    const savedProfile = JSON.parse(localStorage.getItem('zorevi-designer-profile') || '{}');
+    return savedProfile?.socialAccounts || {};
+  } catch {
+    return {};
+  }
+};
 
 export default function LandingPage() {
   const { selectedCity, userLocation } = useApp();
@@ -66,6 +76,7 @@ export default function LandingPage() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('recommended');
+  const [savedDesignerSocialAccounts] = useState(loadSavedDesignerSocialAccounts);
   const [bookingDesigner, setBookingDesigner] = useState(null);
   const [bookingOpen, setBookingOpen] = useState(false);
 
@@ -228,16 +239,6 @@ export default function LandingPage() {
               </span>
             </div>
 
-            {/* Dynamic Floating Price & Experience Card */}
-            <div className="public-price-card public-price-card--animated" key={currentExpSlide}>
-              <span>{SHOPPING_EXPERIENCES[currentExpSlide].badge}</span>
-              <strong>
-                ₹{SHOPPING_EXPERIENCES[currentExpSlide].price} <small>{SHOPPING_EXPERIENCES[currentExpSlide].unit}</small>
-              </strong>
-              <p>{SHOPPING_EXPERIENCES[currentExpSlide].title}</p>
-              <small>{SHOPPING_EXPERIENCES[currentExpSlide].note}</small>
-            </div>
-
             {/* 4 Interactive Progress Dots (2-second fill animation) */}
             <div className="public-hero__exp-dots" role="tablist" aria-label="Shopping experiences">
               {SHOPPING_EXPERIENCES.map((exp, index) => {
@@ -322,9 +323,12 @@ export default function LandingPage() {
 
           {filteredDesigners.length ? (
             <div className="public-designer-grid">
-              {filteredDesigners.slice(0, 4).map((designer) => (
-                <PublicDesignerCard key={designer.id} designer={designer} onBook={handleBook} />
-              ))}
+              {filteredDesigners.slice(0, 4).map((designer) => {
+                const cardDesigner = designer.id === 'des-001'
+                  ? { ...designer, socialAccounts: { ...designer.socialAccounts, ...savedDesignerSocialAccounts } }
+                  : designer;
+                return <PublicDesignerCard key={designer.id} designer={cardDesigner} onBook={handleBook} />;
+              })}
             </div>
           ) : (
             <div className="discovery-empty">
@@ -348,7 +352,26 @@ export default function LandingPage() {
           <p className="public-section-subtitle">Discover premier shopping malls, designer boutiques, and luxury fashion destinations.</p>
           {selectedCity === 'Hyderabad' ? (
             <div className="public-mall-grid">
-              {publicMalls.map((mall) => <PublicMallCard key={mall.id} mall={mall} />)}
+              <PublicMallCard mall={publicMalls[0]} />
+              {FEATURED_FASHION_PLACES.map((place) => {
+                const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${place.mapQuery}, Hyderabad, Telangana`)}`;
+                return (
+                  <article className="public-mall-card" key={place.id}>
+                    <a href={mapsUrl} className="public-mall-card__image-link" target="_blank" rel="noreferrer" aria-label={`Find ${place.name} in Hyderabad`}>
+                      <img src={place.image} alt={place.imageAlt} loading="lazy" />
+                      <span>{place.kind}</span>
+                    </a>
+                    <div className="public-mall-card__content">
+                      <h3>{place.name}</h3>
+                      <p><MapPin size={15} /> {place.location}</p>
+                      <div className="public-mall-card__actions">
+                        <Link className="zorevi-btn zorevi-btn--outline" to="/explore/designers">Explore designers</Link>
+                        <a className="public-mall-card__map-link" href={mapsUrl} target="_blank" rel="noreferrer">Directions <ArrowUpRight size={14} /></a>
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
             </div>
           ) : (
             <div className="discovery-empty discovery-empty--compact">

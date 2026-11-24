@@ -1,0 +1,31 @@
+.social-profile-links {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.social-profile-links__item {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--social-accent) 24%, white);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--social-accent);
+  text-decoration: none;
+  transition: transform 140ms ease, background 140ms ease, box-shadow 140ms ease;
+}
+
+.social-profile-links__item:not(.is-disabled):hover,
+.social-profile-links__item:not(.is-disabled):focus-visible {
+  transform: translateY(-1px);
+  background: color-mix(in srgb, var(--social-accent) 7%, white);
+  box-shadow: 0 3px 10px color-mix(in srgb, var(--social-accent) 18%, transparent);
+}
+
+.social-profile-links__item.is-disabled {
+  cursor: default;
+  opacity: 0.58;
+}

@@ -1,7 +1,7 @@
-import { useState } from 'react';
+﻿import { useEffect, useRef, useState } from 'react';
 import {
   Calendar as CalendarIcon, Clock, Check, X,
-  Plus, Edit2, AlertCircle, Sparkles, ChevronLeft, ChevronRight
+  Plus, Edit2, AlertCircle, Sparkles, ChevronDown, ChevronLeft, ChevronRight
 } from 'lucide-react';
 import { useApp } from '../../../context/AppContext';
 import Modal from '../../../components/common/Modal';
@@ -13,6 +13,123 @@ const formatTime = (time) => {
 };
 
 const formatHours = (item) => `${formatTime(item.start)} to ${formatTime(item.end)}${item.hasBreak ? ` | Break ${formatTime(item.breakStart)} to ${formatTime(item.breakEnd)}` : ''}`;
+const MONTH_NAMES = Array.from({ length: 12 }, (_, month) => new Date(2000, month, 1).toLocaleString('en-US', { month: 'long' }));
+const BOOKED_DATES = new Set(['2025-11-18', '2025-11-22', '2025-11-24']);
+
+const makeCalendarCells = (year, month) => {
+  const firstWeekday = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const cellCount = Math.ceil((firstWeekday + daysInMonth) / 7) * 7;
+  return Array.from({ length: cellCount }, (_, index) => {
+    const day = index - firstWeekday + 1;
+    return day >= 1 && day <= daysInMonth ? new Date(year, month, day) : null;
+  });
+};
+
+const dateKey = (date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+
+function SearchableDropdown({ label, value, options, onSelect, width, numeric = false }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [query, setQuery] = useState('');
+  const dropdownRef = useRef(null);
+  const inputRef = useRef(null);
+  const listRef = useRef(null);
+  const listId = `availability-${label.toLowerCase()}-options`;
+  const filteredOptions = options.filter((option) => String(option).toLowerCase().startsWith(query.toLowerCase()));
+
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (!dropdownRef.current?.contains(event.target)) {
+        setIsOpen(false);
+        setQuery('');
+      }
+    };
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, []);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    listRef.current?.querySelector('[aria-selected="true"]')?.scrollIntoView({ block: 'nearest' });
+  }, [isOpen, value, filteredOptions.length]);
+
+  const openDropdown = () => {
+    setQuery('');
+    setIsOpen(true);
+  };
+
+  const closeDropdown = () => {
+    setQuery('');
+    setIsOpen(false);
+  };
+
+  const chooseOption = (option) => {
+    onSelect(option);
+    closeDropdown();
+  };
+
+  return (
+    <div ref={dropdownRef} style={{ position: 'relative', width, flex: '0 0 auto' }}>
+      <input
+        ref={inputRef}
+        aria-label={`Calendar ${label.toLowerCase()}`}
+        aria-controls={listId}
+        aria-expanded={isOpen}
+        aria-autocomplete="list"
+        role="combobox"
+        type="text"
+        inputMode={numeric ? 'numeric' : 'text'}
+        value={isOpen ? query : value}
+        onFocus={openDropdown}
+        onChange={(event) => {
+          setIsOpen(true);
+          setQuery(numeric ? event.target.value.replace(/\D/g, '').slice(0, 4) : event.target.value);
+        }}
+        onKeyDown={(event) => {
+          if (event.key === 'Escape') closeDropdown();
+          if (event.key === 'Enter' && filteredOptions.length) {
+            event.preventDefault();
+            chooseOption(filteredOptions[0]);
+          }
+        }}
+        style={{ width: '100%', boxSizing: 'border-box', border: '1px solid #E5E7EB', borderRadius: '9px', padding: '8px 30px 8px 10px', color: '#1E1B4B', fontSize: '0.95rem', fontWeight: 700, background: '#fff' }}
+      />
+      <button
+        type="button"
+        aria-label={`Show ${label.toLowerCase()} options`}
+        aria-expanded={isOpen}
+        onMouseDown={(event) => event.preventDefault()}
+        onClick={() => {
+          if (isOpen) closeDropdown();
+          else {
+            openDropdown();
+            inputRef.current?.focus();
+          }
+        }}
+        style={{ position: 'absolute', top: '50%', right: '7px', transform: 'translateY(-50%)', display: 'grid', placeItems: 'center', border: 0, padding: '3px', background: 'transparent', color: '#6B7280', cursor: 'pointer' }}
+      >
+        <ChevronDown size={15} />
+      </button>
+      {isOpen && (
+        <div ref={listRef} id={listId} role="listbox" aria-label={`${label} options`} style={{ position: 'absolute', zIndex: 30, top: 'calc(100% + 5px)', left: 0, width: '100%', maxHeight: '220px', overflowY: 'auto', padding: '4px', border: '1px solid #E5E7EB', borderRadius: '10px', background: '#fff', boxShadow: '0 8px 24px rgba(31, 24, 45, 0.14)' }}>
+          {filteredOptions.length ? filteredOptions.map((option) => (
+            <button
+              key={option}
+              type="button"
+              role="option"
+              aria-selected={String(option) === String(value)}
+              onMouseDown={(event) => event.preventDefault()}
+              onClick={() => chooseOption(option)}
+              style={{ display: 'block', width: '100%', border: 0, borderRadius: '7px', padding: '8px 9px', background: String(option) === String(value) ? '#F5F0FF' : '#fff', color: '#30283C', textAlign: 'left', fontSize: '0.84rem', cursor: 'pointer' }}
+            >
+              {option}
+            </button>
+          )) : <div style={{ padding: '8px 9px', color: '#817A89', fontSize: '0.8rem' }}>No matches</div>}
+        </div>
+      )}
+    </div>
+  );
+}
 
 const defaultWeeklySchedule = [
   { day: 'Mon, Nov 17', start: '10:00', end: '17:00', hasBreak: true, breakStart: '13:00', breakEnd: '14:00', status: 'available' },
@@ -39,11 +156,23 @@ export default function DesignerAvailability() {
     try { return localStorage.getItem('zorevi-designer-vacation-mode') === 'true'; }
     catch { return false; }
   });
-  const [selectedDay, setSelectedDay] = useState('18');
+  const [calendarMonth, setCalendarMonth] = useState(() => new Date().getMonth());
+  const [calendarYear, setCalendarYear] = useState(() => new Date().getFullYear());
+  const [selectedDay, setSelectedDay] = useState(() => dateKey(new Date()));
 
   const [weeklySchedule, setWeeklySchedule] = useState(loadWeeklySchedule);
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [draftSchedule, setDraftSchedule] = useState([]);
+  const calendarCells = makeCalendarCells(calendarYear, calendarMonth);
+  const yearOptions = Array.from({ length: 201 }, (_, index) => 1900 + index);
+  const todayKey = dateKey(new Date());
+
+  const changeCalendarMonth = (offset) => {
+    const nextMonth = new Date(calendarYear, calendarMonth + offset, 1);
+    setCalendarMonth(nextMonth.getMonth());
+    setCalendarYear(nextMonth.getFullYear());
+    setSelectedDay(null);
+  };
 
   const openScheduleEditor = () => {
     setDraftSchedule(weeklySchedule.map((item) => ({ ...item })));
@@ -110,11 +239,33 @@ export default function DesignerAvailability() {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: '24px' }}>
         {/* Calendar Widget matching screenshot */}
         <div style={{ background: '#FFFFFF', borderRadius: '24px', border: '1px solid #F3F4F6', padding: '24px', boxShadow: '0 4px 16px rgba(0,0,0,0.03)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: '700', color: '#1E1B4B', margin: 0 }}>November 2025</h3>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', marginBottom: '16px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
+              <SearchableDropdown
+                label="Month"
+                value={MONTH_NAMES[calendarMonth]}
+                options={MONTH_NAMES}
+                width="124px"
+                onSelect={(month) => {
+                  setCalendarMonth(MONTH_NAMES.indexOf(month));
+                  setSelectedDay(null);
+                }}
+              />
+              <SearchableDropdown
+                label="Year"
+                value={String(calendarYear)}
+                options={yearOptions}
+                width="100px"
+                numeric
+                onSelect={(year) => {
+                  setCalendarYear(Number(year));
+                  setSelectedDay(null);
+                }}
+              />
+            </div>
             <div style={{ display: 'flex', gap: '6px' }}>
-              <button className="zorevi-btn zorevi-btn--ghost zorevi-btn--sm" style={{ padding: '4px 8px' }}><ChevronLeft size={16} /></button>
-              <button className="zorevi-btn zorevi-btn--ghost zorevi-btn--sm" style={{ padding: '4px 8px' }}><ChevronRight size={16} /></button>
+              <button type="button" aria-label="Previous month" onClick={() => changeCalendarMonth(-1)} className="zorevi-btn zorevi-btn--ghost zorevi-btn--sm" style={{ padding: '4px 8px' }}><ChevronLeft size={16} /></button>
+              <button type="button" aria-label="Next month" onClick={() => changeCalendarMonth(1)} className="zorevi-btn zorevi-btn--ghost zorevi-btn--sm" style={{ padding: '4px 8px' }}><ChevronRight size={16} /></button>
             </div>
           </div>
 
@@ -124,31 +275,36 @@ export default function DesignerAvailability() {
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '6px', textAlign: 'center' }}>
-            {['26', '27', '28', '29', '30', '31', '1',
-              '2', '3', '4', '5', '6', '7', '8',
-              '9', '10', '11', '12', '13', '14', '15',
-              '16', '17', '18', '19', '20', '21', '22',
-              '23', '24', '25', '26', '27', '28', '29',
-              '30', '1', '2', '3', '4', '5', '6'].slice(0, 35).map((d, i) => {
-              const isBooked = ['18', '22', '24'].includes(d);
-              const isSelected = selectedDay === d;
+            {calendarCells.map((date, index) => {
+              if (!date) return <span key={`empty-${index}`} aria-hidden="true" />;
+              const key = dateKey(date);
+              const isBooked = BOOKED_DATES.has(key);
+              const isSelected = selectedDay === key;
+              const isToday = todayKey === key;
               return (
                 <button
-                  key={i}
+                  key={key}
                   type="button"
-                  onClick={() => setSelectedDay(d)}
+                  aria-label={date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                  aria-pressed={isSelected}
+                  onClick={() => setSelectedDay(key)}
                   style={{
-                    padding: '10px 4px',
-                    borderRadius: '10px',
-                    border: isSelected ? '2px solid #7C3AED' : '1px solid transparent',
-                    background: isBooked ? '#F5F0FF' : '#F9FAFB',
-                    color: isBooked ? '#7C3AED' : '#1E1B4B',
-                    fontWeight: isBooked || isSelected ? '700' : '500',
+                    display: 'grid',
+                    placeItems: 'center',
+                    width: '38px',
+                    height: '38px',
+                    margin: 'auto',
+                    padding: 0,
+                    borderRadius: isToday ? '50%' : '10px',
+                    border: isToday || isSelected ? '2px solid #7C3AED' : '1px solid transparent',
+                    background: isToday ? '#7C3AED' : isBooked ? '#F5F0FF' : '#F9FAFB',
+                    color: isToday ? '#FFFFFF' : isBooked ? '#7C3AED' : '#1E1B4B',
+                    fontWeight: isBooked || isSelected || isToday ? '700' : '500',
                     fontSize: '0.82rem',
                     cursor: 'pointer',
                   }}
                 >
-                  {d}
+                  {date.getDate()}
                 </button>
               );
             })}

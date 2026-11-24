@@ -15,17 +15,12 @@ import './BookingModal.css';
 
 // Occasions data
 export const OCCASIONS_DATA = [
-  { id: 'wedding', label: 'Wedding' },
-  { id: 'engagement', label: 'Engagement' },
-  { id: 'birthday', label: 'Birthday' },
-  { id: 'party', label: 'Party' },
-  { id: 'office', label: 'Office Wear' },
-  { id: 'casual', label: 'Casual Wear' },
-  { id: 'festival', label: 'Festival' },
-  { id: 'traditional', label: 'Traditional Events' },
-  { id: 'vacation', label: 'Vacation' },
-  { id: 'family', label: 'Family Functions' },
-  { id: 'other', label: 'Other Occasions' },
+  { id: 'vacation-photoshoot-shopping', label: 'Vacation/Photoshoot Shopping' },
+  { id: 'wedding-shopping', label: 'Wedding Shopping' },
+  { id: 'festive-shopping', label: 'Festive Shopping' },
+  { id: 'family-occasions', label: 'Family Occasions' },
+  { id: 'nri-family-visits', label: 'NRI Family Visits' },
+  { id: 'corporate-events-it-meets', label: 'Corporate Events/IT Meets' },
 ];
 
 // Occasion & Category specific services
@@ -83,6 +78,15 @@ export const SERVICES_BY_OCCASION = {
   ],
 };
 
+const BOOKING_SERVICES_BY_OCCASION = {
+  'vacation-photoshoot-shopping': [...SERVICES_BY_OCCASION.vacation, ...SERVICES_BY_OCCASION.other],
+  'wedding-shopping': SERVICES_BY_OCCASION.wedding,
+  'festive-shopping': [...SERVICES_BY_OCCASION.festival, ...SERVICES_BY_OCCASION.traditional],
+  'family-occasions': SERVICES_BY_OCCASION.family,
+  'nri-family-visits': [...SERVICES_BY_OCCASION.family, ...SERVICES_BY_OCCASION.vacation],
+  'corporate-events-it-meets': [...SERVICES_BY_OCCASION.office, ...SERVICES_BY_OCCASION.party],
+};
+
 const SHOPPING_BUDGETS = [
   { id: '10k', label: 'Up to ₹10,000', desc: 'High-street & smart essentials' },
   { id: '20k', label: 'Up to ₹20,000', desc: 'Premium retail & festive' },
@@ -120,16 +124,16 @@ export default function BookingModal({
   const [selectedOccasion, setSelectedOccasion] = useState(OCCASIONS_DATA[0]);
 
   // Section 2: Services (Multi-select)
-  const [selectedServices, setSelectedServices] = useState([SERVICES_BY_OCCASION.wedding[0]]);
+  const [selectedServices, setSelectedServices] = useState([BOOKING_SERVICES_BY_OCCASION[OCCASIONS_DATA[0].id][0]]);
 
-  // Section 3: Fashion Category
-  const [fashionCategory, setFashionCategory] = useState('Women');
+  // Default category retained for existing booking records.
+  const fashionCategory = 'Women';
 
-  // Section 4: Total Shopping Budget
+  // Section 3: Total Shopping Budget
   const [shoppingBudget, setShoppingBudget] = useState('Up to ₹20,000');
   const [customBudgetValue, setCustomBudgetValue] = useState('35,000');
 
-  // Section 5: Date, Venue & Times
+  // Section 4: Date, Venue & Times
   const [bookingDate, setBookingDate] = useState('2025-11-25');
   const [bookingTime, setBookingTime] = useState('11:00 AM');
   const [isCustomTime, setIsCustomTime] = useState(false);
@@ -163,13 +167,13 @@ export default function BookingModal({
 
   // Available services for current occasion
   const availableServices = useMemo(() => {
-    return SERVICES_BY_OCCASION[selectedOccasion.id] || SERVICES_BY_OCCASION.other;
+    return BOOKING_SERVICES_BY_OCCASION[selectedOccasion.id];
   }, [selectedOccasion]);
 
   // Update selected services when occasion changes if none selected
   const handleSelectOccasion = (occ) => {
     setSelectedOccasion(occ);
-    const servicesForOcc = SERVICES_BY_OCCASION[occ.id] || SERVICES_BY_OCCASION.other;
+    const servicesForOcc = BOOKING_SERVICES_BY_OCCASION[occ.id];
     if (servicesForOcc && servicesForOcc.length > 0) {
       setSelectedServices([servicesForOcc[0]]);
     }
@@ -367,37 +371,10 @@ export default function BookingModal({
               </div>
             </div>
 
-            {/* SECTION 3: FASHION CATEGORY */}
+            {/* SECTION 3: ESTIMATED SHOPPING BUDGET */}
             <div className="zorevi-form-section">
               <div className="zorevi-section-title-row">
                 <span className="zorevi-section-badge">3</span>
-                <div>
-                  <h4 className="zorevi-section-title">Fashion Category</h4>
-                  <small className="zorevi-section-sub">Who is this styling consultation for?</small>
-                </div>
-              </div>
-
-              <div className="zorevi-category-pills-row">
-                {['Women', 'Men', 'Kids', 'Couple', 'Family'].map((cat) => {
-                  const isSelected = fashionCategory === cat;
-                  return (
-                    <button
-                      key={cat}
-                      type="button"
-                      className={`zorevi-cat-pill-btn ${isSelected ? 'is-active' : ''}`}
-                      onClick={() => setFashionCategory(cat)}
-                    >
-                      <span>{cat}'s Styling</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* SECTION 4: ESTIMATED SHOPPING BUDGET */}
-            <div className="zorevi-form-section">
-              <div className="zorevi-section-title-row">
-                <span className="zorevi-section-badge">4</span>
                 <div>
                   <h4 className="zorevi-section-title">Estimated Wardrobe Purchase Budget</h4>
                   <small className="zorevi-section-sub">
@@ -438,10 +415,10 @@ export default function BookingModal({
               )}
             </div>
 
-            {/* SECTION 5: DATE, VENUE & TIMES (EXTENSIVE TIMES INCLUDED) */}
+            {/* SECTION 4: DATE, VENUE & TIMES (EXTENSIVE TIMES INCLUDED) */}
             <div className="zorevi-form-section">
               <div className="zorevi-section-title-row">
-                <span className="zorevi-section-badge">5</span>
+                <span className="zorevi-section-badge">4</span>
                 <div>
                   <h4 className="zorevi-section-title">Session Schedule, Venue & Times</h4>
                   <small className="zorevi-section-sub">Select preferred date, meeting spot, and exact time slot</small>

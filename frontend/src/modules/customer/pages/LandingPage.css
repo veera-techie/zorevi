@@ -435,21 +435,6 @@ body:has(.public-home) .navbar__public-links a:focus-visible {
   to { width: 100%; }
 }
 
-.public-price-card--animated {
-  animation: priceCardFadeIn 0.35s ease-out;
-}
-
-@keyframes priceCardFadeIn {
-  from {
-    opacity: 0.5;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .public-hero__visual > img {
   position: absolute;
   inset: 0;
@@ -457,49 +442,6 @@ body:has(.public-home) .navbar__public-links a:focus-visible {
   height: 100%;
   object-fit: cover;
   object-position: right center;
-}
-
-.public-price-card {
-  position: absolute;
-  z-index: 2;
-  top: auto;
-  bottom: 24px;
-  right: 24px;
-  width: min(226px, calc(100% - 32px));
-  padding: 18px;
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.75);
-  border-radius: 20px;
-  background: linear-gradient(145deg, rgba(132, 45, 219, 0.97), rgba(103, 36, 178, 0.97));
-  box-shadow: 0 16px 32px rgba(68, 29, 122, 0.28);
-}
-
-.public-price-card > span {
-  display: block;
-  font-size: 0.78rem;
-  opacity: 0.9;
-}
-
-.public-price-card strong {
-  display: block;
-  margin: 3px 0 6px;
-  font-size: 1.85rem;
-  line-height: 1.15;
-}
-
-.public-price-card strong small {
-  font-size: 0.93rem;
-  font-weight: 500;
-}
-
-.public-price-card p {
-  margin-bottom: 5px;
-  font-size: 0.86rem;
-}
-
-.public-price-card > small {
-  font-size: 0.73rem;
-  opacity: 0.9;
 }
 
 .public-home__notice {
@@ -741,18 +683,6 @@ body:has(.public-home) .zorevi-footer__grid {
     width: 100%;
     height: 14%;
     background: linear-gradient(180deg, #f3eaff 0%, rgba(243, 234, 255, 0.45) 22%, transparent 100%);
-  }
-
-  .public-price-card {
-    top: auto;
-    right: 12px;
-    bottom: 12px;
-    width: min(200px, calc(100% - 24px));
-    padding: 13px 15px;
-  }
-
-  .public-price-card strong {
-    font-size: 1.55rem;
   }
 
   .public-home__controls {
