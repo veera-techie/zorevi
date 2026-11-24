@@ -129,63 +129,12 @@ body:has(.public-home) .navbar {
 }
 
 body:has(.public-home) .navbar__inner {
-  max-width: 1288px;
-  min-height: 72px;
-  height: auto;
-  padding-inline: 24px;
-}
-
-body:has(.public-home) .navbar__public-links a[href="/for-designers"] {
-  position: relative;
-  padding: 10px 15px;
-  color: #6827a9;
-  border: 1px solid #e8d6fb;
-  border-radius: 999px;
-  background: linear-gradient(120deg, #fcf8ff, #f3e8ff);
-  box-shadow: 0 4px 14px rgba(126, 58, 183, 0.12);
-  transition: color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
-}
-
-body:has(.public-home) .navbar__public-links a[href="/for-designers"]::after {
-  content: "A place to grow your creative work";
-  position: absolute;
-  z-index: 5;
-  top: calc(100% + 10px);
-  left: 50%;
-  width: max-content;
-  max-width: 240px;
-  padding: 9px 12px;
-  color: #fff;
-  border-radius: 10px;
-  background: #38205c;
-  box-shadow: 0 8px 20px rgba(37, 20, 62, 0.2);
-  font-size: 0.75rem;
-  font-weight: 600;
-  white-space: normal;
-  opacity: 0;
-  pointer-events: none;
-  transform: translate(-50%, -4px);
-  transition: opacity 160ms ease, transform 160ms ease;
-}
-
-body:has(.public-home) .navbar__public-links a[href="/for-designers"]:hover,
-body:has(.public-home) .navbar__public-links a[href="/for-designers"]:focus-visible {
-  color: #4b1686;
-  box-shadow: 0 7px 21px rgba(126, 58, 183, 0.22);
-  transform: translateY(-1px);
-}
-
-body:has(.public-home) .navbar__public-links a[href="/for-designers"]:hover::after,
-body:has(.public-home) .navbar__public-links a[href="/for-designers"]:focus-visible::after {
-  opacity: 1;
-  transform: translate(-50%, 0);
-}
-
-body:has(.public-home) .navbar__mobile-nav a[href="/for-designers"] {
-  color: #6827a9;
-  border: 1px solid #e8d6fb;
-  border-radius: 12px;
-  background: linear-gradient(120deg, #fcf8ff, #f3e8ff);
+  width: 100%;
+  max-width: 100%;
+  min-height: 70px;
+  height: 70px;
+  padding: 0 clamp(20px, 2.5vw, 36px);
+  margin: 0;
 }
 
 .public-hero {
@@ -442,10 +391,6 @@ body:has(.public-home) .navbar__public-links a:focus-visible {
   height: 100%;
   object-fit: cover;
   object-position: right center;
-}
-
-.public-home__notice {
-  margin-top: 14px;
 }
 
 .public-discovery-section {
@@ -710,8 +655,9 @@ body:has(.public-home) .zorevi-footer__grid {
   }
 
   body:has(.public-home) .navbar__inner {
+    width: 100%;
     min-height: 56px;
-    padding-inline: 16px;
+    padding: 0 16px;
   }
 
   body:has(.public-home) .zorevi-footer__inner {

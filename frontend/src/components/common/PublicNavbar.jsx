@@ -57,19 +57,12 @@ export default function PublicNavbar() {
   return (
     <header className="navbar">
       <div className="navbar__inner">
-        <Link to="/" className="navbar__logo">
-          <div className="navbar__logo-icon">
-            <svg viewBox="0 0 32 32" fill="none" width="32" height="32">
-              <path d="M16 4C12 4 8 8 8 12c0 4 4 8 8 12 4-4 8-8 8-12 0-4-4-8-8-8z" fill="url(#ng)"/>
-              <path d="M8 12c-4 0-6 2-6 4s2 4 6 4c2 0 4-2 6-4-2-2-4-4-6-4z" fill="url(#ng)" opacity="0.8"/>
-              <path d="M24 12c4 0 6 2 6 4s-2 4-6 4c-2 0-4-2-6-4 2-2 4-4 6-4z" fill="url(#ng)" opacity="0.8"/>
-              <defs><linearGradient id="ng" x1="0" y1="0" x2="32" y2="32"><stop stopColor="#7C3AED"/><stop offset="1" stopColor="#A855F7"/></linearGradient></defs>
-            </svg>
-          </div>
-          <div className="navbar__logo-text">
-            <span className="navbar__brand">Zorevi</span>
-            <span className="navbar__tagline">Fashion for Everyone</span>
-          </div>
+        <Link to="/" className="navbar__logo" aria-label="Zorevi Homepage">
+          <img
+            src="/images/zorevi-logo.png"
+            alt="Zorevi – Shopping | Happy | Stylish"
+            className="navbar__logo-img"
+          />
         </Link>
 
         <div className="navbar__center">
@@ -87,68 +80,69 @@ export default function PublicNavbar() {
           </form>
         </div>
 
-        <nav className="navbar__public-links" aria-label="Main navigation">
-          <Link
-            to="/explore/designers"
-            className={location.pathname.startsWith('/explore/designers') ? 'active' : ''}
-          >
-            Explore Designers
-          </Link>
-          <Link
-            to="/explore/fashion-hubs"
-            className={location.pathname.startsWith('/explore/fashion-hubs') ? 'active' : ''}
-          >
-            Fashion Hubs
-          </Link>
-          <Link
-            to="/for-designers"
-            className={location.pathname === '/for-designers' ? 'active' : ''}
-          >
-            For Designers
-          </Link>
-        </nav>
+        <div className="navbar__right">
+          <nav className="navbar__public-links" aria-label="Main navigation">
+            <Link
+              to="/explore/designers"
+              className={location.pathname.startsWith('/explore/designers') ? 'active' : ''}
+            >
+              Explore Designers
+            </Link>
+            <Link
+              to="/explore/fashion-hubs"
+              className={location.pathname.startsWith('/explore/fashion-hubs') ? 'active' : ''}
+            >
+              Fashion Hubs
+            </Link>
+          </nav>
 
-        <div className="navbar__actions">
-          {isAuthenticated ? (
-            <>
-              <Link to={`/${user.role}/wishlist`} className="navbar__action-btn" title="Wishlist" aria-label="Wishlist">
-                <Heart size={20} />
-              </Link>
-              <Link to={`/${user.role}/notifications`} className="navbar__action-btn navbar__notif-btn" title="Notifications" aria-label="Notifications">
-                <Bell size={20} />
-                {unreadCount > 0 && <span className="navbar__badge">{unreadCount}</span>}
-              </Link>
-              <div className="navbar__user-menu" ref={userRef}>
-                <button className="navbar__user-btn" onClick={() => setShowUserDropdown(!showUserDropdown)}>
-                  <img src={user.avatar} alt={user.name} className="navbar__avatar"
-                    onError={(e) => { e.target.onerror = null; e.target.src = user.role === 'designer' ? AAROHI_PROFILE_IMAGE : '/images/customer-praveen.png'; }} />
-                  <span className="navbar__username">Hi, {user.name.split(' ')[0]}</span>
-                  <ChevronDown size={14} />
-                </button>
-                {showUserDropdown && (
-                  <div className="navbar__user-dropdown">
-                    <div className="navbar__user-info">
-                      <strong>{user.name}</strong>
-                      <span>{user.email}</span>
+          <div className="navbar__actions">
+            {isAuthenticated ? (
+              <>
+                <Link to={`/${user.role}/wishlist`} className="navbar__action-btn" title="Wishlist" aria-label="Wishlist">
+                  <Heart size={20} />
+                </Link>
+                <Link to={`/${user.role}/notifications`} className="navbar__action-btn navbar__notif-btn" title="Notifications" aria-label="Notifications">
+                  <Bell size={20} />
+                  {unreadCount > 0 && <span className="navbar__badge">{unreadCount}</span>}
+                </Link>
+                <div className="navbar__user-menu" ref={userRef}>
+                  <button className="navbar__user-btn" onClick={() => setShowUserDropdown(!showUserDropdown)}>
+                    <img src={user.avatar} alt={user.name} className="navbar__avatar"
+                      onError={(e) => { e.target.onerror = null; e.target.src = user.role === 'designer' ? AAROHI_PROFILE_IMAGE : '/images/customer-praveen.png'; }} />
+                    <span className="navbar__username">Hi, {user.name.split(' ')[0]}</span>
+                    <ChevronDown size={14} />
+                  </button>
+                  {showUserDropdown && (
+                    <div className="navbar__user-dropdown">
+                      <div className="navbar__user-info">
+                        <strong>{user.name}</strong>
+                        <span>{user.email}</span>
+                      </div>
+                      <Link to={`/${user.role}/profile`} className="navbar__dropdown-item" onClick={() => setShowUserDropdown(false)}>
+                        <User size={16} /> My Profile
+                      </Link>
+                      <Link to={`/${user.role}/settings`} className="navbar__dropdown-item" onClick={() => setShowUserDropdown(false)}>
+                        <Settings size={16} /> Settings
+                      </Link>
+                      <button className="navbar__dropdown-item navbar__logout" onClick={() => { logout(); setShowUserDropdown(false); navigate('/'); }}>
+                        <LogOut size={16} /> Logout
+                      </button>
                     </div>
-                    <Link to={`/${user.role}/profile`} className="navbar__dropdown-item" onClick={() => setShowUserDropdown(false)}>
-                      <User size={16} /> My Profile
-                    </Link>
-                    <Link to={`/${user.role}/settings`} className="navbar__dropdown-item" onClick={() => setShowUserDropdown(false)}>
-                      <Settings size={16} /> Settings
-                    </Link>
-                    <button className="navbar__dropdown-item navbar__logout" onClick={() => { logout(); setShowUserDropdown(false); navigate('/'); }}>
-                      <LogOut size={16} /> Logout
-                    </button>
-                  </div>
-                )}
+                  )}
+                </div>
+              </>
+            ) : (
+              <div className="navbar__auth-btns">
+                <Link to="/for-designers" className="navbar__btn-designer">
+                  For Designers
+                </Link>
+                <Link to="/customer/login" className="navbar__login-btn">
+                  Login
+                </Link>
               </div>
-            </>
-          ) : (
-            <div className="navbar__auth-btns">
-              <Link to="/customer/login" className="navbar__login-btn">Login</Link>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
         <button

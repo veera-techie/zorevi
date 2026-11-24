@@ -35,6 +35,43 @@
   align-items: center;
   gap: 10px;
   text-decoration: none;
+  flex-shrink: 0;
+}
+
+.zorevi-dash-header__logo-img {
+  height: 40px;
+  width: auto;
+  max-width: 155px;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.zorevi-dash-header__logo-img:hover {
+  opacity: 0.95;
+  transform: scale(1.02);
+}
+
+.zorevi-dash-header__role-badge {
+  font-size: 0.68rem;
+  font-weight: 750;
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.zorevi-dash-header__role-badge--designer {
+  background: linear-gradient(135deg, #F5F3FF 0%, #EDE9FE 100%);
+  color: #7C3AED;
+  border: 1px solid #DDD6FE;
+}
+
+.zorevi-dash-header__role-badge--admin {
+  background: #FEF3C7;
+  color: #B45309;
+  border: 1px solid #FDE68A;
 }
 
 .zorevi-dash-header__home-link {

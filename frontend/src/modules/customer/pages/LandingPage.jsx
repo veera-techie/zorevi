@@ -5,7 +5,7 @@ import BookingModal from '../../../components/cards/BookingModal';
 import PublicDesignerCard from '../../../components/cards/PublicDesignerCard';
 import PublicMallCard from '../../../components/cards/PublicMallCard';
 import { useApp } from '../../../context/AppContext';
-import { discoveryCategories, discoveryDemoNotice, publicDesigners, publicMalls } from '../../../services/publicDiscoveryData';
+import { discoveryCategories, publicDesigners, publicMalls } from '../../../services/publicDiscoveryData';
 import './LandingPage.css';
 
 const SHOPPING_EXPERIENCES = [
@@ -270,10 +270,6 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <p className="discovery-demo-notice public-home__notice" role="note">
-          {discoveryDemoNotice} Live GPS & location search available in the header.
-        </p>
-
         <section className="public-discovery-section" aria-labelledby="public-designers-title">
           <div className="public-section-heading">
             <div>
@@ -375,7 +371,7 @@ export default function LandingPage() {
             </div>
           ) : (
             <div className="discovery-empty discovery-empty--compact">
-              <p>The prototype fashion hubs directory currently has official-source entries for Hyderabad.</p>
+              <p>Fashion hubs directory currently has official-source entries for Hyderabad.</p>
               <Link to="/explore/fashion-hubs" className="zorevi-btn zorevi-btn--outline">Browse fashion hubs</Link>
             </div>
           )}

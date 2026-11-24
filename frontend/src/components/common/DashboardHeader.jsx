@@ -24,7 +24,7 @@ export default function DashboardHeader({ onToggleSidebar, profileDrawerOpen = f
     ? AAROHI_PROFILE_IMAGE
     : role === 'admin'
       ? '/images/admin-priya.png'
-      : '/zorevi-icon.svg';
+      : '/images/customer-praveen.png';
 
   useEffect(() => {
     function handleClickOutside(e) {
@@ -78,28 +78,17 @@ export default function DashboardHeader({ onToggleSidebar, profileDrawerOpen = f
           </button>
         )}
 
-        <Link to={`/${role}`} className="zorevi-dash-header__brand">
-          <div className="zorevi-dash-header__logo-icon">
-            {role === 'designer' ? <img src="/zorevi-butterfly-hd.svg" alt="" /> : (
-              <svg viewBox="0 0 32 32" fill="none" width="30" height="30">
-                <path d="M16 4C12 4 8 8 8 12c0 4 4 8 8 12 4-4 8-8 8-12 0-4-4-8-8-8z" fill="url(#dash-logo-g)"/>
-                <path d="M8 12c-4 0-6 2-6 4s2 4 6 4c2 0 4-2 6-4-2-2-4-4-6-4z" fill="url(#dash-logo-g)" opacity="0.8"/>
-                <path d="M24 12c4 0 6 2 6 4s-2 4-6 4c-2 0-4-2-6-4 2-2 4-4 6-4z" fill="url(#dash-logo-g)" opacity="0.8"/>
-                <defs>
-                  <linearGradient id="dash-logo-g" x1="0" y1="0" x2="32" y2="32">
-                    <stop stopColor="#7C3AED"/>
-                    <stop offset="1" stopColor="#A855F7"/>
-                  </linearGradient>
-                </defs>
-              </svg>
-            )}
-          </div>
-          <div className="zorevi-dash-header__brand-text">
-            <span className="zorevi-dash-header__title">Zorevi</span>
-            <span className="zorevi-dash-header__subtitle">
-              {role === 'designer' ? 'Designer Studio' : role === 'admin' ? 'Admin Console' : 'Fashion for Everyone'}
+        <Link to={`/${role}`} className="zorevi-dash-header__brand" aria-label="Zorevi">
+          <img
+            src="/images/zorevi-logo.png"
+            alt="Zorevi – Shopping | Happy | Stylish"
+            className="zorevi-dash-header__logo-img"
+          />
+          {role !== 'customer' && (
+            <span className={`zorevi-dash-header__role-badge zorevi-dash-header__role-badge--${role}`}>
+              {role === 'designer' ? 'Designer Studio' : 'Admin'}
             </span>
-          </div>
+          )}
         </Link>
 
         {role === 'customer' && (
@@ -155,8 +144,8 @@ export default function DashboardHeader({ onToggleSidebar, profileDrawerOpen = f
               role === 'designer'
                 ? 'Search bookings, services or customers...'
                 : role === 'admin'
-                ? 'Search customers, designers, bookings...'
-                : 'Search designers, malls, services or occasions...'
+                  ? 'Search customers, designers, bookings...'
+                  : 'Search designers, malls, services or occasions...'
             }
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}

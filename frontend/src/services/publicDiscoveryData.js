@@ -162,4 +162,4 @@ export const publicMalls = [
   },
 ];
 
-export const discoveryDemoNotice = 'Prototype content only: designer names, stock profile portraits, verification states, ratings, review counts, distances, prices and availability are illustrative demo data. Profile photos do not depict or endorse the named demo designers. Mall photos are illustrative and are not photos of the named venues.';
+export const discoveryDemoNotice = 'Stylish and Smarter way to shop with Zorevi';

@@ -97,12 +97,12 @@ export default function CustomerSidebar({ isOpen, onClose }) {
           <div className="zorevi-customer-drawer__user-info">
             <Link to="/customer/profile" onClick={onClose} className="zorevi-customer-drawer__avatar-link" title="Edit Profile & Photo">
               <img
-                src={user?.avatar || '/zorevi-icon.svg'}
+                src={user?.avatar || '/images/customer-praveen.png'}
                 alt={user?.name || 'Customer'}
                 className="zorevi-customer-drawer__avatar"
                 onError={(e) => {
                   e.target.onerror = null;
-                  e.target.src = '/zorevi-icon.svg';
+                  e.target.src = '/images/customer-praveen.png';
                 }}
               />
               <span className="zorevi-customer-drawer__avatar-edit-badge" title="Edit photo">

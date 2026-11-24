@@ -13,22 +13,12 @@ export default function PublicFooter({ role }) {
       <div className="zorevi-footer__inner container">
         <div className="zorevi-footer__grid">
           <div className="zorevi-footer__brand-col">
-            <Link to={isCustomer ? '/customer' : '/'} className="zorevi-footer__logo">
-              <svg viewBox="0 0 32 32" fill="none" width="30" height="30">
-                <path d="M16 4C12 4 8 8 8 12c0 4 4 8 8 12 4-4 8-8 8-12 0-4-4-8-8-8z" fill="url(#footer-logo-g)"/>
-                <path d="M8 12c-4 0-6 2-6 4s2 4 6 4c2 0 4-2 6-4-2-2-4-4-6-4z" fill="url(#footer-logo-g)" opacity="0.8"/>
-                <path d="M24 12c4 0 6 2 6 4s-2 4-6 4c-2 0-4-2-6-4 2-2 4-4 6-4z" fill="url(#footer-logo-g)" opacity="0.8"/>
-                <defs>
-                  <linearGradient id="footer-logo-g" x1="0" y1="0" x2="32" y2="32">
-                    <stop stopColor="#7C3AED"/>
-                    <stop offset="1" stopColor="#A855F7"/>
-                  </linearGradient>
-                </defs>
-              </svg>
-              <div>
-                <span className="zorevi-footer__brand-name">Zorevi</span>
-                <span className="zorevi-footer__tagline">Fashion for Everyone</span>
-              </div>
+            <Link to={isCustomer ? '/customer' : '/'} className="zorevi-footer__logo" aria-label="Zorevi Homepage">
+              <img
+                src="/images/zorevi-logo.png"
+                alt="Zorevi – Shopping | Happy | Stylish"
+                className="zorevi-footer__logo-img"
+              />
             </Link>
             <p className="zorevi-footer__desc">
               Discover top fashion designers and fashion hubs, book personalized styling sessions, and elevate your personal wardrobe for any occasion.

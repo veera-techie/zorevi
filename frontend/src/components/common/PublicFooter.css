@@ -13,25 +13,24 @@
 }
 
 .zorevi-footer__logo {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
   text-decoration: none;
   margin-bottom: 16px;
 }
 
-.zorevi-footer__brand-name {
-  font-size: 1.4rem;
-  font-weight: 800;
-  color: var(--color-primary, #7c3aed);
+.zorevi-footer__logo-img {
+  height: 48px;
+  width: auto;
+  max-width: 180px;
+  object-fit: contain;
   display: block;
-  line-height: 1;
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
-.zorevi-footer__tagline {
-  font-size: 0.7rem;
-  color: #6b7280;
-  display: block;
+.zorevi-footer__logo-img:hover {
+  opacity: 0.92;
+  transform: scale(1.02);
 }
 
 .zorevi-footer__desc {

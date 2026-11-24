@@ -33,7 +33,7 @@ export function AuthProvider({ children }) {
       ...baseUser,
       name: userData?.name || baseUser.name,
       email: userData?.email || baseUser.email,
-      avatar: userData?.avatar || '/zorevi-icon.svg',
+      avatar: userData?.avatar || '/images/customer-praveen.png',
     };
     setUser(newUser);
     setIsLoading(false);
@@ -49,7 +49,7 @@ export function AuthProvider({ children }) {
       ...baseUser,
       name: baseUser.name || 'Praveen Kumar',
       email: 'praveen.kumar@gmail.com',
-      avatar: '/zorevi-icon.svg',
+      avatar: '/images/customer-praveen.png',
     };
     setUser(googleUser);
     setIsLoading(false);

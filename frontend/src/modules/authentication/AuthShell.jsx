@@ -27,12 +27,12 @@ export function AuthShell({
   return (
     <div className={`zorevi-auth-page ${className}`}>
       <section className="zorevi-auth-hero" aria-label="About Zorevi">
-        <Link to="/" className="zorevi-auth-hero__logo">
-          <img src="/zorevi-icon.svg" alt="" width="42" height="42" />
-          <span>
-            <strong className="zorevi-auth-hero__brand">Zorevi</strong>
-            <small className="zorevi-auth-hero__tagline">{tagline}</small>
-          </span>
+        <Link to="/" className="zorevi-auth-hero__logo" aria-label="Zorevi Homepage">
+          <img
+            src="/images/zorevi-logo.png"
+            alt="Zorevi – Shopping | Happy | Stylish"
+            className="zorevi-auth-hero__logo-img"
+          />
         </Link>
 
         <div className="zorevi-auth-hero__content">
