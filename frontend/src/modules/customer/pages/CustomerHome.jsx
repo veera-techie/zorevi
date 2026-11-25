@@ -29,6 +29,7 @@ import { useAuth } from '../../../context/AuthContext';
 import { CATEGORIES, PRICE_BASE, PRICE_DURATION_HOURS } from '../../../constants';
 import { mockDesigners, mockMalls } from '../../../services/mockData';
 import { searchFashionHubs } from '../../../services/fashionHubsService';
+import { isCustomerBooking, normalizeBookingStatusKey } from '../../../utils';
 import './CustomerHome.css';
 
 const heroSlides = [
@@ -128,11 +129,17 @@ export default function CustomerHome() {
     return results.hubs.length > 0 ? results.hubs : searchFashionHubs({ limit: 4 }).hubs;
   }, [userLocation]);
 
-  // Active bookings requiring attention (Awaiting Payment or Pending Confirmation)
-  const pendingOrAwaitingBookings = (bookings || []).filter(
-    (b) => b.status === 'Awaiting Payment' || b.status === 'Pending Confirmation' || b.status === 'Alternative Proposed'
+  // Logged-in customer's bookings and active requests requiring attention
+  const customerBookings = useMemo(
+    () => (bookings || []).filter((b) => isCustomerBooking(b, user)),
+    [bookings, user]
   );
+  const pendingOrAwaitingBookings = customerBookings.filter((b) => {
+    const key = normalizeBookingStatusKey(b.status);
+    return key === 'accepted' || key === 'pending' || key === 'alternative';
+  });
   const latestActiveBooking = pendingOrAwaitingBookings[0] || null;
+  const isLatestAccepted = latestActiveBooking && normalizeBookingStatusKey(latestActiveBooking.status) === 'accepted';
 
   // Saved designers
   const savedDesigners = mockDesigners.filter((d) =>
@@ -168,7 +175,7 @@ export default function CustomerHome() {
         </div>
         <div className="customer-home-welcome-actions">
           <Link to="/customer/bookings" className="zorevi-btn zorevi-btn--ghost zorevi-btn--sm">
-            <Calendar size={14} /> My Bookings ({(bookings || []).length})
+            <Calendar size={14} /> My Bookings ({customerBookings.length})
           </Link>
           <Link to="/customer/designers" className="zorevi-btn zorevi-btn--primary zorevi-btn--sm">
             <Search size={14} /> Find Designers
@@ -178,10 +185,10 @@ export default function CustomerHome() {
 
       {/* 2. ACTIVE BOOKING STATUS SNAPSHOT (If any pending or awaiting payment) */}
       {latestActiveBooking && (
-        <div className={`customer-home-alert-banner ${latestActiveBooking.status === 'Awaiting Payment' ? 'awaiting' : 'pending'}`}>
+        <div className={`customer-home-alert-banner ${isLatestAccepted ? 'awaiting' : 'pending'}`}>
           <div className="alert-content-left">
             <div className="alert-icon-box">
-              {latestActiveBooking.status === 'Awaiting Payment' ? (
+              {isLatestAccepted ? (
                 <CreditCard size={22} color="#059669" />
               ) : (
                 <Clock size={22} color="#D97706" />
@@ -190,24 +197,24 @@ export default function CustomerHome() {
             <div>
               <div className="alert-title-row">
                 <strong>
-                  {latestActiveBooking.status === 'Awaiting Payment'
+                  {isLatestAccepted
                     ? `Designer Accepted! 30% Advance Due for Booking #${latestActiveBooking.id}`
                     : `Inquiry Pending Review with ${latestActiveBooking.designerName}`}
                 </strong>
-                <span className={`alert-badge ${latestActiveBooking.status === 'Awaiting Payment' ? 'awaiting' : 'pending'}`}>
+                <span className={`alert-badge ${isLatestAccepted ? 'awaiting' : 'pending'}`}>
                   {latestActiveBooking.status}
                 </span>
               </div>
               <p>
-                {latestActiveBooking.status === 'Awaiting Payment'
-                  ? `${latestActiveBooking.designerName} confirmed availability for ${latestActiveBooking.occasion} (${latestActiveBooking.date} at ${latestActiveBooking.time}). Pay 30% advance (₹${Math.round((latestActiveBooking.designerFee || 999) * 0.3)}) to confirm.`
-                  : `Your request for ${latestActiveBooking.occasion} is awaiting confirmation. We will notify you once accepted.`}
+                {isLatestAccepted
+                  ? `${latestActiveBooking.designerName} confirmed availability for ${latestActiveBooking.occasion} (${latestActiveBooking.date} at ${latestActiveBooking.time || latestActiveBooking.startTime}). Pay 30% advance (₹${Math.round((latestActiveBooking.designerFee || 999) * 0.3)}) to confirm.`
+                  : `Your request for ${latestActiveBooking.occasion} is awaiting approval. We will notify you once accepted.`}
               </p>
             </div>
           </div>
 
           <div className="alert-content-right">
-            {latestActiveBooking.status === 'Awaiting Payment' ? (
+            {isLatestAccepted ? (
               <button
                 type="button"
                 className="zorevi-btn zorevi-btn--pay-pulse"

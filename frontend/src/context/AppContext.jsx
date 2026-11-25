@@ -11,6 +11,8 @@ import {
   getCurrentDevicePosition,
   reverseGeocodeCoordinates,
 } from '../services/locationService';
+import apiClient from '../services/apiClient';
+import { formatDate, parseValidDate } from '../utils';
 
 const AppContext = createContext(null);
 
@@ -22,6 +24,34 @@ const STORAGE_KEYS = {
   SCHEDULE: 'zorevi_designer_schedule',
   LOCATION: 'zorevi_user_location',
 };
+
+function resolveNotificationTimestamp(notif) {
+  const direct = parseValidDate(notif?.timestamp) || parseValidDate(notif?.createdAt) || parseValidDate(notif?.date);
+  if (direct) return direct.toISOString();
+  const epochMatch = typeof notif?.id === 'string' ? /(\d{13})$/.exec(notif.id) : null;
+  if (epochMatch) {
+    const fromId = parseValidDate(Number(epochMatch[1]));
+    if (fromId) return fromId.toISOString();
+  }
+  return new Date().toISOString();
+}
+
+function normalizeNotification(notif, roleHint = 'customer') {
+  if (!notif || typeof notif !== 'object') return notif;
+  const timestamp = resolveNotificationTimestamp(notif);
+  const type = notif.type || (notif.paymentStatus || /advance|payment|paid|invoice/i.test(notif.title || '') ? 'payment' : 'booking');
+  const link = notif.link || (
+    notif.bookingId
+      ? (roleHint === 'designer' ? '/designer/booking-requests' : `/customer/bookings/${notif.bookingId}`)
+      : undefined
+  );
+  return {
+    ...notif,
+    type,
+    timestamp,
+    link,
+  };
+}
 
 const initialBookings = () => {
   try {
@@ -36,17 +66,19 @@ const initialBookings = () => {
   return mockBookings;
 };
 
-const initialNotifications = (key, fallback) => {
+const initialNotifications = (key, fallback, roleHint) => {
   try {
     const saved = localStorage.getItem(key);
     if (saved) {
       const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed)) return parsed;
+      if (Array.isArray(parsed)) {
+        return parsed.map((n) => normalizeNotification(n, roleHint));
+      }
     }
   } catch (e) {
     console.error(`Error loading notifications for ${key}`, e);
   }
-  return fallback;
+  return fallback.map((n) => normalizeNotification(n, roleHint));
 };
 
 export function AppProvider({ children }) {
@@ -73,14 +105,19 @@ export function AppProvider({ children }) {
   });
 
   const [bookings, setBookings] = useState(initialBookings);
+  const [bookingConfirmation, setBookingConfirmation] = useState(null);
   const [customerNotifications, setCustomerNotifications] = useState(() =>
-    initialNotifications(STORAGE_KEYS.CUSTOMER_NOTIFS, mockCustomerNotifications)
+    initialNotifications(STORAGE_KEYS.CUSTOMER_NOTIFS, mockCustomerNotifications, 'customer')
   );
   const [designerNotifications, setDesignerNotifications] = useState(() =>
-    initialNotifications(STORAGE_KEYS.DESIGNER_NOTIFS, mockDesignerNotifications)
+    initialNotifications(STORAGE_KEYS.DESIGNER_NOTIFS, mockDesignerNotifications, 'designer')
   );
   const [adminNotifications, setAdminNotifications] = useState(mockAdminNotifications);
   const [selectedCity, setSelectedCity] = useState('Hyderabad');
+
+  const clearBookingConfirmation = useCallback(() => {
+    setBookingConfirmation(null);
+  }, []);
 
   // Real-time location state
   const [userLocation, setUserLocation] = useState(() => {
@@ -160,6 +197,32 @@ export function AppProvider({ children }) {
     }
   }, [wishlist]);
 
+  // Cross-tab sync for bookings & notifications so designer updates reflect in customer views
+  useEffect(() => {
+    const handleStorage = (event) => {
+      try {
+        if (event.key === STORAGE_KEYS.BOOKINGS && event.newValue) {
+          const parsed = JSON.parse(event.newValue);
+          if (Array.isArray(parsed)) setBookings(parsed);
+        } else if (event.key === STORAGE_KEYS.CUSTOMER_NOTIFS && event.newValue) {
+          const parsed = JSON.parse(event.newValue);
+          if (Array.isArray(parsed)) {
+            setCustomerNotifications(parsed.map((n) => normalizeNotification(n, 'customer')));
+          }
+        } else if (event.key === STORAGE_KEYS.DESIGNER_NOTIFS && event.newValue) {
+          const parsed = JSON.parse(event.newValue);
+          if (Array.isArray(parsed)) {
+            setDesignerNotifications(parsed.map((n) => normalizeNotification(n, 'designer')));
+          }
+        }
+      } catch (e) {
+        console.error('Failed to sync storage updates', e);
+      }
+    };
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, []);
+
   const toggleWishlist = useCallback((type, itemId) => {
     setWishlist((prev) => {
       const exists = prev.find((w) => w.type === type && w.itemId === itemId);
@@ -209,15 +272,25 @@ export function AppProvider({ children }) {
   );
 
   /**
-   * 1. CUSTOMER CREATES BOOKING REQUEST (Step 8)
-   * Status starts as 'Pending Confirmation'. Never requests payment upfront!
+   * 1. CUSTOMER CREATES BOOKING REQUEST
+   * Validates via API client, creates booking with 'Pending Approval' status,
+   * adds properly timestamped notifications, and triggers confirmation modal.
    */
   const createBookingRequest = useCallback(
-    (draft) => {
+    async (draft) => {
+      const now = new Date();
+      const nowIso = now.toISOString();
       const bookingId = `ZV-${Math.floor(8450 + Math.random() * 1000)}`;
       const designerFee = Number(draft.designerFee || draft.designer?.startingPrice || 999);
       const advanceAmount = Math.round(designerFee * 0.3);
       const remainingAmount = designerFee - advanceAmount;
+      const requestedTime = draft.time || draft.startTime || '11:00 AM';
+      const requestedDate = draft.date || nowIso.slice(0, 10);
+      const venueName =
+        draft.meetingLocation ||
+        draft.mall?.name ||
+        draft.location?.mallName ||
+        'Lakeside Fashion Mall';
 
       const newBooking = {
         id: bookingId,
@@ -232,69 +305,89 @@ export function AppProvider({ children }) {
         designerTitle: draft.designer?.title || "Women's & Bridal Styling",
         designerLocation: draft.designer?.location || 'Hyderabad',
         occasion: draft.occasion || 'Wedding',
+        service: draft.service || (Array.isArray(draft.services) && draft.services[0]) || 'Bridal Styling',
         services: draft.services || (draft.service ? [draft.service] : ['Bridal Styling']),
         category: draft.category || 'Women',
         preferences: {
-          clothingPreference: draft.preferences?.clothingPreference || 'Traditional & Ethnic',
-          preferredStyles: draft.preferences?.preferredStyles || ['Royal & Heavy'],
-          colorPreferences: draft.preferences?.colorPreferences || 'Maroon, Gold, Rose Pink',
-          outfitRequirements: draft.preferences?.outfitRequirements || draft.requirements || 'Occasion ensemble curation',
-          specialInstructions: draft.preferences?.specialInstructions || draft.notes || '',
-          referenceImages: draft.preferences?.referenceImages || [],
+          clothingPreference: draft.preferences?.clothingPreference || draft.clothingPreference || 'Contemporary & Occasion Wear',
+          preferredStyles: draft.preferences?.preferredStyles || draft.preferredStyles || ['Modern', 'Tailored Regular'],
+          colorPreferences: draft.preferences?.colorPreferences || draft.preferredColors || 'Palette tailored to selected occasion',
+          outfitRequirements: draft.preferences?.outfitRequirements || draft.outfitRequirements || draft.requirements || 'Occasion ensemble curation',
+          specialInstructions: draft.preferences?.specialInstructions || draft.specialInstructions || draft.notes || '',
+          referenceImages: draft.preferences?.referenceImages || draft.referenceImages || [],
         },
         shoppingBudget: draft.shoppingBudget || 'Up to ₹50,000',
         designerFee,
         advanceAmount,
         remainingAmount,
-        date: draft.date || '2025-11-26',
-        startTime: draft.time || draft.startTime || '11:00 AM',
+        date: requestedDate,
+        time: requestedTime,
+        startTime: requestedTime,
         endTime: draft.endTime || '01:00 PM',
         duration: draft.duration || 2,
-        locationType: draft.locationType || 'mall',
-        mall: draft.mall || { name: 'Lakeside Fashion Mall', locality: 'Kukatpally, Hyderabad' },
+        meetingType: draft.meetingType || 'Mall Styling Session',
+        meetingLocation: venueName,
+        locationType: draft.locationType || (draft.meetingType === 'Online Consultation' ? 'online' : draft.meetingType === 'Designer Studio' ? 'studio' : 'mall'),
+        mall: draft.mall || { name: venueName, locality: draft.designer?.location || 'Hyderabad' },
         meetingPoint: draft.meetingPoint || 'Fashion Lounge, Ground Floor',
-        status: 'Pending Confirmation',
+        notes: draft.notes || draft.outfitRequirements || '',
+        status: 'Pending Approval',
         paymentStatus: 'Unpaid',
         timeline: [
-          { step: 'Request Submitted', date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }), time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }), completed: true },
-          { step: 'Designer Confirmation', date: 'Pending review', completed: false, active: true },
-          { step: '30% Advance Payment', date: 'Awaiting confirmation', completed: false },
-          { step: 'Styling Session', date: draft.date || 'Scheduled Date', completed: false },
+          {
+            step: 'Request Submitted',
+            date: now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }),
+            time: now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+            completed: true,
+          },
+          { step: 'Designer Approval', date: 'Pending designer review', completed: false, active: true },
+          { step: '30% Advance Payment', date: 'Awaiting approval', completed: false },
+          { step: 'Styling Session', date: formatDate(requestedDate, requestedDate), completed: false },
           { step: 'Completed', date: '', completed: false },
         ],
-        createdAt: new Date().toISOString(),
+        createdAt: nowIso,
+        submittedAt: nowIso,
       };
+
+      const response = await apiClient.post('/bookings', newBooking);
+      if (!response || response.status >= 400) {
+        throw new Error(response?.error || 'Failed to submit booking request. Please try again.');
+      }
 
       setBookings((prev) => [newBooking, ...prev]);
 
       // Notify Designer
       const designerNotif = {
         id: `notif-des-${Date.now()}`,
+        type: 'booking',
         role: 'designer',
         title: 'New Booking Request!',
-        message: `${newBooking.customerName} submitted a booking request for ${newBooking.occasion} on ${newBooking.date} (${newBooking.startTime}).`,
-        date: 'Just now',
+        message: `${newBooking.customerName} submitted a booking request (#${newBooking.id}) for ${newBooking.occasion} on ${formatDate(newBooking.date, newBooking.date)} at ${newBooking.startTime}.`,
+        timestamp: nowIso,
         read: false,
         bookingId: newBooking.id,
+        link: '/designer/booking-requests',
       };
       setDesignerNotifications((prev) => [designerNotif, ...prev]);
 
       // Notify Customer
       const customerNotif = {
-        id: `notif-cust-${Date.now()}`,
+        id: `notif-cust-${Date.now() + 1}`,
+        type: 'booking',
         role: 'customer',
-        title: 'Booking Request Sent',
-        message: `Your request for ${newBooking.designerName} was sent. You will be notified once the designer accepts.`,
-        date: 'Just now',
+        title: 'Booking Request Submitted',
+        message: `Your request (#${newBooking.id}) with ${newBooking.designerName} for ${formatDate(newBooking.date, newBooking.date)} at ${newBooking.startTime} is pending designer approval.`,
+        timestamp: nowIso,
         read: false,
         bookingId: newBooking.id,
+        link: `/customer/bookings/${newBooking.id}`,
       };
       setCustomerNotifications((prev) => [customerNotif, ...prev]);
 
-      addToast(`Booking request #${bookingId} sent to ${newBooking.designerName}!`, 'success');
+      setBookingConfirmation(newBooking);
       return newBooking;
     },
-    [addToast]
+    []
   );
 
   /**
@@ -303,15 +396,17 @@ export function AppProvider({ children }) {
    */
   const acceptBookingRequest = useCallback(
     (bookingId) => {
+      const nowIso = new Date().toISOString();
       setBookings((prev) =>
         prev.map((b) => {
           if (b.id !== bookingId) return b;
           return {
             ...b,
             status: 'Awaiting Payment',
-            timeline: b.timeline.map((item, idx) => {
-              if (item.step === 'Designer Confirmation') {
-                return { ...item, date: 'Confirmed just now', completed: true, active: false };
+            updatedAt: nowIso,
+            timeline: (b.timeline || []).map((item) => {
+              if (item.step === 'Designer Confirmation' || item.step === 'Designer Approval') {
+                return { ...item, date: 'Accepted just now', completed: true, active: false };
               }
               if (item.step === '30% Advance Payment') {
                 return { ...item, date: 'Ready to pay (30%)', active: true };
@@ -328,12 +423,14 @@ export function AppProvider({ children }) {
       // Notify Customer
       const notif = {
         id: `notif-cust-${Date.now()}`,
+        type: 'booking',
         role: 'customer',
         title: 'Booking Request Accepted! 🎉',
-        message: `${designerName} confirmed your slot for ${target?.occasion || 'Styling'}. Please pay 30% advance (₹${target?.advanceAmount || 300}) to lock your booking.`,
-        date: 'Just now',
+        message: `${designerName} accepted your request (#${bookingId}) for ${target?.occasion || 'Styling'}. Pay 30% advance (₹${target?.advanceAmount || 300}) to confirm your booking.`,
+        timestamp: nowIso,
         read: false,
         bookingId,
+        link: `/customer/bookings/${bookingId}`,
       };
       setCustomerNotifications((prev) => [notif, ...prev]);
 
@@ -347,6 +444,7 @@ export function AppProvider({ children }) {
    */
   const rejectBookingRequest = useCallback(
     (bookingId, reason = 'Schedule unavailable') => {
+      const nowIso = new Date().toISOString();
       setBookings((prev) =>
         prev.map((b) => {
           if (b.id !== bookingId) return b;
@@ -354,8 +452,9 @@ export function AppProvider({ children }) {
             ...b,
             status: 'Declined',
             declineReason: reason,
-            timeline: b.timeline.map((item) => {
-              if (item.step === 'Designer Confirmation') {
+            updatedAt: nowIso,
+            timeline: (b.timeline || []).map((item) => {
+              if (item.step === 'Designer Confirmation' || item.step === 'Designer Approval') {
                 return { ...item, date: `Declined: ${reason}`, completed: false, active: false };
               }
               return item;
@@ -367,12 +466,14 @@ export function AppProvider({ children }) {
       const target = bookings.find((b) => b.id === bookingId);
       const notif = {
         id: `notif-cust-${Date.now()}`,
+        type: 'booking',
         role: 'customer',
         title: 'Booking Request Update',
         message: `${target?.designerName || 'Designer'} was unable to accept booking #${bookingId}: ${reason}`,
-        date: 'Just now',
+        timestamp: nowIso,
         read: false,
         bookingId,
+        link: `/customer/bookings/${bookingId}`,
       };
       setCustomerNotifications((prev) => [notif, ...prev]);
 
@@ -386,6 +487,7 @@ export function AppProvider({ children }) {
    */
   const proposeAlternativeSlot = useCallback(
     (bookingId, proposedDate, proposedTime, note = '') => {
+      const nowIso = new Date().toISOString();
       setBookings((prev) =>
         prev.map((b) => {
           if (b.id !== bookingId) return b;
@@ -395,8 +497,9 @@ export function AppProvider({ children }) {
             proposedDate,
             proposedTime,
             designerNote: note,
-            timeline: b.timeline.map((item) => {
-              if (item.step === 'Designer Confirmation') {
+            updatedAt: nowIso,
+            timeline: (b.timeline || []).map((item) => {
+              if (item.step === 'Designer Confirmation' || item.step === 'Designer Approval') {
                 return { ...item, date: `Alternative suggested: ${proposedDate} at ${proposedTime}`, active: true };
               }
               return item;
@@ -408,12 +511,14 @@ export function AppProvider({ children }) {
       const target = bookings.find((b) => b.id === bookingId);
       const notif = {
         id: `notif-cust-${Date.now()}`,
+        type: 'booking',
         role: 'customer',
         title: 'Alternative Slot Proposed',
-        message: `${target?.designerName || 'Designer'} suggested an alternative slot: ${proposedDate} at ${proposedTime}.`,
-        date: 'Just now',
+        message: `${target?.designerName || 'Designer'} suggested an alternative slot for #${bookingId}: ${formatDate(proposedDate, proposedDate)} at ${proposedTime}.`,
+        timestamp: nowIso,
         read: false,
         bookingId,
+        link: `/customer/bookings/${bookingId}`,
       };
       setCustomerNotifications((prev) => [notif, ...prev]);
 
@@ -423,11 +528,12 @@ export function AppProvider({ children }) {
   );
 
   /**
-   * 5. CUSTOMER PAYS 30% ADVANCE PAYMENT (Step 9)
+   * 5. CUSTOMER PAYS 30% ADVANCE PAYMENT
    * Only accessible AFTER designer confirms. Changes status to 'Confirmed'.
    */
   const payAdvancePayment = useCallback(
     (bookingId, paymentMethod = 'UPI') => {
+      const nowIso = new Date().toISOString();
       setBookings((prev) =>
         prev.map((b) => {
           if (b.id !== bookingId) return b;
@@ -437,8 +543,9 @@ export function AppProvider({ children }) {
             paymentStatus: 'Advance Paid (30%)',
             paymentMethod,
             totalPaid: b.advanceAmount || 300,
-            advancePaidAt: new Date().toISOString(),
-            timeline: b.timeline.map((item) => {
+            advancePaidAt: nowIso,
+            updatedAt: nowIso,
+            timeline: (b.timeline || []).map((item) => {
               if (item.step === '30% Advance Payment') {
                 return { ...item, date: `Paid ₹${b.advanceAmount || 300} via ${paymentMethod}`, completed: true, active: false };
               }
@@ -457,24 +564,28 @@ export function AppProvider({ children }) {
       // Notify Designer of incoming advance payout
       const desNotif = {
         id: `notif-des-${Date.now()}`,
+        type: 'payment',
         role: 'designer',
         title: '30% Advance Received! 💳',
         message: `${target?.customerName || 'Customer'} paid 30% advance (₹${advance}) for booking #${bookingId}. The styling session is confirmed.`,
-        date: 'Just now',
+        timestamp: nowIso,
         read: false,
         bookingId,
+        link: '/designer/bookings',
       };
       setDesignerNotifications((prev) => [desNotif, ...prev]);
 
       // Notify Customer
       const custNotif = {
-        id: `notif-cust-${Date.now()}`,
+        id: `notif-cust-${Date.now() + 1}`,
+        type: 'booking',
         role: 'customer',
         title: 'Appointment Confirmed! 🎉',
-        message: `Advance payment verified. Your appointment with ${target?.designerName || 'Designer'} on ${target?.date || 'Date'} is confirmed. Remaining 70% (₹${target?.remainingAmount || 700}) is payable after the session.`,
-        date: 'Just now',
+        message: `Advance payment verified. Your appointment with ${target?.designerName || 'Designer'} on ${formatDate(target?.date, target?.date || 'Date')} is confirmed. Remaining 70% (₹${target?.remainingAmount || 700}) is payable after the session.`,
+        timestamp: nowIso,
         read: false,
         bookingId,
+        link: `/customer/bookings/${bookingId}`,
       };
       setCustomerNotifications((prev) => [custNotif, ...prev]);
 
@@ -488,6 +599,8 @@ export function AppProvider({ children }) {
    */
   const cancelBooking = useCallback(
     (bookingId, reason = 'Customer requested cancellation') => {
+      const nowIso = new Date().toISOString();
+      const target = bookings.find((b) => b.id === bookingId);
       setBookings((prev) =>
         prev.map((b) => {
           if (b.id !== bookingId) return b;
@@ -495,14 +608,28 @@ export function AppProvider({ children }) {
             ...b,
             status: 'Cancelled',
             cancelReason: reason,
+            updatedAt: nowIso,
             paymentStatus: b.paymentStatus === 'Advance Paid (30%)' ? 'Refund Initiated' : 'Cancelled',
           };
         })
       );
 
+      const custNotif = {
+        id: `notif-cust-${Date.now()}`,
+        type: 'booking',
+        role: 'customer',
+        title: 'Booking Cancelled',
+        message: `Booking #${bookingId} with ${target?.designerName || 'Designer'} has been cancelled.`,
+        timestamp: nowIso,
+        read: false,
+        bookingId,
+        link: `/customer/bookings/${bookingId}`,
+      };
+      setCustomerNotifications((prev) => [custNotif, ...prev]);
+
       addToast(`Booking #${bookingId} cancelled.`, 'info');
     },
-    [addToast]
+    [bookings, addToast]
   );
 
   /**
@@ -510,6 +637,8 @@ export function AppProvider({ children }) {
    */
   const completeBooking = useCallback(
     (bookingId) => {
+      const nowIso = new Date().toISOString();
+      const target = bookings.find((b) => b.id === bookingId);
       setBookings((prev) =>
         prev.map((b) => {
           if (b.id !== bookingId) return b;
@@ -518,12 +647,64 @@ export function AppProvider({ children }) {
             status: 'Completed',
             paymentStatus: 'Fully Paid',
             totalPaid: b.designerFee || b.amount || 999,
-            timeline: b.timeline.map((item) => ({ ...item, completed: true, active: false })),
+            updatedAt: nowIso,
+            timeline: (b.timeline || []).map((item) => ({ ...item, completed: true, active: false })),
           };
         })
       );
 
+      const custNotif = {
+        id: `notif-cust-${Date.now()}`,
+        type: 'booking',
+        role: 'customer',
+        title: 'Session Completed',
+        message: `Your styling session #${bookingId} with ${target?.designerName || 'your designer'} is marked as completed.`,
+        timestamp: nowIso,
+        read: false,
+        bookingId,
+        link: `/customer/bookings/${bookingId}`,
+      };
+      setCustomerNotifications((prev) => [custNotif, ...prev]);
+
       addToast(`Styling session #${bookingId} marked as completed!`, 'success');
+    },
+    [bookings, addToast]
+  );
+
+  /**
+   * 8. RESCHEDULE SESSION
+   */
+  const rescheduleBooking = useCallback(
+    (bookingId, newDate, newTime) => {
+      const nowIso = new Date().toISOString();
+      setBookings((prev) =>
+        prev.map((b) => {
+          if (b.id !== bookingId) return b;
+          return {
+            ...b,
+            date: newDate,
+            time: newTime,
+            startTime: newTime,
+            status: 'Rescheduled',
+            updatedAt: nowIso,
+          };
+        })
+      );
+
+      const custNotif = {
+        id: `notif-cust-${Date.now()}`,
+        type: 'booking',
+        role: 'customer',
+        title: 'Booking Rescheduled',
+        message: `Booking #${bookingId} rescheduled to ${formatDate(newDate, newDate)} at ${newTime}.`,
+        timestamp: nowIso,
+        read: false,
+        bookingId,
+        link: `/customer/bookings/${bookingId}`,
+      };
+      setCustomerNotifications((prev) => [custNotif, ...prev]);
+
+      addToast('Booking successfully rescheduled! Stylist notified.', 'success');
     },
     [addToast]
   );
@@ -538,6 +719,8 @@ export function AppProvider({ children }) {
         toggleWishlist,
         isInWishlist,
         bookings,
+        bookingConfirmation,
+        clearBookingConfirmation,
         createBookingRequest,
         acceptBookingRequest,
         rejectBookingRequest,
@@ -545,6 +728,7 @@ export function AppProvider({ children }) {
         payAdvancePayment,
         cancelBooking,
         completeBooking,
+        rescheduleBooking,
         customerNotifications,
         designerNotifications,
         adminNotifications,

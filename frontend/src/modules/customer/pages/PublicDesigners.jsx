@@ -17,7 +17,8 @@ const CATEGORY_TABS = [
   { id: 'bridal', label: 'Bridal & Groom' },
 ];
 
-export default function PublicDesigners({ role = 'public' }) {
+export default function PublicDesigners({ role = 'public', isCustomerView = false }) {
+  const effectiveRole = isCustomerView ? 'customer' : role;
   const [searchParams] = useSearchParams();
   const initialSearch = searchParams.get('search') || '';
   const { selectedCity } = useApp();
@@ -68,6 +69,8 @@ export default function PublicDesigners({ role = 'public' }) {
       const matchSearch =
         des.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         des.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (des.locality || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (des.location || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
         des.specializations.some((s) => s.toLowerCase().includes(searchQuery.toLowerCase()));
 
       // Specialization
@@ -180,6 +183,19 @@ export default function PublicDesigners({ role = 'public' }) {
 
           <div className="zorevi-filter-select-wrap">
             <select
+              value={selectedLocation}
+              onChange={(e) => setSelectedLocation(e.target.value)}
+              className="zorevi-filter-select"
+            >
+              <option value="All">All Locations</option>
+              <option value="Hyderabad">Hyderabad</option>
+              <option value="Mumbai">Mumbai</option>
+              <option value="Bengaluru">Bengaluru</option>
+            </select>
+          </div>
+
+          <div className="zorevi-filter-select-wrap">
+            <select
               value={budgetTier}
               onChange={(e) => setBudgetTier(e.target.value)}
               className="zorevi-filter-select"
@@ -205,14 +221,14 @@ export default function PublicDesigners({ role = 'public' }) {
             </select>
           </div>
 
-          <button className="zorevi-btn zorevi-btn--ghost zorevi-btn--sm" onClick={clearFilters}>
+          <button type="button" className="zorevi-btn zorevi-btn--ghost zorevi-btn--sm" onClick={clearFilters}>
             Clear
           </button>
         </div>
 
         {/* Active Filters count summary */}
         <div className="zorevi-filter-summary">
-          <span>Showing <strong>{filteredDesigners.length}</strong> verified stylists available in {selectedCity}</span>
+          <span>Showing <strong>{filteredDesigners.length}</strong> verified stylists{selectedLocation === 'All' ? ` across ${selectedCity} & partner cities` : ` in ${selectedLocation}`}</span>
         </div>
       </div>
 
@@ -225,14 +241,15 @@ export default function PublicDesigners({ role = 'public' }) {
               designer={designer}
               onBook={handleBook}
               showBookBtn={true}
-              role={role}
+              role={effectiveRole}
             />
           ))}
         </div>
       ) : (
-        <div className="zorevi-no-results">
-          <p>No designers match your active filters.</p>
-          <button className="zorevi-btn zorevi-btn--primary" onClick={clearFilters}>
+        <div className="zorevi-empty-state">
+          <h3>No designers match your active filters</h3>
+          <p>Try adjusting your category, city, or search filters.</p>
+          <button type="button" className="zorevi-btn zorevi-btn--primary" onClick={clearFilters}>
             Reset All Filters
           </button>
         </div>

@@ -2,17 +2,32 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Bell, CheckCheck, Calendar, CreditCard, MessageCircle, Star,
-  AlertCircle, ChevronRight, CheckCircle2, User, Heart, Settings
+  ChevronRight, CheckCircle2, User, Heart, Settings
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { useAuth } from '../../context/AuthContext';
+import { formatDateTime, isCustomerBooking, parseValidDate } from '../../utils';
 import './NotificationCenter.css';
+
+function formatNotificationTimestamp(notif) {
+  const candidate = notif?.timestamp || notif?.createdAt || notif?.date;
+  const parsed = parseValidDate(candidate);
+  if (parsed) {
+    return formatDateTime(parsed);
+  }
+  if (typeof notif?.date === 'string' && notif.date.trim() && notif.date.trim().toLowerCase() !== 'invalid date') {
+    return notif.date;
+  }
+  return 'Recently';
+}
 
 export default function NotificationCenter({ role = 'customer' }) {
   const {
     customerNotifications,
     designerNotifications,
     adminNotifications,
+    bookings,
+    wishlist,
     markNotificationRead,
     markAllNotificationsRead,
     addToast,
@@ -21,6 +36,8 @@ export default function NotificationCenter({ role = 'customer' }) {
   const navigate = useNavigate();
 
   const [activeFilter, setActiveFilter] = useState('all');
+
+  const customerBookingsCount = (bookings || []).filter((b) => isCustomerBooking(b, user)).length;
 
   const notifications = role === 'customer'
     ? customerNotifications
@@ -111,7 +128,7 @@ export default function NotificationCenter({ role = 'customer' }) {
                         <span className="zorevi-notif-item__dot"></span>
                       </div>
                       <p>{notif.message}</p>
-                      <small>{new Date(notif.timestamp).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}</small>
+                      <small>{formatNotificationTimestamp(notif)}</small>
                     </div>
                     <ChevronRight size={16} className="zorevi-notif-item__arrow" />
                   </div>
@@ -139,7 +156,7 @@ export default function NotificationCenter({ role = 'customer' }) {
                         <strong>{notif.title}</strong>
                       </div>
                       <p>{notif.message}</p>
-                      <small>{new Date(notif.timestamp).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}</small>
+                      <small>{formatNotificationTimestamp(notif)}</small>
                     </div>
                     <ChevronRight size={16} className="zorevi-notif-item__arrow" />
                   </div>
@@ -180,12 +197,12 @@ export default function NotificationCenter({ role = 'customer' }) {
             <div className="zorevi-notifs-quick-stats">
               <Link to="/customer/bookings" className="zorevi-notifs-stat-box">
                 <Calendar size={18} color="#7C3AED" />
-                <strong>6</strong>
+                <strong>{customerBookingsCount}</strong>
                 <span>My Bookings</span>
               </Link>
               <Link to="/customer/wishlist" className="zorevi-notifs-stat-box">
                 <Heart size={18} color="#EC4899" />
-                <strong>18</strong>
+                <strong>{wishlist?.length || 0}</strong>
                 <span>My Wishlist</span>
               </Link>
               <Link to="/customer/reviews" className="zorevi-notifs-stat-box">

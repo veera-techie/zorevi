@@ -69,6 +69,7 @@ import AdminSupportReviews from './modules/admin/pages/AdminSupportReviews';
 
 // Shared Components
 import ScrollToTop from './components/common/ScrollToTop';
+import BookingConfirmationModal from './components/cards/BookingConfirmationModal';
 import BookingChat from './modules/shared/BookingChat';
 import NotificationCenter from './modules/shared/NotificationCenter';
 import NotFoundPage from './modules/shared/NotFoundPage';
@@ -78,6 +79,7 @@ function App() {
   return (
     <>
       <ScrollToTop />
+      <BookingConfirmationModal />
       <Routes>
       {/* ========================================================
           1. PUBLIC ROUTES

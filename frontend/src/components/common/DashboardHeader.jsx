@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Search, MapPin, Heart, Bell, ChevronDown, LogOut, User, Settings, Menu, Home } from 'lucide-react';
+import { Search, MapPin, Heart, Bell, ChevronDown, LogOut, User, Settings, Menu, Home, Calendar } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
 import HeaderLocationSelector from './HeaderLocationSelector';
@@ -94,8 +94,17 @@ export default function DashboardHeader({ onToggleSidebar, profileDrawerOpen = f
         {role === 'customer' && (
           <>
             <div className="zorevi-dash-header__divider" aria-hidden="true" />
-            <Link to="/customer" className="zorevi-dash-header__home-link">
+            <Link
+              to="/customer"
+              className={`zorevi-dash-header__home-link ${location.pathname === '/customer' ? 'is-active' : ''}`}
+            >
               <Home size={18} /> <span>Home</span>
+            </Link>
+            <Link
+              to="/customer/bookings"
+              className={`zorevi-dash-header__home-link zorevi-dash-header__bookings-link ${location.pathname.startsWith('/customer/bookings') ? 'is-active' : ''}`}
+            >
+              <Calendar size={18} /> <span>My Bookings</span>
             </Link>
             <div className="zorevi-dash-header__location-wrap">
               <HeaderLocationSelector />

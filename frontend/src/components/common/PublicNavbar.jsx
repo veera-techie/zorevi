@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Search, Heart, Bell, ShoppingBag, Menu, X, ChevronDown, LogOut, User, Settings } from 'lucide-react';
+import { Search, Heart, Bell, ShoppingBag, Menu, X, ChevronDown, LogOut, User, Settings, Calendar } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
 import HeaderLocationSelector from './HeaderLocationSelector';
@@ -99,6 +99,16 @@ export default function PublicNavbar() {
           <div className="navbar__actions">
             {isAuthenticated ? (
               <>
+                {user?.role === 'customer' && (
+                  <Link
+                    to="/customer/bookings"
+                    className="navbar__action-btn"
+                    title="My Bookings"
+                    aria-label="My Bookings"
+                  >
+                    <Calendar size={20} />
+                  </Link>
+                )}
                 <Link to={`/${user.role}/wishlist`} className="navbar__action-btn" title="Wishlist" aria-label="Wishlist">
                   <Heart size={20} />
                 </Link>
@@ -119,6 +129,11 @@ export default function PublicNavbar() {
                         <strong>{user.name}</strong>
                         <span>{user.email}</span>
                       </div>
+                      {user.role === 'customer' && (
+                        <Link to="/customer/bookings" className="navbar__dropdown-item" onClick={() => setShowUserDropdown(false)}>
+                          <Calendar size={16} /> My Bookings
+                        </Link>
+                      )}
                       <Link to={`/${user.role}/profile`} className="navbar__dropdown-item" onClick={() => setShowUserDropdown(false)}>
                         <User size={16} /> My Profile
                       </Link>
@@ -176,6 +191,9 @@ export default function PublicNavbar() {
             <Link to="/">Home</Link>
             <Link to="/explore/designers">Explore Designers</Link>
             <Link to="/explore/fashion-hubs">Fashion Hubs</Link>
+            {isAuthenticated && user?.role === 'customer' && (
+              <Link to="/customer/bookings">My Bookings</Link>
+            )}
             <Link to="/categories">Fashion Categories</Link>
             <Link to="/for-designers">For Designers</Link>
             <Link to="/help">Help & Support</Link>

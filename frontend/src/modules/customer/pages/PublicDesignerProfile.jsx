@@ -9,6 +9,7 @@ import { publicDesigners } from '../../../services/publicDiscoveryData';
 import BookingModal from '../../../components/cards/BookingModal';
 import CustomerAccessDialog from '../../../components/common/CustomerAccessDialog';
 import ImageWithFallback from '../../../components/common/ImageWithFallback';
+import SocialProfileLinks from '../../../components/common/SocialProfileLinks';
 import { useAuth } from '../../../context/AuthContext';
 import { useApp } from '../../../context/AppContext';
 import './PublicDesignerProfile.css';
@@ -150,6 +151,10 @@ export default function PublicDesignerProfile({ role = 'public' }) {
               <span className="zorevi-badge zorevi-badge--default">
                 <Sparkles size={13} /> Custom Designs
               </span>
+            </div>
+            <div className="zorevi-profile-social-row">
+              <span>Follow designer</span>
+              <SocialProfileLinks accounts={designer.socialAccounts} owner={designer.name} />
             </div>
           </div>
 
@@ -312,6 +317,13 @@ export default function PublicDesignerProfile({ role = 'public' }) {
                     </div>
                   ))}
                 </div>
+                <button
+                  type="button"
+                  className="zorevi-profile-check-availability"
+                  onClick={handleBookingClick}
+                >
+                  <Calendar size={15} /> Check custom availability
+                </button>
               </div>
             </div>
           </div>

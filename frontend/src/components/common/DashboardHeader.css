@@ -133,7 +133,8 @@
   transition: color 150ms ease, background-color 150ms ease;
 }
 
-.zorevi-dash-header--customer .zorevi-dash-header__home-link:hover {
+.zorevi-dash-header--customer .zorevi-dash-header__home-link:hover,
+.zorevi-dash-header--customer .zorevi-dash-header__home-link.is-active {
   color: #7c3aed;
   background: #f5f0ff;
 }
@@ -552,6 +553,10 @@
     gap: 4px;
     padding: 0 8px;
     font-size: 0.76rem;
+  }
+
+  .zorevi-dash-header--customer .zorevi-dash-header__bookings-link {
+    display: none;
   }
 
   .zorevi-dash-header--customer .zorevi-dash-header__center {

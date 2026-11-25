@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Heart, Star, MapPin, CheckCircle2, Check, Briefcase, Shirt, Sparkles } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import ImageWithFallback from '../common/ImageWithFallback';
+import SocialProfileLinks from '../common/SocialProfileLinks';
 import './Cards.css';
 
 function getSpecializationIcon(title) {
@@ -109,6 +110,15 @@ export default function DesignerCard({
     );
   }
 
+  const formattedReviews = designer.reviewCount
+    ? (designer.reviewCount >= 1000 ? `${(designer.reviewCount / 1000).toFixed(1)}k` : `${designer.reviewCount}`)
+    : '0';
+
+  const socialAccounts = designer.socialAccounts || {
+    instagram: `https://instagram.com/${(designer.name || 'zorevi').toLowerCase().replace(/[^a-z0-9]+/g, '')}`,
+    youtube: `https://youtube.com/@${(designer.name || 'zorevi').toLowerCase().replace(/[^a-z0-9]+/g, '')}`,
+  };
+
   return (
     <div className="zorevi-designer-card">
       <div className="zorevi-designer-card__img-wrap">
@@ -120,40 +130,64 @@ export default function DesignerCard({
             fallbackType="designer"
           />
         </Link>
+        {designer.isVerified && (
+          <span className="zorevi-designer-card__badge-tag">
+            <Check size={11} strokeWidth={3} /> Verified
+          </span>
+        )}
         <button
+          type="button"
           className={`zorevi-designer-card__wishlist-btn ${isSaved ? 'active' : ''}`}
           onClick={handleWishlistClick}
           aria-label={isSaved ? 'Remove from wishlist' : 'Save to wishlist'}
         >
-          <Heart size={18} fill={isSaved ? '#EC4899' : 'none'} color={isSaved ? '#EC4899' : '#6B7280'} />
+          <Heart size={16} fill={isSaved ? '#EC4899' : 'none'} color={isSaved ? '#EC4899' : '#6B7280'} />
         </button>
       </div>
 
       <div className="zorevi-designer-card__body">
         <div className="zorevi-designer-card__header">
-          <div>
-            <div className="zorevi-designer-card__name-row">
-              <Link to={profileUrl} onClick={handleScrollTop} className="zorevi-designer-card__name">
-                {designer.name}
-              </Link>
-              {designer.isVerified && (
-                <CheckCircle2 size={16} className="zorevi-designer-card__verified-icon" title="Verified Designer" />
-              )}
+          <div className="zorevi-designer-card__name-row">
+            <Link to={profileUrl} onClick={handleScrollTop} className="zorevi-designer-card__name">
+              {designer.name}
+            </Link>
+            {designer.isVerified && (
+              <CheckCircle2 size={15} className="zorevi-designer-card__verified-icon" title="Verified Designer" />
+            )}
+          </div>
+
+          <div className="zorevi-designer-card__rating-row" title={`${designer.rating} rating (${formattedReviews} reviews)`}>
+            <div className="zorevi-designer-card__stars">
+              <Star size={12} fill="#F59E0B" color="#F59E0B" />
+              <span>{designer.rating}</span>
             </div>
-            <div className="zorevi-designer-card__role">
-              {designer.title} • {designer.experience}
-            </div>
+            <span className="zorevi-designer-card__reviews">({formattedReviews})</span>
           </div>
         </div>
 
-        <div className="zorevi-designer-card__rating-row">
-          <div className="zorevi-designer-card__stars">
-            <Star size={14} fill="#F59E0B" color="#F59E0B" />
-            <span>{designer.rating}</span>
+        <div className="zorevi-designer-card__role">
+          {designer.title}
+        </div>
+
+        <p className="zorevi-designer-card__bio">
+          {designer.bio || `${designer.brandName || designer.name} • Personalized styling and occasion wardrobe curation.`}
+        </p>
+
+        <div className="zorevi-designer-card__meta-grid">
+          <div className="zorevi-designer-card__location-row">
+            <MapPin size={13} color="#7C3AED" />
+            <span>
+              {designer.locality ? `${designer.locality}, ` : ''}
+              {designer.location} • {designer.distance || '2.4 km'}
+            </span>
           </div>
-          <span className="zorevi-designer-card__reviews">
-            ({designer.reviewCount ? `${(designer.reviewCount / 1000).toFixed(1)}k` : '0'} reviews)
-          </span>
+          <div className="zorevi-designer-card__location-row">
+            <Briefcase size={13} color="#7C3AED" />
+            <span>
+              {designer.experience}
+              {designer.completedBookings ? ` • ${designer.completedBookings}+ sessions` : ''}
+            </span>
+          </div>
         </div>
 
         <div className="zorevi-designer-card__tags">
@@ -164,9 +198,9 @@ export default function DesignerCard({
           ))}
         </div>
 
-        <div className="zorevi-designer-card__location-row">
-          <MapPin size={13} />
-          <span>{designer.location} • {designer.distance || '2.4 km'}</span>
+        <div className="zorevi-designer-card__social-row">
+          <span className="zorevi-designer-card__social-label">Follow work</span>
+          <SocialProfileLinks accounts={socialAccounts} owner={designer.name} />
         </div>
 
         <div className="zorevi-designer-card__footer">
@@ -177,10 +211,11 @@ export default function DesignerCard({
 
           <div className="zorevi-designer-card__actions">
             <Link to={profileUrl} onClick={handleScrollTop} className="zorevi-btn zorevi-btn--outline zorevi-btn--sm">
-              View Profile
+              Profile
             </Link>
             {showBookBtn && (
               <button
+                type="button"
                 className="zorevi-btn zorevi-btn--primary zorevi-btn--sm"
                 onClick={() => onBook && onBook(designer)}
               >

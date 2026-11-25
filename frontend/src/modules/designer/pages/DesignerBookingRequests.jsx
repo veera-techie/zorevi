@@ -7,6 +7,7 @@ import {
 import Modal from '../../../components/common/Modal';
 import { useApp } from '../../../context/AppContext';
 import ImageWithFallback from '../../../components/common/ImageWithFallback';
+import { formatDate, formatDateTime, normalizeBookingStatusKey } from '../../../utils';
 
 export default function DesignerBookingRequests() {
   const { bookings, acceptBookingRequest, rejectBookingRequest, proposeAlternativeSlot, addToast } = useApp();
@@ -25,13 +26,15 @@ export default function DesignerBookingRequests() {
   const [rejectReason, setRejectReason] = useState('Schedule fully booked during this time');
 
   // Bookings that are requests
-  const pendingRequests = (bookings || []).filter(
-    (b) => b.status === 'Pending Confirmation' || b.status === 'Pending' || b.status === 'Alternative Proposed'
-  );
+  const pendingRequests = (bookings || []).filter((b) => {
+    const key = normalizeBookingStatusKey(b.status);
+    return key === 'pending' || key === 'alternative';
+  });
 
-  const allRequests = (bookings || []).filter(
-    (b) => b.status === 'Pending Confirmation' || b.status === 'Pending' || b.status === 'Alternative Proposed' || b.status === 'Declined' || b.status === 'Awaiting Payment'
-  );
+  const allRequests = (bookings || []).filter((b) => {
+    const key = normalizeBookingStatusKey(b.status);
+    return key === 'pending' || key === 'alternative' || key === 'rejected' || key === 'accepted';
+  });
 
   const displayRequests = activeTab === 'pending' ? pendingRequests : allRequests;
 
@@ -127,8 +130,9 @@ export default function DesignerBookingRequests() {
       {displayRequests.length > 0 ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {displayRequests.map((req) => {
-            const isPending = req.status === 'Pending Confirmation' || req.status === 'Pending';
-            const isAwaitingPay = req.status === 'Awaiting Payment';
+            const reqKey = normalizeBookingStatusKey(req.status);
+            const isPending = reqKey === 'pending';
+            const isAwaitingPay = reqKey === 'accepted';
             const fee = Number(req.designerFee || req.amount || 999);
             const advance = Math.round(fee * 0.3);
 
@@ -162,6 +166,9 @@ export default function DesignerBookingRequests() {
                       </div>
                       <span style={{ fontSize: '0.82rem', color: '#6B7280' }}>
                         {req.customerEmail || 'customer@zorevi.com'} • {req.customerPhone || '+91 98765 43210'}
+                      </span>
+                      <span style={{ display: 'block', fontSize: '0.76rem', color: '#9CA3AF', marginTop: '2px' }}>
+                        Submitted: {formatDateTime(req.createdAt || req.submittedAt)}
                       </span>
                     </div>
                   </div>
@@ -210,7 +217,7 @@ export default function DesignerBookingRequests() {
                       Requested Schedule
                     </span>
                     <strong style={{ color: '#1E1B4B', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <Calendar size={13} color="#7C3AED" /> {req.date} at {req.time || req.startTime}
+                      <Calendar size={13} color="#7C3AED" /> {formatDate(req.date, req.date)} at {req.time || req.startTime}
                     </strong>
                     <span style={{ color: '#6B7280', fontSize: '0.78rem' }}>
                       {req.meetingLocation || req.location?.mallName || 'Lakeside Fashion Mall'}

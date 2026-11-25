@@ -5,15 +5,19 @@ import {
   LayoutDashboard, Search, Heart, Building2
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { useApp } from '../../context/AppContext';
+import { isCustomerBooking } from '../../utils';
 import './Sidebar.css';
 import './CustomerSidebar.css';
 
 export default function CustomerSidebar({ isOpen, onClose }) {
   const { user, logout } = useAuth();
+  const { bookings } = useApp();
   const navigate = useNavigate();
   const location = useLocation();
   const drawerRef = useRef(null);
   const closeButtonRef = useRef(null);
+  const customerBookingsCount = (bookings || []).filter((b) => isCustomerBooking(b, user)).length;
 
   useEffect(() => {
     if (!isOpen) return undefined;
@@ -64,7 +68,7 @@ export default function CustomerSidebar({ isOpen, onClose }) {
     { label: 'Dashboard', path: '/customer', icon: LayoutDashboard },
     { label: 'Find Designers', path: '/customer/designers', icon: Search },
     { label: 'Fashion Hubs', path: '/customer/fashion-hubs', icon: Building2 },
-    { label: 'My Bookings', path: '/customer/bookings', icon: Calendar },
+    { label: 'My Bookings', path: '/customer/bookings', icon: Calendar, count: customerBookingsCount },
     { label: 'Saved Wishlist', path: '/customer/wishlist', icon: Heart },
     { label: 'My Profile', path: '/customer/profile', icon: User },
     { label: 'Settings', path: '/customer/settings', icon: Settings },
@@ -144,6 +148,11 @@ export default function CustomerSidebar({ isOpen, onClose }) {
               >
                 <Icon size={19} aria-hidden="true" />
                 <span>{item.label}</span>
+                {item.count > 0 && (
+                  <span style={{ marginLeft: 'auto', fontSize: '0.75rem', fontWeight: 700, padding: '2px 8px', borderRadius: '9999px', background: '#F5F0FF', color: '#7C3AED' }}>
+                    {item.count}
+                  </span>
+                )}
               </NavLink>
             );
           })}

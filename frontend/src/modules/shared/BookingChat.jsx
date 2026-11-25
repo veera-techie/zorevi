@@ -14,10 +14,13 @@ import './BookingChat.css';
 export default function BookingChat({ role = 'customer' }) {
   const { bookingId } = useParams();
   const { user } = useAuth();
-  const { addToast } = useApp();
+  const { addToast, bookings } = useApp();
 
   // Find active booking
-  const currentBooking = mockBookings.find((b) => b.id === (bookingId || 'ZV-8402')) || mockBookings[0];
+  const currentBooking =
+    (bookings || []).find((b) => b.id === (bookingId || 'ZV-8402')) ||
+    mockBookings.find((b) => b.id === (bookingId || 'ZV-8402')) ||
+    mockBookings[0];
   const isCustomer = role === 'customer';
   const partnerName = isCustomer ? currentBooking.designerName : currentBooking.customerName;
   const partnerAvatar = isCustomer ? currentBooking.designerAvatar : currentBooking.customerAvatar;

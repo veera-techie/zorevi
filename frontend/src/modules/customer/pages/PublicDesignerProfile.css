@@ -100,6 +100,41 @@
   gap: 8px;
 }
 
+.zorevi-profile-social-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  color: #6b7280;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.zorevi-profile-check-availability {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 38px;
+  margin-top: 14px;
+  padding: 8px 12px;
+  color: #6d28d9;
+  border: 1px solid #ddd6fe;
+  border-radius: 10px;
+  background: #fff;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 140ms ease, border-color 140ms ease;
+}
+
+.zorevi-profile-check-availability:hover,
+.zorevi-profile-check-availability:focus-visible {
+  border-color: #c4b5fd;
+  background: #faf7ff;
+}
+
 .zorevi-profile-actions-col {
   display: flex;
   flex-direction: column;

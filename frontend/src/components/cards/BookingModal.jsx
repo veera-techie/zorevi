@@ -102,6 +102,29 @@ const TIME_SLOTS = {
   evening: ['05:30 PM', '06:00 PM', '06:30 PM', '07:00 PM', '07:30 PM', '08:00 PM'],
 };
 
+function getLocalIsoDate(offsetDays = 0) {
+  const date = new Date();
+  date.setDate(date.getDate() + offsetDays);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function buildQuickDateOptions() {
+  return [0, 1, 2, 3, 4].map((offset) => {
+    const d = new Date();
+    d.setDate(d.getDate() + offset);
+    const label =
+      offset === 0
+        ? 'Today'
+        : offset === 1
+        ? 'Tomorrow'
+        : d.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' });
+    return { label, date: getLocalIsoDate(offset) };
+  });
+}
+
 export default function BookingModal({
   isOpen,
   onClose,
@@ -114,7 +137,7 @@ export default function BookingModal({
   const { user } = useAuth();
   const { addToast, createBookingRequest, payAdvancePayment } = useApp();
 
-  // Mode: 'form' | 'submitted' | 'payment'
+  // Mode: 'form' | 'payment'
   const [viewMode, setViewMode] = useState(bookingToPay || initialStep === 9 || initialStep === 8 ? 'payment' : 'form');
 
   // Designer
@@ -134,13 +157,19 @@ export default function BookingModal({
   const [customBudgetValue, setCustomBudgetValue] = useState('35,000');
 
   // Section 4: Date, Venue & Times
-  const [bookingDate, setBookingDate] = useState('2025-11-25');
+  const quickDateOptions = useMemo(() => buildQuickDateOptions(), []);
+  const [bookingDate, setBookingDate] = useState(() => getLocalIsoDate(0));
   const [bookingTime, setBookingTime] = useState('11:00 AM');
   const [isCustomTime, setIsCustomTime] = useState(false);
   const [customTimeInput, setCustomTimeInput] = useState('');
   const [meetingType, setMeetingType] = useState('Mall Styling Session');
   const [selectedMall, setSelectedMall] = useState(preselectedHub || REAL_FASHION_HUBS[0] || mockMalls[0]);
   const [additionalNotes, setAdditionalNotes] = useState('');
+
+  // Submission & validation states
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
+  const [submitError, setSubmitError] = useState('');
 
   // Post-submit & Payment states
   const [createdBooking, setCreatedBooking] = useState(bookingToPay || null);
@@ -163,6 +192,9 @@ export default function BookingModal({
     } else {
       setViewMode('form');
     }
+    setFormErrors({});
+    setSubmitError('');
+    setIsSubmitting(false);
   }, [initialDesigner, preselectedHub, bookingToPay, initialStep, isOpen]);
 
   // Available services for current occasion
@@ -206,42 +238,109 @@ export default function BookingModal({
   const activeAdvance = Math.round(activeFee * 0.3);
   const activeRemaining = activeFee - activeAdvance;
 
+  // Validate required booking fields
+  const validateBookingForm = () => {
+    const errors = {};
+    if (!designer?.id && !designer?.name) {
+      errors.designer = 'Please select a designer.';
+    }
+    if (!selectedOccasion?.id) {
+      errors.occasion = 'Please select an occasion.';
+    }
+    if (!selectedServices || selectedServices.length === 0) {
+      errors.services = 'Please select at least one styling service.';
+    }
+    if (!shoppingBudget) {
+      errors.budget = 'Please select your estimated shopping budget.';
+    } else if (shoppingBudget === 'Custom Budget') {
+      const numericBudget = Number(String(customBudgetValue || '').replace(/[^0-9.]/g, ''));
+      if (!numericBudget || numericBudget <= 0) {
+        errors.budget = 'Please enter a valid custom wardrobe budget amount.';
+      }
+    }
+    if (!meetingType) {
+      errors.venue = 'Please select a session experience & meeting venue.';
+    } else if (meetingType === 'Mall Styling Session' && !selectedMall?.id) {
+      errors.venue = 'Please select a fashion hub or shopping mall.';
+    }
+    if (!bookingDate || Number.isNaN(new Date(`${bookingDate}T00:00:00`).getTime())) {
+      errors.date = 'Please choose a valid session date.';
+    }
+    const finalTime = isCustomTime ? customTimeInput.trim() : bookingTime;
+    if (!finalTime) {
+      errors.time = isCustomTime
+        ? 'Please enter your preferred custom time slot.'
+        : 'Please select a preferred time slot.';
+    }
+    return errors;
+  };
+
   // Submit Booking Request
-  const handleSubmitBookingRequest = (e) => {
+  const handleSubmitBookingRequest = async (e) => {
     e?.preventDefault();
+    if (isSubmitting) return;
+
+    const errors = validateBookingForm();
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      setSubmitError('Please review the highlighted fields before submitting.');
+      addToast(Object.values(errors)[0], 'error');
+      return;
+    }
+
+    setFormErrors({});
+    setSubmitError('');
+    setIsSubmitting(true);
+
     const finalBudget = shoppingBudget === 'Custom Budget' ? `Custom (₹${customBudgetValue})` : shoppingBudget;
-    const finalTime = isCustomTime && customTimeInput ? customTimeInput : bookingTime;
+    const finalTime = isCustomTime ? customTimeInput.trim() : bookingTime;
+    const resolvedVenue =
+      meetingType === 'Mall Styling Session'
+        ? selectedMall.name
+        : meetingType === 'Designer Studio'
+        ? `${designer.name}'s Studio Atelier`
+        : 'Online Video Consultation';
 
     const draft = {
       customerId: user?.id || 'cust-001',
       customerName: user?.name || 'Praveen Kumar',
-      customerAvatar: user?.avatar || '/zorevi-icon.svg',
+      customerAvatar: user?.avatar || '/images/customer-praveen.png',
       customerPhone: user?.phone || '+91 98765 43210',
       customerEmail: user?.email || 'praveen.kumar@email.com',
-      designer: designer,
+      designer,
       designerFee: calculatedServiceFee,
       occasion: selectedOccasion.label,
       services: selectedServices.map((s) => s.name),
       category: fashionCategory,
-      clothingPreference: 'Contemporary & Occasion Wear',
-      preferredStyles: ['Modern', 'Tailored Regular'],
-      preferredColors: 'Palette tailored to selected occasion',
-      outfitRequirements: additionalNotes || 'Curated styling matching the selected occasion and schedule.',
-      specialInstructions: 'Private trial lounge coordination requested.',
-      referenceImages: [],
+      preferences: {
+        clothingPreference: 'Contemporary & Occasion Wear',
+        preferredStyles: ['Modern', 'Tailored Regular'],
+        colorPreferences: 'Palette tailored to selected occasion',
+        outfitRequirements: additionalNotes.trim() || 'Curated styling matching the selected occasion and schedule.',
+        specialInstructions: additionalNotes.trim() || 'Private trial lounge coordination requested.',
+        referenceImages: [],
+      },
       shoppingBudget: finalBudget,
       date: bookingDate,
       time: finalTime,
       meetingType,
-      meetingLocation: meetingType === 'Mall Styling Session'
-        ? selectedMall.name
-        : (meetingType === 'Designer Studio' ? `${designer.name}'s Studio Atelier` : 'Online Video Consultation'),
-      notes: additionalNotes,
+      mall: meetingType === 'Mall Styling Session' ? selectedMall : { name: resolvedVenue, locality: designer?.location || 'Hyderabad' },
+      meetingLocation: resolvedVenue,
+      notes: additionalNotes.trim(),
     };
 
-    const newBooking = createBookingRequest(draft);
-    setCreatedBooking(newBooking);
-    setViewMode('submitted');
+    try {
+      const newBooking = await createBookingRequest(draft);
+      setCreatedBooking(newBooking);
+      setIsSubmitting(false);
+      // Automatically close the booking modal & form after successful submission
+      onClose();
+    } catch (err) {
+      setIsSubmitting(false);
+      const errMessage = err?.message || 'Unable to submit booking request. Please try again.';
+      setSubmitError(errMessage);
+      addToast(errMessage, 'error');
+    }
   };
 
   // Pay 30% advance
@@ -258,7 +357,10 @@ export default function BookingModal({
   };
 
   const handleClose = () => {
+    if (isSubmitting) return;
     setPaymentDone(false);
+    setFormErrors({});
+    setSubmitError('');
     onClose();
   };
 
@@ -267,9 +369,7 @@ export default function BookingModal({
       isOpen={isOpen}
       onClose={handleClose}
       title={
-        viewMode === 'submitted'
-          ? 'Booking Request Submitted'
-          : viewMode === 'payment'
+        viewMode === 'payment'
           ? (paymentDone ? 'Booking Confirmed!' : '30% Advance Payment')
           : `Book Styling Session with ${designer?.name || 'Designer'}`
       }
@@ -405,14 +505,19 @@ export default function BookingModal({
                   <label className="zorevi-form-label">Enter Custom Wardrobe Budget (₹)</label>
                   <input
                     type="number"
+                    min="1"
                     className="zorevi-input"
                     value={customBudgetValue}
-                    onChange={(e) => setCustomBudgetValue(e.target.value)}
+                    onChange={(e) => {
+                      setCustomBudgetValue(e.target.value);
+                      if (formErrors.budget) setFormErrors((prev) => ({ ...prev, budget: undefined }));
+                    }}
                     placeholder="e.g. 75000"
                     style={{ maxWidth: '240px' }}
                   />
                 </div>
               )}
+              {formErrors.budget && <span className="zorevi-field-error">{formErrors.budget}</span>}
             </div>
 
             {/* SECTION 4: DATE, VENUE & TIMES (EXTENSIVE TIMES INCLUDED) */}
@@ -438,7 +543,10 @@ export default function BookingModal({
                       key={type.id}
                       type="button"
                       className={`zorevi-meeting-type-btn ${meetingType === type.id ? 'active' : ''}`}
-                      onClick={() => setMeetingType(type.id)}
+                      onClick={() => {
+                        setMeetingType(type.id);
+                        if (formErrors.venue) setFormErrors((prev) => ({ ...prev, venue: undefined }));
+                      }}
                     >
                       <type.icon size={15} />
                       <span>{type.label}</span>
@@ -458,6 +566,7 @@ export default function BookingModal({
                       const allHubs = [...REAL_FASHION_HUBS, ...mockMalls];
                       const m = allHubs.find((item) => item.id === e.target.value);
                       if (m) setSelectedMall(m);
+                      if (formErrors.venue) setFormErrors((prev) => ({ ...prev, venue: undefined }));
                     }}
                   >
                     {REAL_FASHION_HUBS.map((hub) => (
@@ -468,23 +577,21 @@ export default function BookingModal({
                   </select>
                 </div>
               )}
+              {formErrors.venue && <span className="zorevi-field-error">{formErrors.venue}</span>}
 
               {/* Preferred Date */}
               <div className="zorevi-form-group">
                 <label className="zorevi-form-label">Preferred Date</label>
                 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
-                  {[
-                    { label: 'Today', date: '2025-11-23' },
-                    { label: 'Tomorrow', date: '2025-11-24' },
-                    { label: 'Tue, 25 Nov', date: '2025-11-25' },
-                    { label: 'Wed, 26 Nov', date: '2025-11-26' },
-                    { label: 'Thu, 27 Nov', date: '2025-11-27' },
-                  ].map((d) => (
+                  {quickDateOptions.map((d) => (
                     <button
                       key={d.date}
                       type="button"
                       className={`zorevi-pill-btn ${bookingDate === d.date ? 'is-active' : ''}`}
-                      onClick={() => setBookingDate(d.date)}
+                      onClick={() => {
+                        setBookingDate(d.date);
+                        if (formErrors.date) setFormErrors((prev) => ({ ...prev, date: undefined }));
+                      }}
                     >
                       {d.label}
                     </button>
@@ -495,11 +602,15 @@ export default function BookingModal({
                     type="date"
                     className="zorevi-input"
                     value={bookingDate}
-                    onChange={(e) => setBookingDate(e.target.value)}
+                    onChange={(e) => {
+                      setBookingDate(e.target.value);
+                      if (formErrors.date) setFormErrors((prev) => ({ ...prev, date: undefined }));
+                    }}
                     style={{ maxWidth: '170px', padding: '6px 10px', fontSize: '0.85rem' }}
                     title="Choose specific date"
                   />
                 </div>
+                {formErrors.date && <span className="zorevi-field-error">{formErrors.date}</span>}
               </div>
 
               {/* Times Section - Extensive Slots Added */}
@@ -523,6 +634,7 @@ export default function BookingModal({
                         onClick={() => {
                           setBookingTime(slot);
                           setIsCustomTime(false);
+                          if (formErrors.time) setFormErrors((prev) => ({ ...prev, time: undefined }));
                         }}
                       >
                         {slot}
@@ -545,6 +657,7 @@ export default function BookingModal({
                         onClick={() => {
                           setBookingTime(slot);
                           setIsCustomTime(false);
+                          if (formErrors.time) setFormErrors((prev) => ({ ...prev, time: undefined }));
                         }}
                       >
                         {slot}
@@ -567,6 +680,7 @@ export default function BookingModal({
                         onClick={() => {
                           setBookingTime(slot);
                           setIsCustomTime(false);
+                          if (formErrors.time) setFormErrors((prev) => ({ ...prev, time: undefined }));
                         }}
                       >
                         {slot}
@@ -580,7 +694,10 @@ export default function BookingModal({
                   <button
                     type="button"
                     className={`zorevi-time-chip ${isCustomTime ? 'is-active' : ''}`}
-                    onClick={() => setIsCustomTime(true)}
+                    onClick={() => {
+                      setIsCustomTime(true);
+                      if (formErrors.time) setFormErrors((prev) => ({ ...prev, time: undefined }));
+                    }}
                   >
                     Custom Time
                   </button>
@@ -590,12 +707,16 @@ export default function BookingModal({
                       className="zorevi-input"
                       placeholder="e.g. 11:15 AM or 04:15 PM"
                       value={customTimeInput}
-                      onChange={(e) => setCustomTimeInput(e.target.value)}
+                      onChange={(e) => {
+                        setCustomTimeInput(e.target.value);
+                        if (formErrors.time) setFormErrors((prev) => ({ ...prev, time: undefined }));
+                      }}
                       style={{ maxWidth: '200px', padding: '6px 12px', fontSize: '0.85rem' }}
                       autoFocus
                     />
                   )}
                 </div>
+                {formErrors.time && <span className="zorevi-field-error">{formErrors.time}</span>}
               </div>
 
               {/* Special Instructions / Notes */}
@@ -639,13 +760,30 @@ export default function BookingModal({
               </div>
             </div>
 
+            {submitError && (
+              <div className="zorevi-form-error-banner" role="alert">
+                <AlertCircle size={18} style={{ flexShrink: 0, marginTop: '1px' }} />
+                <span>{submitError}</span>
+              </div>
+            )}
+
             {/* SUBMIT BUTTON */}
             <div className="zorevi-step-actions" style={{ marginTop: '12px' }}>
-              <button type="button" className="zorevi-btn zorevi-btn--ghost" onClick={handleClose}>
+              <button
+                type="button"
+                className="zorevi-btn zorevi-btn--ghost"
+                onClick={handleClose}
+                disabled={isSubmitting}
+              >
                 Cancel
               </button>
-              <button type="submit" className="zorevi-btn zorevi-btn--primary" style={{ padding: '12px 28px', fontSize: '0.95rem' }}>
-                <span>Submit Booking Request (₹{calculatedServiceFee})</span>
+              <button
+                type="submit"
+                className="zorevi-btn zorevi-btn--primary"
+                style={{ padding: '12px 28px', fontSize: '0.95rem' }}
+                disabled={isSubmitting}
+              >
+                <span>{isSubmitting ? 'Submitting Request...' : `Submit Booking Request (₹${calculatedServiceFee})`}</span>
                 <Check size={17} strokeWidth={3} />
               </button>
             </div>
@@ -653,103 +791,7 @@ export default function BookingModal({
         )}
 
         {/* =========================================================
-            MODE 2: BOOKING REQUEST SUBMITTED (PENDING CONFIRMATION)
-            ========================================================= */}
-        {viewMode === 'submitted' && (
-          <div className="zorevi-step-pane zorevi-step-status-pane">
-            <div className="zorevi-status-icon-wrap pending">
-              <Clock size={40} color="#D97706" />
-            </div>
-
-            <h3 className="zorevi-status-title">Booking Request Submitted!</h3>
-            <span className="zorevi-status-badge pending">Status: Pending Confirmation</span>
-
-            <p className="zorevi-status-lead">
-              Your styling inquiry has been routed directly to <strong>{designer.name}</strong>.
-            </p>
-
-            <div className="zorevi-status-info-card">
-              <div className="status-row">
-                <span>Booking Reference:</span>
-                <strong>#{createdBooking?.id || 'ZV-8490'}</strong>
-              </div>
-              <div className="status-row">
-                <span>Occasion & Category:</span>
-                <span>{selectedOccasion.label} ({fashionCategory})</span>
-              </div>
-              <div className="status-row">
-                <span>Requested Schedule:</span>
-                <span>{bookingDate} at {isCustomTime && customTimeInput ? customTimeInput : bookingTime}</span>
-              </div>
-              <div className="status-row">
-                <span>Meeting Location:</span>
-                <span>{meetingType === 'Mall Styling Session' ? selectedMall.name : meetingType}</span>
-              </div>
-              <div className="status-row">
-                <span>Designer Service Fee:</span>
-                <span>₹{calculatedServiceFee}</span>
-              </div>
-            </div>
-
-            <div className="zorevi-workflow-timeline-mini">
-              <h4>What happens next?</h4>
-              <div className="timeline-steps">
-                <div className="timeline-step done">
-                  <div className="timeline-num">1</div>
-                  <div>
-                    <strong>Request Sent</strong>
-                    <span>Inquiry submitted with your requirements</span>
-                  </div>
-                </div>
-                <div className="timeline-step current">
-                  <div className="timeline-num">2</div>
-                  <div>
-                    <strong>Designer Review</strong>
-                    <span>{designer.name} checks availability and confirms</span>
-                  </div>
-                </div>
-                <div className="timeline-step pending">
-                  <div className="timeline-num">3</div>
-                  <div>
-                    <strong>30% Advance Payment</strong>
-                    <span>Pay ₹{advanceAmount30} only after designer confirmation</span>
-                  </div>
-                </div>
-                <div className="timeline-step pending">
-                  <div className="timeline-num">4</div>
-                  <div>
-                    <strong>Styling Session</strong>
-                    <span>Meet at {meetingType === 'Mall Styling Session' ? selectedMall.name : meetingType}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="zorevi-step-actions centered">
-              <button
-                type="button"
-                className="zorevi-btn zorevi-btn--outline"
-                onClick={handleClose}
-              >
-                Close
-              </button>
-              <button
-                type="button"
-                className="zorevi-btn zorevi-btn--primary"
-                onClick={() => {
-                  handleClose();
-                  navigate('/customer/bookings');
-                }}
-              >
-                <span>View in My Bookings</span>
-                <ChevronRight size={16} />
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* =========================================================
-            MODE 3: 30% ADVANCE PAYMENT (ONCE CONFIRMED)
+            MODE 2: 30% ADVANCE PAYMENT (ONCE CONFIRMED)
             ========================================================= */}
         {viewMode === 'payment' && !paymentDone && (
           <div className="zorevi-step-pane zorevi-advance-payment-pane">

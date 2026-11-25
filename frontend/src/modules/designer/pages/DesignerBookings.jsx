@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useApp } from '../../../context/AppContext';
 import ImageWithFallback from '../../../components/common/ImageWithFallback';
+import { normalizeBookingStatusKey } from '../../../utils';
 
 export default function DesignerBookings() {
   const { bookings, completeBooking, addToast } = useApp();
@@ -14,11 +15,12 @@ export default function DesignerBookings() {
   const allBookings = bookings || [];
 
   const filteredBookings = allBookings.filter((b) => {
+    const key = normalizeBookingStatusKey(b.status);
     if (activeTab === 'upcoming') {
-      return b.status === 'Confirmed' || b.status === 'Upcoming' || b.status === 'Awaiting Payment';
+      return key === 'confirmed' || key === 'accepted';
     }
-    if (activeTab === 'completed') return b.status === 'Completed';
-    if (activeTab === 'cancelled') return b.status === 'Cancelled' || b.status === 'Declined';
+    if (activeTab === 'completed') return key === 'completed';
+    if (activeTab === 'cancelled') return key === 'cancelled' || key === 'rejected';
     return true;
   });
 

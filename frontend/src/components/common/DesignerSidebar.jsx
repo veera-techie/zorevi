@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
+import { normalizeBookingStatusKey } from '../../utils';
 import './Sidebar.css';
 
 export default function DesignerSidebar({ isOpen, onClose }) {
@@ -13,7 +14,7 @@ export default function DesignerSidebar({ isOpen, onClose }) {
   const navigate = useNavigate();
 
   const pendingRequestsCount = (bookings || []).filter(
-    (b) => b.status === 'Pending Confirmation' || b.status === 'Pending'
+    (b) => normalizeBookingStatusKey(b.status) === 'pending'
   ).length;
 
   const navItems = [
