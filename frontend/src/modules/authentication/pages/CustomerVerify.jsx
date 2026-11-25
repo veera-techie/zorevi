@@ -76,7 +76,7 @@ export default function CustomerVerify() {
       name: verification.profile.name,
       email: verification.profile.email,
       phone: verification.profile.phone,
-      avatar: '/zorevi-icon.svg',
+      avatar: '/images/zorevi-livelogo.png',
       role: 'customer',
       preferredCategories: verification.profile.interests,
       preferredStyles: [],

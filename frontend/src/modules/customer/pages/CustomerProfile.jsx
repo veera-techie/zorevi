@@ -13,7 +13,7 @@ export default function CustomerProfile() {
   const [email, setEmail] = useState(user?.email || 'praveen.kumar@email.com');
   const [phone, setPhone] = useState(user?.phone || '+91 98765 43210');
   const [city, setCity] = useState(user?.location || 'Hyderabad');
-  const [avatar, setAvatar] = useState(user?.avatar || '/zorevi-icon.svg');
+  const [avatar, setAvatar] = useState(user?.avatar || '/images/customer-praveen.png');
   const [selectedStyles, setSelectedStyles] = useState(['Contemporary', 'Ethnic', 'Western']);
   const [addresses, setAddresses] = useState([
     { id: 1, label: 'Home', address: 'Flat 402, Gachibowli, Hyderabad – 500032' },
@@ -47,9 +47,9 @@ export default function CustomerProfile() {
   };
 
   const handleResetLogo = () => {
-    setAvatar('/zorevi-icon.svg');
+    setAvatar('/images/zorevi-livelogo.png');
     if (setUser) {
-      setUser((prev) => ({ ...(prev || {}), avatar: '/zorevi-icon.svg' }));
+      setUser((prev) => ({ ...(prev || {}), avatar: '/images/zorevi-livelogo.png' }));
     }
     addToast('Reset avatar to Zorevi company logo.', 'info');
   };
@@ -96,16 +96,16 @@ export default function CustomerProfile() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '24px', marginBottom: '28px', flexWrap: 'wrap' }}>
             <div style={{ position: 'relative' }}>
               <img
-                src={avatar || '/zorevi-icon.svg'}
+                src={avatar || '/images/zorevi-livelogo.png'}
                 alt={name}
-                onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/zorevi-icon.svg'; }}
+                onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/images/zorevi-livelogo.png'; }}
                 style={{
                   width: '88px',
                   height: '88px',
                   borderRadius: '50%',
-                  objectFit: avatar === '/zorevi-icon.svg' ? 'contain' : 'cover',
+                  objectFit: avatar === '/images/zorevi-livelogo.png' ? 'contain' : 'cover',
                   background: '#ffffff',
-                  padding: avatar === '/zorevi-icon.svg' ? '6px' : '0',
+                  padding: avatar === '/images/zorevi-livelogo.png' ? '6px' : '0',
                   border: '3px solid #EDE9FE',
                   boxShadow: '0 4px 16px rgba(124, 58, 237, 0.1)',
                   display: 'block',
@@ -158,7 +158,7 @@ export default function CustomerProfile() {
                 >
                   <Camera size={13} /> Change Photo
                 </button>
-                {avatar !== '/zorevi-icon.svg' && (
+                {avatar !== '/images/zorevi-livelogo.png' && (
                   <button
                     type="button"
                     className="zorevi-btn zorevi-btn--ghost zorevi-btn--sm"

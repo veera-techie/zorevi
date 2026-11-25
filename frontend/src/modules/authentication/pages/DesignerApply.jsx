@@ -249,9 +249,12 @@ export default function DesignerApply() {
     <div className="zorevi-apply-page">
       {/* Top Header */}
       <header className="zorevi-apply-header">
-        <Link to="/" className="zorevi-apply-logo">
-          <img src="/zorevi-icon.svg" alt="" width="32" height="32" />
-          <span style={{ fontSize: '1.25rem', fontWeight: '800', color: '#7C3AED' }}>Zorevi</span>
+        <Link to="/" className="zorevi-apply-logo" aria-label="Zorevi Homepage">
+          <img
+            src="/images/zorevi-logo.png"
+            alt="Zorevi – Shopping | Happy | Stylish"
+            className="zorevi-apply-logo-img"
+          />
         </Link>
 
         <div className="zorevi-apply-header-meta">
