@@ -30,28 +30,21 @@
 .zorevi-status-logo {
   display: flex;
   align-items: center;
-  gap: 12px;
   text-decoration: none;
 }
 
-.zorevi-status-logo__text {
-  display: flex;
-  flex-direction: column;
+.zorevi-status-logo-img {
+  height: 44px;
+  width: auto;
+  max-width: 175px;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
-.zorevi-status-logo__brand {
-  font-size: 1.35rem;
-  font-weight: 850;
-  color: #7c3aed;
-  line-height: 1.1;
-  letter-spacing: -0.03em;
-}
-
-.zorevi-status-logo__tagline {
-  font-size: 0.68rem;
-  color: #6b7280;
-  font-weight: 600;
-  letter-spacing: 0.02em;
+.zorevi-status-logo-img:hover {
+  opacity: 0.95;
+  transform: scale(1.02);
 }
 
 .zorevi-status-header__actions {

@@ -215,7 +215,7 @@ export default function BookingModal({
     const draft = {
       customerId: user?.id || 'cust-001',
       customerName: user?.name || 'Praveen Kumar',
-      customerAvatar: user?.avatar || '/zorevi-icon.svg',
+      customerAvatar: user?.avatar || '/images/customer-praveen.png',
       customerPhone: user?.phone || '+91 98765 43210',
       customerEmail: user?.email || 'praveen.kumar@email.com',
       designer: designer,

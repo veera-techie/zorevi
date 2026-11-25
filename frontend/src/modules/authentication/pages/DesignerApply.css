@@ -20,8 +20,21 @@
 .zorevi-apply-logo {
   display: flex;
   align-items: center;
-  gap: 10px;
   text-decoration: none;
+}
+
+.zorevi-apply-logo-img {
+  height: 44px;
+  width: auto;
+  max-width: 175px;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.zorevi-apply-logo-img:hover {
+  opacity: 0.95;
+  transform: scale(1.02);
 }
 
 .zorevi-apply-header-meta {

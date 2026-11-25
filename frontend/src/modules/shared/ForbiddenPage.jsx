@@ -16,6 +16,14 @@ const ForbiddenPage = () => {
         backgroundColor: '#faf7fd'
       }}
     >
+      <Link to="/" style={{ marginBottom: '28px', display: 'inline-block' }} aria-label="Zorevi Homepage">
+        <img
+          src="/images/zorevi-logo.png"
+          alt="Zorevi – Shopping | Happy | Stylish"
+          style={{ height: '46px', width: 'auto', objectFit: 'contain' }}
+        />
+      </Link>
+
       <div
         style={{
           width: '80px',

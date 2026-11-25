@@ -60,22 +60,12 @@ export default function DesignerApplicationStatus() {
     <div className="zorevi-status-page">
       {/* Top Application Header */}
       <header className="zorevi-status-header">
-        <Link to="/" className="zorevi-status-logo">
-          <svg viewBox="0 0 32 32" fill="none" width="34" height="34">
-            <path d="M16 4C12 4 8 8 8 12c0 4 4 8 8 12 4-4 8-8 8-12 0-4-4-8-8-8z" fill="url(#st-logo-g)" />
-            <path d="M8 12c-4 0-6 2-6 4s2 4 6 4c2 0 4-2 6-4-2-2-4-4-6-4z" fill="url(#st-logo-g)" opacity="0.8" />
-            <path d="M24 12c4 0 6 2 6 4s-2 4-6 4c-2 0-4-2-6-4 2-2 4-4 6-4z" fill="url(#st-logo-g)" opacity="0.8" />
-            <defs>
-              <linearGradient id="st-logo-g" x1="0" y1="0" x2="32" y2="32">
-                <stop stopColor="#7C3AED" />
-                <stop offset="1" stopColor="#A855F7" />
-              </linearGradient>
-            </defs>
-          </svg>
-          <div className="zorevi-status-logo__text">
-            <span className="zorevi-status-logo__brand">Zorevi</span>
-            <span className="zorevi-status-logo__tagline">Fashion for Everyone</span>
-          </div>
+        <Link to="/" className="zorevi-status-logo" aria-label="Zorevi Homepage">
+          <img
+            src="/images/zorevi-logo.png"
+            alt="Zorevi – Shopping | Happy | Stylish"
+            className="zorevi-status-logo-img"
+          />
         </Link>
 
         <div className="zorevi-status-header__actions">
