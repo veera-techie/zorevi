@@ -5,7 +5,7 @@ import BookingModal from '../../../components/cards/BookingModal';
 import PublicDesignerCard from '../../../components/cards/PublicDesignerCard';
 import PublicMallCard from '../../../components/cards/PublicMallCard';
 import { useApp } from '../../../context/AppContext';
-import { discoveryCategories, publicDesigners, publicMalls } from '../../../services/publicDiscoveryData';
+import { discoveryCategories, designerStyleFilters, publicDesigners, publicMalls } from '../../../services/publicDiscoveryData';
 import './LandingPage.css';
 
 const SHOPPING_EXPERIENCES = [
@@ -280,7 +280,7 @@ export default function LandingPage() {
           </div>
 
           <div className="discovery-chip-row public-home__categories" role="group" aria-label="Filter designers by style">
-            {discoveryCategories.map((category) => (
+            {designerStyleFilters.map((category) => (
               <button
                 type="button"
                 key={category.id}

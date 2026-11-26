@@ -1,7 +1,7 @@
 const image = (name) => `/assets/images/${name}`;
 
 export const discoveryCategories = [
-  { id: 'all', label: 'All Styles', title: 'Everyday style', description: 'Find a point of view for your everyday wardrobe.', image: image('category-western.jpg'), terms: [] },
+  { id: 'all', label: 'All Stylists', title: 'Everyday style', description: 'Find a point of view for your everyday wardrobe.', image: image('category-western.jpg'), terms: [] },
   { id: 'men', label: 'Men', title: "Men's styling", description: 'Modern, traditional and occasion looks for men.', image: image('category-men.jpg'), terms: ["men's fashion"] },
   { id: 'women', label: 'Women', title: "Women's styling", description: 'Personal style, occasion wear and wardrobe edits.', image: image('category-women.jpg'), terms: ["women's fashion"] },
   { id: 'kids', label: 'Kids', title: "Kids' styling", description: 'Comfortable looks for celebrations and everyday wear.', image: image('category-kids.jpg'), terms: ["kids' fashion"] },
@@ -11,6 +11,8 @@ export const discoveryCategories = [
   { id: 'traditional', label: 'Traditional', title: 'Traditional wear', description: 'Celebrate heritage with silhouettes and details that feel like you.', image: image('category-traditional.jpg'), terms: ['traditional', 'ethnic wear'] },
   { id: 'western', label: 'Western', title: 'Western wear', description: 'Discover contemporary looks for work, weekends and occasions.', image: image('category-western.jpg'), terms: ['western wear', 'formal styling'] },
 ];
+
+export const designerStyleFilters = discoveryCategories.filter((category) => ['all', 'men', 'women'].includes(category.id));
 
 const portfolio = (imageNames, titles) => imageNames.map((name, index) => ({
   id: `${titles[index].toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${index}`,

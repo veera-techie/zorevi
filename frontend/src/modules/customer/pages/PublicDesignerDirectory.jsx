@@ -4,7 +4,7 @@ import { Search, SlidersHorizontal } from 'lucide-react';
 import BookingModal from '../../../components/cards/BookingModal';
 import PublicDesignerCard from '../../../components/cards/PublicDesignerCard';
 import { useApp } from '../../../context/AppContext';
-import { discoveryCategories, discoveryDemoNotice, publicDesigners } from '../../../services/publicDiscoveryData';
+import { discoveryCategories, designerStyleFilters, discoveryDemoNotice, publicDesigners } from '../../../services/publicDiscoveryData';
 import './PublicDiscovery.css';
 
 const categoryFor = (id) => discoveryCategories.find((category) => category.id === id) || discoveryCategories[0];
@@ -90,7 +90,7 @@ export default function PublicDesignerDirectory() {
       </section>
 
       <div className="discovery-chip-row" role="group" aria-label="Filter designers by style">
-        {discoveryCategories.map((category) => (
+        {designerStyleFilters.map((category) => (
           <button
             type="button"
             key={category.id}
