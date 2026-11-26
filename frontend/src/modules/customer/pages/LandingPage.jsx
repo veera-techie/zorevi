@@ -48,15 +48,19 @@ const FEATURED_FASHION_PLACES = [
     image: '/assets/images/hero-exp-casual-shopping.jpg',
     imageAlt: 'A customer and stylist browsing clothing in a fashion store',
     mapQuery: 'fashion store',
+    viewLabel: 'View Fashion Stores',
+    viewTo: '/explore/fashion-hubs?category=luxury',
   },
   {
     id: 'designer-boutique',
-    name: 'Designer Boutique',
-    kind: 'Designer boutique',
+    name: 'Fashion Boutique',
+    kind: 'Fashion boutique',
     location: 'Hyderabad, Telangana',
     image: '/assets/images/hero-slide-family-shopping.jpg',
-    imageAlt: 'A family shopping inside a designer fashion boutique',
+    imageAlt: 'A family shopping inside a fashion boutique',
     mapQuery: 'designer boutique',
+    viewLabel: 'View Fashion Boutique',
+    viewTo: '/explore/fashion-hubs?category=designer',
   },
 ];
 
@@ -348,7 +352,7 @@ export default function LandingPage() {
           <p className="public-section-subtitle">Discover premier shopping malls, designer boutiques, and luxury fashion destinations.</p>
           {selectedCity === 'Hyderabad' ? (
             <div className="public-mall-grid">
-              <PublicMallCard mall={publicMalls[0]} />
+              <PublicMallCard mall={publicMalls[0]} title="Fashion Malls" />
               {FEATURED_FASHION_PLACES.map((place) => {
                 const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${place.mapQuery}, Hyderabad, Telangana`)}`;
                 return (
@@ -362,7 +366,7 @@ export default function LandingPage() {
                       <p><MapPin size={15} /> {place.location}</p>
                       <div className="public-mall-card__actions">
                         <Link className="zorevi-btn zorevi-btn--outline" to="/explore/designers">Explore designers</Link>
-                        <a className="public-mall-card__map-link" href={mapsUrl} target="_blank" rel="noreferrer">Directions <ArrowUpRight size={14} /></a>
+                        <Link className="public-mall-card__map-link" to={place.viewTo}>{place.viewLabel} <ArrowUpRight size={14} /></Link>
                       </div>
                     </div>
                   </article>

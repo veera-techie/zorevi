@@ -47,7 +47,7 @@ export default function DesignerProfile() {
   const [availableMallIds, setAvailableMallIds] = useState(() => loadDesignerMallIds(savedProfile));
   const [mallStoreNames, setMallStoreNames] = useState(() => getDesignerStoreNames(savedProfile));
   const [mallStoreImages, setMallStoreImages] = useState(() => getDesignerStoreImages(savedProfile));
-  const [socialAccounts, setSocialAccounts] = useState({ instagram: '', youtube: '', facebook: '', pinterest: '', ...savedProfile.socialAccounts });
+  const [socialAccounts, setSocialAccounts] = useState({ instagram: '', youtube: '', facebook: '', pinterest: '', ...designer.socialAccounts, ...savedProfile.socialAccounts });
   const [mallOverrides, setMallOverrides] = useState(() => loadStoredJson('zorevi-designer-mall-overrides', {}));
   const [customMalls, setCustomMalls] = useState(() => loadStoredJson('zorevi-designer-custom-malls', []));
   const [editingMall, setEditingMall] = useState(null);

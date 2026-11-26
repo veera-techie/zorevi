@@ -17,6 +17,7 @@ import './BookingModal.css';
 export const OCCASIONS_DATA = [
   { id: 'vacation-photoshoot-shopping', label: 'Vacation/Photoshoot Shopping' },
   { id: 'wedding-shopping', label: 'Wedding Shopping' },
+  { id: 'couple-shopping', label: 'Couple Shopping' },
   { id: 'festive-shopping', label: 'Festive Shopping' },
   { id: 'family-occasions', label: 'Family Occasions' },
   { id: 'nri-family-visits', label: 'NRI Family Visits' },
@@ -28,63 +29,47 @@ export const SERVICES_BY_OCCASION = {
   wedding: [
     { id: 'w1', name: 'Bridal Styling (Consultation + Look)', price: 1499, time: '3 hrs', desc: 'Complete bridal lehenga/saree, jewelry & veil coordination' },
     { id: 'w2', name: 'Groom Styling (Sherwani & Accessories)', price: 1299, time: '2.5 hrs', desc: 'Sherwani, safa, mojari & royalty accessory curation' },
-    { id: 'w3', name: 'Wedding Family Styling (Coordinated)', price: 1999, time: '4 hrs', desc: 'Color palette harmonization for the bridal party & family' },
-    { id: 'w4', name: 'Trousseau Planning & Jewelry Pairing', price: 999, time: '2 hrs', desc: 'Curating essential post-wedding trousseau packages' },
   ],
   engagement: [
-    { id: 'e1', name: 'Engagement Ring Ceremony Styling', price: 1199, time: '2.5 hrs', desc: 'Modern Indo-Western and luxury gown/sherwani curation' },
-    { id: 'e2', name: 'Cocktail & Evening Party Look', price: 999, time: '2 hrs', desc: 'Contemporary party chic & sharp tailored silhouettes' },
-    { id: 'e3', name: 'Couple Harmonization Session', price: 999, time: '2 hrs', desc: 'Color-matching and aesthetic coordination for the couple' },
-  ],
-  birthday: [
-    { id: 'b1', name: 'Birthday Star Outfit Curation', price: 699, time: '1.5 hrs', desc: 'Standout personalized birthday statement look' },
-    { id: 'b2', name: 'Theme & Glam Party Wardrobe', price: 799, time: '2 hrs', desc: 'Styling according to celebration themes & venue vibes' },
-  ],
-  party: [
-    { id: 'p1', name: 'Party Outfit Selection', price: 699, time: '1.5 hrs', desc: 'Selecting vibrant, flattering partywear' },
-    { id: 'p2', name: 'Party Styling & Footwear Pairing', price: 799, time: '2 hrs', desc: 'Complete ensemble styling with shoes and bag curation' },
-    { id: 'p3', name: 'Accessories & Statement Jewelry', price: 499, time: '1 hr', desc: 'Adding the perfect finishing touches and jewels' },
+    { id: 'e1', name: 'Couple Shopping Consultation', price: 1199, time: '2.5 hrs', desc: 'Plan coordinated looks that reflect both personal styles.' },
+    { id: 'e2', name: 'Couple Outfit Coordination', price: 999, time: '2 hrs', desc: 'Coordinate colors and styles for a balanced shared look.' },
+    { id: 'e3', name: 'Special Occasion Couple Styling', price: 999, time: '2 hrs', desc: 'Select complementary outfits for a celebration or event.' },
   ],
   office: [
-    { id: 'o1', name: 'Executive & Corporate Wardrobe', price: 999, time: '2 hrs', desc: 'Crisp, commanding professional blazers, shirts & skirts/trousers' },
-    { id: 'o2', name: 'Smart Business Casuals', price: 699, time: '1.5 hrs', desc: 'Everyday workplace styling that blends comfort and authority' },
-    { id: 'o3', name: 'Capsule Work Wardrobe (5 Looks)', price: 1499, time: '3 hrs', desc: 'A 5-piece mix-and-match capsule for a full working week' },
-  ],
-  casual: [
-    { id: 'c1', name: 'Weekend Smart Casuals', price: 499, time: '1.5 hrs', desc: 'Relaxed yet refined everyday looks for brunch and coffee runs' },
-    { id: 'c2', name: 'Streetwear & Denim Styling', price: 499, time: '1.5 hrs', desc: 'Edgy modern denim, oversized tops & sneaker pairings' },
-    { id: 'c3', name: 'Personal Everyday Wardrobe Refresh', price: 799, time: '2 hrs', desc: 'Upgrading your daily aesthetic with timeless essentials' },
+    { id: 'o1', name: 'Corporate Event Styling', price: 999, time: '2 hrs', desc: 'Plan a polished look for conferences, client meetings, and company events.' },
+    { id: 'o2', name: 'IT Meet Outfit Planning', price: 699, time: '1.5 hrs', desc: 'Choose comfortable, professional looks for team and industry meets.' },
+    { id: 'o3', name: 'Professional Shopping Consultation', price: 799, time: '2 hrs', desc: 'Find versatile options suited to your role, workplace, and budget.' },
   ],
   festival: [
-    { id: 'f1', name: 'Traditional Festive Styling', price: 899, time: '2 hrs', desc: 'Diwali, Eid, Sankranti ethnic wear curation with authentic charm' },
-    { id: 'f2', name: 'Handloom & Silk Saree Guidance', price: 999, time: '2 hrs', desc: 'Handloom pure weaves, borders, and blouse pairings' },
-    { id: 'f3', name: 'Festive Men’s Kurta & Bandhgala', price: 799, time: '1.5 hrs', desc: 'Rich ethnic kurtas with bundis and jacket pairing' },
-  ],
-  traditional: [
-    { id: 't1', name: 'Puja & Ritual Attire Selection', price: 699, time: '1.5 hrs', desc: 'Traditional auspicious colors, silks and classic drapes' },
-    { id: 't2', name: 'Cultural Ceremonies & Temple Wear', price: 699, time: '1.5 hrs', desc: 'Dignified temple silhouettes with heritage touch' },
+    { id: 'f1', name: 'Festive Shopping Consultation', price: 899, time: '2 hrs', desc: 'Plan comfortable, occasion-ready looks for your festive calendar.' },
+    { id: 'f2', name: 'Festive Look Coordination', price: 999, time: '2 hrs', desc: 'Bring colors, accessories, and personal style together for the celebration.' },
+    { id: 'f3', name: 'Family Festive Styling', price: 1299, time: '2.5 hrs', desc: 'Coordinate celebration looks for the whole family.' },
   ],
   vacation: [
-    { id: 'v1', name: 'Resort & Beach Holiday Wardrobe', price: 799, time: '2 hrs', desc: 'Breezy linens, vibrant sundresses, and swimwear coverups' },
-    { id: 'v2', name: 'Light Travel Capsule (10 Mix-and-Match)', price: 899, time: '2 hrs', desc: 'Effortless travel packing capsule for flights & luggage limits' },
+    { id: 'v1', name: 'Vacation Shopping Consultation', price: 799, time: '2 hrs', desc: 'Plan practical, coordinated outfits for your trip.' },
+    { id: 'v2', name: 'Photoshoot Outfit Selection', price: 899, time: '2 hrs', desc: 'Choose looks that suit your shoot location, theme, and budget.' },
+    { id: 'v3', name: 'Travel Outfit Coordination', price: 699, time: '1.5 hrs', desc: 'Coordinate versatile outfits and accessories for your itinerary.' },
   ],
   family: [
-    { id: 'fa1', name: 'Family Coordinated Styling', price: 1499, time: '3 hrs', desc: 'Harmonious color palettes for mom, dad, and children' },
-    { id: 'fa2', name: 'Anniversary & Milestone Celebrations', price: 899, time: '2 hrs', desc: 'Elegant looks for couple and immediate family celebrations' },
+    { id: 'fa1', name: 'Family Shopping Consultation', price: 1499, time: '3 hrs', desc: 'Get outfit guidance for each family member in one shopping session.' },
+    { id: 'fa2', name: 'Family Occasion Coordination', price: 899, time: '2 hrs', desc: 'Coordinate colors and styles for a shared family celebration.' },
+    { id: 'fa3', name: 'Celebration Outfit Planning', price: 999, time: '2 hrs', desc: 'Plan suitable looks for your family event and shopping budget.' },
   ],
-  other: [
-    { id: 'ot1', name: 'Custom Personal Styling Consultation', price: 699, time: '1.5 hrs', desc: 'Tailored advice for custom occasions, photoshoots or makeovers' },
-    { id: 'ot2', name: 'Complete Wardrobe Audit', price: 1299, time: '2.5 hrs', desc: 'Full review of what to keep, alter, or acquire' },
+  nriFamily: [
+    { id: 'nri1', name: 'Family Visit Shopping Consultation', price: 1299, time: '2.5 hrs', desc: 'Plan outfits for visits, gatherings, and time with family.' },
+    { id: 'nri2', name: 'Reunion & Celebration Styling', price: 999, time: '2 hrs', desc: 'Choose coordinated looks for reunions and family celebrations.' },
+    { id: 'nri3', name: 'Family Shopping Coordination', price: 1499, time: '3 hrs', desc: 'Make a shared shopping plan for visiting family members.' },
   ],
 };
 
 const BOOKING_SERVICES_BY_OCCASION = {
-  'vacation-photoshoot-shopping': [...SERVICES_BY_OCCASION.vacation, ...SERVICES_BY_OCCASION.other],
+  'vacation-photoshoot-shopping': SERVICES_BY_OCCASION.vacation,
   'wedding-shopping': SERVICES_BY_OCCASION.wedding,
-  'festive-shopping': [...SERVICES_BY_OCCASION.festival, ...SERVICES_BY_OCCASION.traditional],
+  'couple-shopping': SERVICES_BY_OCCASION.engagement,
+  'festive-shopping': SERVICES_BY_OCCASION.festival,
   'family-occasions': SERVICES_BY_OCCASION.family,
-  'nri-family-visits': [...SERVICES_BY_OCCASION.family, ...SERVICES_BY_OCCASION.vacation],
-  'corporate-events-it-meets': [...SERVICES_BY_OCCASION.office, ...SERVICES_BY_OCCASION.party],
+  'nri-family-visits': SERVICES_BY_OCCASION.nriFamily,
+  'corporate-events-it-meets': SERVICES_BY_OCCASION.office,
 };
 
 const SHOPPING_BUDGETS = [
@@ -476,7 +461,7 @@ export default function BookingModal({
               <div className="zorevi-section-title-row">
                 <span className="zorevi-section-badge">3</span>
                 <div>
-                  <h4 className="zorevi-section-title">Estimated Wardrobe Purchase Budget</h4>
+                  <h4 className="zorevi-section-title">Estimated Shopping Purchase Budget</h4>
                   <small className="zorevi-section-sub">
                     Estimated budget for purchasing outfits at stores (Designer fee is separate)
                   </small>
@@ -620,27 +605,26 @@ export default function BookingModal({
                   Select Preferred Time Slot
                 </label>
 
+                <div className="zorevi-time-periods">
                 {/* Morning Slots */}
                 <div className="zorevi-time-section">
                   <div className="zorevi-time-heading">
                     <Sun size={13} color="#D97706" /> <span>Morning Slots (09:00 AM – 12:00 PM)</span>
                   </div>
-                  <div className="zorevi-slots-row">
-                    {TIME_SLOTS.morning.map((slot) => (
-                      <button
-                        key={slot}
-                        type="button"
-                        className={`zorevi-time-chip ${!isCustomTime && bookingTime === slot ? 'is-active' : ''}`}
-                        onClick={() => {
-                          setBookingTime(slot);
-                          setIsCustomTime(false);
-                          if (formErrors.time) setFormErrors((prev) => ({ ...prev, time: undefined }));
-                        }}
-                      >
-                        {slot}
-                      </button>
-                    ))}
-                  </div>
+                  <select
+                    className="zorevi-input"
+                    aria-label="Select morning time"
+                    value={!isCustomTime && TIME_SLOTS.morning.includes(bookingTime) ? bookingTime : ''}
+                    onChange={(e) => {
+                      setBookingTime(e.target.value);
+                      setIsCustomTime(false);
+                      if (formErrors.time) setFormErrors((prev) => ({ ...prev, time: undefined }));
+                    }}
+                    style={{ width: '100%', padding: '8px 12px', fontSize: '0.85rem' }}
+                  >
+                    <option value="">Select a morning time</option>
+                    {TIME_SLOTS.morning.map((slot) => <option key={slot} value={slot}>{slot}</option>)}
+                  </select>
                 </div>
 
                 {/* Afternoon Slots */}
@@ -648,22 +632,20 @@ export default function BookingModal({
                   <div className="zorevi-time-heading">
                     <Sunset size={13} color="#EA580C" /> <span>Afternoon Slots (12:00 PM – 05:00 PM)</span>
                   </div>
-                  <div className="zorevi-slots-row">
-                    {TIME_SLOTS.afternoon.map((slot) => (
-                      <button
-                        key={slot}
-                        type="button"
-                        className={`zorevi-time-chip ${!isCustomTime && bookingTime === slot ? 'is-active' : ''}`}
-                        onClick={() => {
-                          setBookingTime(slot);
-                          setIsCustomTime(false);
-                          if (formErrors.time) setFormErrors((prev) => ({ ...prev, time: undefined }));
-                        }}
-                      >
-                        {slot}
-                      </button>
-                    ))}
-                  </div>
+                  <select
+                    className="zorevi-input"
+                    aria-label="Select afternoon time"
+                    value={!isCustomTime && TIME_SLOTS.afternoon.includes(bookingTime) ? bookingTime : ''}
+                    onChange={(e) => {
+                      setBookingTime(e.target.value);
+                      setIsCustomTime(false);
+                      if (formErrors.time) setFormErrors((prev) => ({ ...prev, time: undefined }));
+                    }}
+                    style={{ width: '100%', padding: '8px 12px', fontSize: '0.85rem' }}
+                  >
+                    <option value="">Select an afternoon time</option>
+                    {TIME_SLOTS.afternoon.map((slot) => <option key={slot} value={slot}>{slot}</option>)}
+                  </select>
                 </div>
 
                 {/* Evening Slots */}
@@ -671,22 +653,21 @@ export default function BookingModal({
                   <div className="zorevi-time-heading">
                     <Moon size={13} color="#7C3AED" /> <span>Evening Slots (05:00 PM – 09:00 PM)</span>
                   </div>
-                  <div className="zorevi-slots-row">
-                    {TIME_SLOTS.evening.map((slot) => (
-                      <button
-                        key={slot}
-                        type="button"
-                        className={`zorevi-time-chip ${!isCustomTime && bookingTime === slot ? 'is-active' : ''}`}
-                        onClick={() => {
-                          setBookingTime(slot);
-                          setIsCustomTime(false);
-                          if (formErrors.time) setFormErrors((prev) => ({ ...prev, time: undefined }));
-                        }}
-                      >
-                        {slot}
-                      </button>
-                    ))}
-                  </div>
+                  <select
+                    className="zorevi-input"
+                    aria-label="Select evening time"
+                    value={!isCustomTime && TIME_SLOTS.evening.includes(bookingTime) ? bookingTime : ''}
+                    onChange={(e) => {
+                      setBookingTime(e.target.value);
+                      setIsCustomTime(false);
+                      if (formErrors.time) setFormErrors((prev) => ({ ...prev, time: undefined }));
+                    }}
+                    style={{ width: '100%', padding: '8px 12px', fontSize: '0.85rem' }}
+                  >
+                    <option value="">Select an evening time</option>
+                    {TIME_SLOTS.evening.map((slot) => <option key={slot} value={slot}>{slot}</option>)}
+                  </select>
+                </div>
                 </div>
 
                 {/* Custom Time Slot Option */}

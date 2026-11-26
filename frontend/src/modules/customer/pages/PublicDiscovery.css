@@ -327,8 +327,18 @@
   line-height: 1.2;
 }
 
-.public-designer-card__social-links {
-  margin: -3px 0 8px;
+.public-designer-card__social-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0 0 8px;
+}
+
+.public-designer-card__social-row > span {
+  color: #6b7280;
+  font-size: 0.72rem;
+  font-weight: 600;
 }
 
 .public-designer-card__price {

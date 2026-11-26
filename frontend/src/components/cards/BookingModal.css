@@ -1515,8 +1515,14 @@
 }
 
 /* Time Slot Sections */
+.zorevi-time-periods {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
 .zorevi-time-section {
-  margin-bottom: 12px;
+  min-width: 0;
 }
 
 .zorevi-time-heading {
@@ -1529,6 +1535,26 @@
   text-transform: uppercase;
   letter-spacing: 0.04em;
   margin-bottom: 6px;
+}
+
+.zorevi-time-periods .zorevi-time-heading {
+  min-height: 34px;
+  line-height: 1.3;
+}
+
+.zorevi-time-periods .zorevi-input {
+  box-sizing: border-box;
+  max-width: none;
+}
+
+@media (max-width: 640px) {
+  .zorevi-time-periods {
+    grid-template-columns: 1fr;
+  }
+
+  .zorevi-time-periods .zorevi-time-heading {
+    min-height: 0;
+  }
 }
 
 .zorevi-slots-row {

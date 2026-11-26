@@ -28,6 +28,23 @@ export default function DesignerCard({
 }) {
   const { isInWishlist, toggleWishlist, addToast } = useApp();
   const isSaved = isInWishlist('designer', designer.id);
+  const savedProfileSocialAccounts = (() => {
+    if (designer.id !== 'des-001') return {};
+    try {
+      const profile = JSON.parse(localStorage.getItem('zorevi-designer-profile') || '{}');
+      return profile?.socialAccounts || {};
+    } catch {
+      return {};
+    }
+  })();
+  const designerSlug = (designer.name || 'zorevi').toLowerCase().replace(/[^a-z0-9]+/g, '');
+  const socialAccounts = {
+    ...(designer.socialAccounts || {
+      instagram: `https://instagram.com/${designerSlug}`,
+      youtube: `https://youtube.com/@${designerSlug}`,
+    }),
+    ...savedProfileSocialAccounts,
+  };
 
   const handleScrollTop = () => {
     window.scrollTo(0, 0);
@@ -97,6 +114,11 @@ export default function DesignerCard({
             </div>
           </div>
 
+          <div className="zorevi-designer-card__social-row">
+            <span className="zorevi-designer-card__social-label">Social</span>
+            <SocialProfileLinks accounts={socialAccounts} owner={designer.name} />
+          </div>
+
           <div className="zorevi-designer-card__dash-price">
             Starting at <strong>₹{designer.startingPrice ? designer.startingPrice.toLocaleString('en-IN') : '499'}</strong>
           </div>
@@ -113,11 +135,6 @@ export default function DesignerCard({
   const formattedReviews = designer.reviewCount
     ? (designer.reviewCount >= 1000 ? `${(designer.reviewCount / 1000).toFixed(1)}k` : `${designer.reviewCount}`)
     : '0';
-
-  const socialAccounts = designer.socialAccounts || {
-    instagram: `https://instagram.com/${(designer.name || 'zorevi').toLowerCase().replace(/[^a-z0-9]+/g, '')}`,
-    youtube: `https://youtube.com/@${(designer.name || 'zorevi').toLowerCase().replace(/[^a-z0-9]+/g, '')}`,
-  };
 
   return (
     <div className="zorevi-designer-card">
@@ -199,7 +216,7 @@ export default function DesignerCard({
         </div>
 
         <div className="zorevi-designer-card__social-row">
-          <span className="zorevi-designer-card__social-label">Follow work</span>
+          <span className="zorevi-designer-card__social-label">Social</span>
           <SocialProfileLinks accounts={socialAccounts} owner={designer.name} />
         </div>
 

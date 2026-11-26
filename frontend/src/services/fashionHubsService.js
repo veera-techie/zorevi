@@ -4,8 +4,7 @@ import { calculateHaversineDistance, isCurrentlyOpen } from './locationService.j
 export const FASHION_HUB_CATEGORIES = [
   { id: 'all', label: 'All Fashion Hubs', icon: 'Sparkles' },
   { id: 'mall', label: 'Shopping Malls', icon: 'Building2' },
-  { id: 'boutique', label: 'Boutiques', icon: 'Scissors' },
-  { id: 'designer', label: 'Designer Boutiques', icon: 'Crown' },
+  { id: 'designer', label: 'Designer Boutique', icon: 'Crown' },
   { id: 'luxury', label: 'Luxury Stores', icon: 'Gem' },
   { id: 'ethnic', label: 'Ethnic Wear', icon: 'Shirt' },
   { id: 'men', label: "Men's Fashion", icon: 'UserCheck' },
@@ -910,8 +909,7 @@ export function searchFashionHubs({
   if (category && category !== 'all') {
     results = results.filter((hub) => {
       if (category === 'mall') return hub.type === 'mall';
-      if (category === 'boutique') return hub.type === 'boutique' || hub.type === 'designer';
-      if (category === 'designer') return hub.type === 'designer';
+      if (category === 'designer') return hub.type === 'boutique' || hub.type === 'designer';
       if (category === 'luxury') return hub.type === 'luxury' || hub.budgetTier === 'luxury';
       if (category === 'ethnic') return hub.type === 'ethnic';
       if (category === 'men') return hub.type === 'men' || hub.targetCategories.includes('Men');
