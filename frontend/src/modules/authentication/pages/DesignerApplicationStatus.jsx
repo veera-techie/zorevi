@@ -1,362 +1,379 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import {
-  Clock,
-  CheckCircle2,
-  AlertTriangle,
-  ArrowRight,
-  RefreshCw,
-  FileText,
-  Check,
-  ShieldCheck,
-  Mail,
-  Phone,
-  Sparkles,
-  MapPin,
-  HelpCircle,
+  AlertCircle, ArrowRight, BadgeCheck, Building2, CalendarDays, Check, Clock,
+  FileCheck2, Image as ImageIcon, Mail, MapPin, PackageCheck, Phone, ShieldCheck, UserRound,
 } from 'lucide-react';
-import { useAuth } from '../../../context/AuthContext';
-import { useApp } from '../../../context/AppContext';
-import { AAROHI_PROFILE_IMAGE } from '../../../utils/aarohiProfileImage';
+import { findDesignerApplication } from '../../../services/designerApplicationsStorage';
 import './DesignerApplicationStatus.css';
 
+const STATUS_OPTIONS = [
+  { id: 'pending', label: 'Pending (Under Review)' },
+  { id: 'approved', label: 'Approved (Studio Live)' },
+  { id: 'changes_requested', label: 'Changes Requested' },
+];
+
+function getStatusKey(status) {
+  const normalizedStatus = typeof status === 'string' ? status.toLowerCase() : '';
+  if (normalizedStatus.includes('approved') || normalizedStatus.includes('studio live')) return 'approved';
+  if (normalizedStatus.includes('change')) return 'changes_requested';
+  return 'pending';
+}
+
+function formatSubmittedDate(application) {
+  const date = application?.submittedAt ? new Date(application.submittedAt) : null;
+  if (date && !Number.isNaN(date.getTime())) {
+    return new Intl.DateTimeFormat('en-IN', { dateStyle: 'medium', timeStyle: 'short' }).format(date);
+  }
+  return [application?.submissionDate, application?.submissionTime].filter(Boolean).join(' ') || 'Date unavailable';
+}
+
+function getFileNames(files) {
+  return Array.isArray(files) ? files.map((file) => file?.name).filter(Boolean) : [];
+}
+
 export default function DesignerApplicationStatus() {
-  const [status, setStatus] = useState('pending'); // 'pending', 'approved', 'changes_requested'
-  const { login } = useAuth();
-  const { addToast } = useApp();
-  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const applicationIdFromUrl = searchParams.get('applicationId') || '';
+  const [applicationId, setApplicationId] = useState(applicationIdFromUrl);
+  const [application, setApplication] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [simulatedStatus, setSimulatedStatus] = useState('pending');
+  const [showSubmittedApplication, setShowSubmittedApplication] = useState(false);
 
-  const savedApp = (() => {
-    try {
-      return JSON.parse(sessionStorage.getItem('zorevi_designer_application') || '{}');
-    } catch {
-      return {};
+  useEffect(() => {
+    setApplicationId(applicationIdFromUrl);
+    setShowSubmittedApplication(false);
+    if (!applicationIdFromUrl) {
+      setApplication(null);
+      setLoading(false);
+      setError('');
+      return undefined;
     }
-  })();
 
-  const applicantName = savedApp.brandName || savedApp.fullName || 'Aarohi Mehta';
-  const applicantLocation = savedApp.city
-    ? `${savedApp.area ? `${savedApp.area}, ` : ''}${savedApp.city}`
-    : 'Banjara Hills, Hyderabad';
-  const applicantId = savedApp.applicationId || 'DZ-7812';
-  const submissionDate = savedApp.submissionDate || '16 Nov 2025';
+    setLoading(true);
+    setError('');
+    try {
+      const savedApplication = findDesignerApplication(applicationIdFromUrl);
+      if (!savedApplication) {
+        throw new Error('This application ID was not found in this browser’s saved applications. Check the ID and try again.');
+      }
+      setApplication(savedApplication);
+      setSimulatedStatus(getStatusKey(savedApplication.status));
+    } catch (requestError) {
+      setApplication(null);
+      setError(requestError.message || 'Could not retrieve this saved application.');
+    } finally {
+      setLoading(false);
+    }
 
-  const handleSimulateApproved = () => {
-    setStatus('approved');
-    addToast('Simulated approval: Application status is now Approved!', 'success');
+    return undefined;
+  }, [applicationIdFromUrl]);
+
+  const handleLookup = (event) => {
+    event.preventDefault();
+    const trimmedId = applicationId.trim();
+    if (trimmedId) setSearchParams({ applicationId: trimmedId });
   };
 
-  const handleSimulateChanges = () => {
-    setStatus('changes_requested');
-    addToast('Simulated request: Information requested by verification officer.', 'warning');
+  const fullName = application?.fullName?.trim() || 'Designer';
+  const initials = fullName === 'Designer'
+    ? ''
+    : fullName.split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toUpperCase();
+  const location = application?.location || [application?.address, application?.city].filter(Boolean).join(', ');
+  const submittedDate = formatSubmittedDate(application);
+  const portfolioFiles = Array.isArray(application?.portfolio)
+    ? application.portfolio
+    : Array.isArray(application?.portfolioFiles) ? application.portfolioFiles : [];
+  const certificateFiles = Array.isArray(application?.certificates) ? application.certificates : [];
+  const portfolioNames = getFileNames(portfolioFiles);
+  const certificateNames = getFileNames(certificateFiles);
+  const skills = Array.isArray(application?.skills) ? application.skills : [];
+  const startingPrice = Number(application?.startingPricePerHour ?? application?.startingPrice);
+  const currentStatus = STATUS_OPTIONS.find((option) => option.id === simulatedStatus) || STATUS_OPTIONS[0];
+  const statusLabel = simulatedStatus === 'approved'
+    ? 'Studio Live'
+    : simulatedStatus === 'changes_requested' ? 'Changes Requested' : 'Under Review';
+  const statusBadgeClass = simulatedStatus === 'approved'
+    ? 'approved'
+    : simulatedStatus === 'changes_requested' ? 'changes_requested' : 'pending';
+  const completedThrough = simulatedStatus === 'approved' ? 4 : 1;
+  const progressWidth = simulatedStatus === 'approved' ? '76%' : '25%';
+  const statusCopy = simulatedStatus === 'approved'
+    ? {
+      heading: 'Your Studio Is Live!',
+      description: 'Your designer application has been approved. Your studio is ready to welcome customers.',
+      note: 'Your application is approved and your studio is live.',
+    }
+    : simulatedStatus === 'changes_requested'
+      ? {
+        heading: 'Changes Requested',
+        description: 'The onboarding team needs an update before verification can continue. Please review your submitted information and follow up on any requested changes.',
+        note: 'Verification is paused until the requested changes are addressed.',
+      }
+      : {
+        heading: 'Application is Under Verification',
+        description: 'Our onboarding team is reviewing your credentials, portfolio, and identity documents to complete your designer verification.',
+        note: 'Estimated turnaround: within 24 hours. We’ll update your application status once the review is complete.',
+      };
+
+  const isApproved = simulatedStatus === 'approved';
+  const changesRequested = simulatedStatus === 'changes_requested';
+  const governmentIdReceived = Boolean(application?.governmentIdUploaded || application?.governmentIdFile);
+  const portfolioCount = portfolioFiles.length;
+  const reviewState = isApproved ? 'verified' : changesRequested ? 'requested' : 'reviewing';
+  const governmentIdState = changesRequested
+    ? { label: 'Action needed', detail: 'Review your identity document and any requested updates.' }
+    : isApproved
+      ? { label: 'Verified · Demo', detail: 'Government ID verification is complete in this demo state.' }
+      : governmentIdReceived
+        ? { label: 'In review', detail: 'Your submitted identity document is being checked.' }
+        : { label: 'Not provided', detail: 'No government ID was attached to this application.' };
+  const portfolioState = changesRequested
+    ? { label: 'Changes requested', detail: 'Review portfolio feedback before verification resumes.' }
+    : isApproved
+      ? { label: 'Approved · Demo', detail: 'Your portfolio is approved in this demo state.' }
+      : { label: 'In review', detail: `${portfolioCount} portfolio image${portfolioCount === 1 ? '' : 's'} submitted for review.` };
+  const verificationTiles = [
+    {
+      title: 'Government ID Proof',
+      Icon: ShieldCheck,
+      ...governmentIdState,
+      state: changesRequested ? 'requested' : isApproved ? 'verified' : governmentIdReceived ? 'reviewing' : 'pending',
+    },
+    {
+      title: 'Studio / Business Proof',
+      Icon: Building2,
+      label: changesRequested ? 'Paused' : isApproved ? 'Verified · Demo' : 'Pending',
+      detail: 'Studio proof is reviewed during onboarding; it is not collected in this application form.',
+      state: changesRequested ? 'pending' : isApproved ? 'verified' : 'pending',
+    },
+    {
+      title: `Portfolio Review${portfolioCount ? ` (${portfolioCount} Look${portfolioCount === 1 ? '' : 's'})` : ''}`,
+      Icon: ImageIcon,
+      ...portfolioState,
+      state: reviewState,
+    },
+    {
+      title: 'Standard Package Onboarding',
+      Icon: PackageCheck,
+      label: changesRequested ? 'Paused' : isApproved ? 'Complete · Demo' : 'Next step',
+      detail: changesRequested
+        ? 'Onboarding continues after requested changes are received.'
+        : isApproved ? 'Standard onboarding is complete in this demo state.' : 'Profile setup follows verification.',
+      state: changesRequested ? 'pending' : isApproved ? 'verified' : 'pending',
+    },
+  ];
+
+  const renderStep = (stepLabel, index) => {
+    const isComplete = index < completedThrough || simulatedStatus === 'approved';
+    const isActive = !isComplete && index === 1;
+    const isChangeStep = changesRequested && index === 1;
+    const stepStatus = simulatedStatus === 'approved'
+      ? 'Completed'
+      : index === 0
+        ? 'Completed'
+        : index === 1
+          ? changesRequested ? 'Changes Requested' : 'In Review'
+          : index === 2
+            ? changesRequested ? 'Paused' : 'Pending'
+            : changesRequested ? 'Pending' : 'Final Step · Pending';
+
+    return (
+      <div className={`zorevi-step ${isComplete ? 'completed' : ''} ${isActive ? 'active' : ''} ${isChangeStep ? 'changes-requested' : ''}`} key={stepLabel}>
+        <span className="zorevi-step__circle">
+          {isComplete ? <Check size={18} /> : isChangeStep ? <AlertCircle size={17} /> : index + 1}
+        </span>
+        <span className="zorevi-step__label">{stepLabel}</span>
+        <span className="zorevi-step__date">{stepStatus}</span>
+      </div>
+    );
   };
 
-  const handleEnterDashboard = async () => {
-    await login('designer');
-    navigate('/designer');
-  };
+  const renderSubmittedDetails = () => (
+    <dl className="zorevi-submitted-details">
+      <div><dt>Full Name</dt><dd>{application.fullName || 'Not provided'}</dd></div>
+      <div><dt>Application ID</dt><dd>{application.applicationId}</dd></div>
+      <div><dt>WhatsApp Number</dt><dd>{application.whatsappNumber || application.phone || 'Not provided'}</dd></div>
+      <div><dt>Email</dt><dd>{application.email || 'Not provided'}</dd></div>
+      <div><dt>Location</dt><dd>{location || 'Not provided'}</dd></div>
+      <div><dt>Styling Skills</dt><dd>{skills.length ? skills.join(', ') : 'Not provided'}</dd></div>
+      <div><dt>Experience</dt><dd>{application.experience || 'Not provided'}</dd></div>
+      <div><dt>Starting Price / Hour</dt><dd>{Number.isFinite(startingPrice) ? `₹${startingPrice.toLocaleString('en-IN')} / hour` : 'Not provided'}</dd></div>
+      <div><dt>Submitted</dt><dd>{submittedDate}</dd></div>
+      <div><dt>Portfolio</dt><dd>{portfolioNames.length ? portfolioNames.join(', ') : 'No images added'}{application.portfolioLink ? ` · ${application.portfolioLink}` : ''}</dd></div>
+      <div><dt>Certificates</dt><dd>{certificateNames.length ? certificateNames.join(', ') : 'No certificates added'}</dd></div>
+      <div><dt>Government ID</dt><dd>{governmentIdReceived ? 'Document received' : 'Not provided'}</dd></div>
+    </dl>
+  );
 
   return (
     <div className="zorevi-status-page">
-      {/* Top Application Header */}
       <header className="zorevi-status-header">
         <Link to="/" className="zorevi-status-logo" aria-label="Zorevi Homepage">
-          <img
-            src="/images/zorevi-logo.png"
-            alt="Zorevi – Shopping | Happy | Stylish"
-            className="zorevi-status-logo-img"
-          />
+          <img src="/images/zorevi-logo.png" alt="Zorevi" className="zorevi-status-logo-img" />
         </Link>
-
-        <div className="zorevi-status-header__actions">
-          <Link to="/help" className="zorevi-status-header__help">
-            <HelpCircle size={15} style={{ verticalAlign: 'middle', marginRight: '4px' }} />
-            Help &amp; Support
-          </Link>
-          <Link to="/designer/login" className="zorevi-btn zorevi-btn--outline zorevi-btn--sm">
-            Designer Login
-          </Link>
-        </div>
+        <nav className="zorevi-status-header__actions" aria-label="Support and account">
+          <a className="zorevi-status-header__help" href="#designer-status-support">Help &amp; Support</a>
+          <Link to="/designer/login" className="zorevi-status-login">Designer Login</Link>
+        </nav>
       </header>
 
-      {/* Main Content Area */}
       <main className="zorevi-status-container">
-        <div className="zorevi-status-card">
-          {/* Card Header Banner */}
-          <div className="zorevi-status-card__header">
-            <div className="zorevi-status-card__header-left">
-              <img
-                src={savedApp.avatar || AAROHI_PROFILE_IMAGE}
-                alt={applicantName}
-                className="zorevi-status-avatar"
-              />
-              <div className="zorevi-status-meta">
-                <h1>{applicantName}</h1>
-                <div className="zorevi-status-meta-pills">
-                  <span className="zorevi-meta-pill id-pill">
-                    <FileText size={12} /> ID: {applicantId}
-                  </span>
-                  <span className="zorevi-meta-pill">
-                    <MapPin size={12} /> {applicantLocation}
-                  </span>
-                  <span className="zorevi-meta-pill">
-                    Submitted: {submissionDate}
-                  </span>
-                </div>
-              </div>
-            </div>
+        {loading && <section className="zorevi-status-empty" role="status">Loading your saved application…</section>}
 
-            {/* Current Status Badge */}
-            <div>
-              {status === 'pending' && (
-                <span className="zorevi-status-badge pending">
-                  <Clock size={16} /> Under Review
+        {!loading && application && (
+          <>
+            <section className="zorevi-status-card designer-status-dashboard">
+              <header className="zorevi-status-card__header">
+                <div className="zorevi-status-card__header-left">
+                  {typeof application.profileImage === 'string' && application.profileImage
+                    ? <img src={application.profileImage} alt={`${fullName} profile`} className="zorevi-status-avatar" />
+                    : <div className="zorevi-status-avatar zorevi-status-avatar--initials" aria-label={`${fullName} profile`}>{initials || <UserRound size={28} />}</div>}
+                  <div className="zorevi-status-meta">
+                    <p className="designer-status-eyebrow">DESIGNER APPLICATION</p>
+                    <h1>{fullName}</h1>
+                    <div className="zorevi-status-meta-pills">
+                      <span className="zorevi-meta-pill id-pill"><FileCheck2 size={14} />{application.applicationId}</span>
+                      {location && <span className="zorevi-meta-pill"><MapPin size={14} />{location}</span>}
+                      <span className="zorevi-meta-pill"><CalendarDays size={14} />Submitted {submittedDate}</span>
+                    </div>
+                  </div>
+                </div>
+                <span className={`zorevi-status-badge ${statusBadgeClass}`}>
+                  {isApproved ? <BadgeCheck size={17} /> : changesRequested ? <AlertCircle size={17} /> : <Clock size={17} />}
+                  {statusLabel}
                 </span>
-              )}
-              {status === 'approved' && (
-                <span className="zorevi-status-badge approved">
-                  <CheckCircle2 size={16} /> Approved &amp; Active
-                </span>
-              )}
-              {status === 'changes_requested' && (
-                <span className="zorevi-status-badge changes_requested">
-                  <AlertTriangle size={16} /> Action Required
-                </span>
-              )}
-            </div>
-          </div>
+              </header>
 
-          {/* Card Body */}
-          <div className="zorevi-status-card__body">
-            {/* Visual Multi-step Timeline */}
-            <div className="zorevi-stepper" aria-label="Application Progress">
-              <div className="zorevi-step completed">
-                <div className="zorevi-step__circle">
-                  <Check size={20} strokeWidth={2.5} />
+              <div className="zorevi-status-card__body">
+                <div className="zorevi-stepper" aria-label="Application progress">
+                  <span className="zorevi-stepper__progress" style={{ width: progressWidth }} aria-hidden="true" />
+                  {['Submitted', 'Portfolio & ID', 'Verification', 'Studio Live'].map(renderStep)}
                 </div>
-                <span className="zorevi-step__label">Submitted</span>
-                <span className="zorevi-step__date">16 Nov 2025</span>
+
+                <section className={`zorevi-status-section ${statusBadgeClass}`}>
+                  <div className="zorevi-status-section__header">
+                    <span className="zorevi-status-section__icon-wrap">
+                      {isApproved ? <BadgeCheck size={25} /> : changesRequested ? <AlertCircle size={25} /> : <ShieldCheck size={25} />}
+                    </span>
+                    <div>
+                      <h2 className="zorevi-status-section__title">{statusCopy.heading}</h2>
+                      <p className="zorevi-status-section__sub">{statusCopy.description}</p>
+                    </div>
+                  </div>
+
+                  {!isApproved && !changesRequested && (
+                    <p className="zorevi-status-turnaround"><Clock size={16} /> Estimated turnaround: within 24 hours</p>
+                  )}
+
+                  <div className="zorevi-checklist-grid">
+                    {verificationTiles.map(({ title, Icon, label, detail, state }) => (
+                      <article className="zorevi-checklist-item" key={title}>
+                        <span className={`zorevi-checklist-item__icon ${state}`}>
+                          {state === 'verified' ? <Check size={16} /> : <Icon size={16} />}
+                        </span>
+                        <span className="zorevi-checklist-item__info">
+                          <strong className="zorevi-checklist-item__title">{title}</strong>
+                          <span className="zorevi-checklist-item__desc">{detail}</span>
+                        </span>
+                        <span className={`zorevi-checklist-item__status ${state}`}>{label}</span>
+                      </article>
+                    ))}
+                  </div>
+
+                  {changesRequested && (
+                    <div className="zorevi-status-change-note" role="status">
+                      <AlertCircle size={18} />
+                      <span>Verification is paused. Review the submitted details and make any updates requested by the onboarding team.</span>
+                    </div>
+                  )}
+                  {isApproved && (
+                    <div className="zorevi-status-approved-note" role="status">
+                      <BadgeCheck size={18} />
+                      <span>Your designer application is approved and your studio is live.</span>
+                    </div>
+                  )}
+
+                  <div className="zorevi-status-action-box">
+                    <button
+                      type="button"
+                      className="zorevi-status-view-button"
+                      aria-expanded={showSubmittedApplication}
+                      aria-controls="submitted-application-details"
+                      onClick={() => setShowSubmittedApplication((visible) => !visible)}
+                    >
+                      {showSubmittedApplication ? 'Hide Submitted Application' : 'View Submitted Application'}
+                      <ArrowRight size={17} />
+                    </button>
+                    <span>Your submitted information is only visible in this browser demo.</span>
+                  </div>
+                </section>
+
+                {showSubmittedApplication && (
+                  <section className="zorevi-submitted-panel" id="submitted-application-details">
+                    <div className="zorevi-submitted-panel__heading">
+                      <h2>Submitted Application</h2>
+                      <span className={`zorevi-status-badge ${statusBadgeClass}`}>{statusLabel}</span>
+                    </div>
+                    {renderSubmittedDetails()}
+                  </section>
+                )}
               </div>
+            </section>
 
-              <div className={`zorevi-step ${status === 'approved' ? 'completed' : 'active'}`}>
-                <div className="zorevi-step__circle">
-                  {status === 'approved' ? <Check size={20} strokeWidth={2.5} /> : '2'}
-                </div>
-                <span className="zorevi-step__label">Portfolio &amp; ID</span>
-                <span className="zorevi-step__date">{status === 'approved' ? 'Verified' : 'In Review'}</span>
-              </div>
-
-              <div className={`zorevi-step ${status === 'approved' ? 'completed' : status === 'changes_requested' ? 'active' : ''}`}>
-                <div className="zorevi-step__circle">
-                  {status === 'approved' ? <Check size={20} strokeWidth={2.5} /> : '3'}
-                </div>
-                <span className="zorevi-step__label">Verification</span>
-                <span className="zorevi-step__date">{status === 'approved' ? 'Completed' : 'Pending'}</span>
-              </div>
-
-              <div className={`zorevi-step ${status === 'approved' ? 'completed' : ''}`}>
-                <div className="zorevi-step__circle">
-                  {status === 'approved' ? <Sparkles size={20} /> : '4'}
-                </div>
-                <span className="zorevi-step__label">Studio Live</span>
-                <span className="zorevi-step__date">{status === 'approved' ? 'Ready!' : 'Final Step'}</span>
-              </div>
-            </div>
-
-            {/* Dynamic Status Section */}
-            {status === 'pending' && (
-              <div className="zorevi-status-section pending">
-                <div className="zorevi-status-section__header">
-                  <div className="zorevi-status-section__icon-wrap">
-                    <Clock size={24} />
-                  </div>
-                  <div>
-                    <h3 className="zorevi-status-section__title">Application is Under Verification</h3>
-                    <p className="zorevi-status-section__sub">
-                      Our fashion onboarding team is reviewing your credentials, portfolio, and identity documents.
-                      Estimated turnaround is 24–48 hours.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Checklist */}
-                <div className="zorevi-checklist-grid">
-                  <div className="zorevi-checklist-item">
-                    <div className="zorevi-checklist-item__icon verified">
-                      <ShieldCheck size={16} />
-                    </div>
-                    <div className="zorevi-checklist-item__info">
-                      <span className="zorevi-checklist-item__title">Government ID Proof</span>
-                      <span className="zorevi-checklist-item__desc">Aadhaar card uploaded &amp; verified</span>
-                    </div>
-                  </div>
-
-                  <div className="zorevi-checklist-item">
-                    <div className="zorevi-checklist-item__icon verified">
-                      <ShieldCheck size={16} />
-                    </div>
-                    <div className="zorevi-checklist-item__info">
-                      <span className="zorevi-checklist-item__title">Studio / Business Proof</span>
-                      <span className="zorevi-checklist-item__desc">Boutique address in Banjara Hills</span>
-                    </div>
-                  </div>
-
-                  <div className="zorevi-checklist-item">
-                    <div className="zorevi-checklist-item__icon reviewing">
-                      <Clock size={16} />
-                    </div>
-                    <div className="zorevi-checklist-item__info">
-                      <span className="zorevi-checklist-item__title">Portfolio Review (8 Looks)</span>
-                      <span className="zorevi-checklist-item__desc">Fashion curator evaluation in progress</span>
-                    </div>
-                  </div>
-
-                  <div className="zorevi-checklist-item">
-                    <div className="zorevi-checklist-item__icon reviewing">
-                      <Clock size={16} />
-                    </div>
-                    <div className="zorevi-checklist-item__info">
-                      <span className="zorevi-checklist-item__title">Standard Package Onboarding</span>
-                      <span className="zorevi-checklist-item__desc">₹499 / 2 hours base consultation</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="zorevi-status-action-box">
-                  <Link to="/designer/apply" className="zorevi-btn zorevi-btn--outline zorevi-btn--sm">
-                    View Submitted Application
-                  </Link>
-                  <Link to="/help" className="zorevi-btn zorevi-btn--ghost zorevi-btn--sm">
-                    Have questions? Contact Concierge
-                  </Link>
+            <section className="zorevi-support-card" id="designer-status-support">
+              <div className="zorevi-support-card__left">
+                <span className="zorevi-support-card__icon"><Mail size={21} /></span>
+                <div>
+                  <h2>Need assistance with your verification?</h2>
+                  <p>Our onboarding support team can help with application questions. Demo contact details:</p>
                 </div>
               </div>
-            )}
+              <div className="zorevi-support-card__contacts">
+                <a className="zorevi-support-pill" href="mailto:support@zorevi.example"><Mail size={15} />support@zorevi.example <small>Demo</small></a>
+                <a className="zorevi-support-pill" href="tel:+910000000000"><Phone size={15} />+91 00000 00000 <small>Demo</small></a>
+              </div>
+            </section>
 
-            {status === 'approved' && (
-              <div className="zorevi-status-section approved">
-                <div className="zorevi-status-section__header">
-                  <div className="zorevi-status-section__icon-wrap">
-                    <CheckCircle2 size={26} />
-                  </div>
-                  <div>
-                    <h3 className="zorevi-status-section__title">Congratulations! Your Designer Studio is Active!</h3>
-                    <p className="zorevi-status-section__sub">
-                      Your credentials and portfolio have passed verification. You are now featured across Zorevi Hyderabad designer discovery and mall styling listings.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="zorevi-checklist-grid">
-                  <div className="zorevi-checklist-item">
-                    <div className="zorevi-checklist-item__icon verified">
-                      <Check size={16} />
-                    </div>
-                    <div className="zorevi-checklist-item__info">
-                      <span className="zorevi-checklist-item__title">Verified Badge Granted</span>
-                      <span className="zorevi-checklist-item__desc">Displaying on all customer search cards</span>
-                    </div>
-                  </div>
-
-                  <div className="zorevi-checklist-item">
-                    <div className="zorevi-checklist-item__icon verified">
-                      <Check size={16} />
-                    </div>
-                    <div className="zorevi-checklist-item__info">
-                      <span className="zorevi-checklist-item__title">Direct Booking Enabled</span>
-                      <span className="zorevi-checklist-item__desc">Customers can book 2-hour styling sessions</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="zorevi-status-action-box">
+            <section className="zorevi-status-simulator" aria-label="Approval state demo simulator">
+              <div className="zorevi-status-simulator__label"><AlertCircle size={16} /> Interactive Simulator: Test Different Approval States</div>
+              <div className="zorevi-status-simulator__btns">
+                {STATUS_OPTIONS.map((option) => (
                   <button
+                    className={`zorevi-sim-btn ${simulatedStatus === option.id ? 'active' : ''}`}
                     type="button"
-                    className="zorevi-btn zorevi-btn--primary zorevi-btn--lg"
-                    onClick={handleEnterDashboard}
+                    key={option.id}
+                    aria-pressed={simulatedStatus === option.id}
+                    onClick={() => setSimulatedStatus(option.id)}
                   >
-                    <span>Enter Designer Studio</span>
-                    <ArrowRight size={18} />
+                    {option.label}
                   </button>
-                </div>
+                ))}
               </div>
-            )}
+              <p className="zorevi-status-simulator__hint">Demo/testing only. Changing the simulator does not update the saved application.</p>
+            </section>
+          </>
+        )}
 
-            {status === 'changes_requested' && (
-              <div className="zorevi-status-section changes_requested">
-                <div className="zorevi-status-section__header">
-                  <div className="zorevi-status-section__icon-wrap">
-                    <AlertTriangle size={24} />
-                  </div>
-                  <div>
-                    <h3 className="zorevi-status-section__title">Note from Verification Concierge</h3>
-                    <p className="zorevi-status-section__sub">
-                      "Please upload a higher-resolution image for your Government ID (Aadhaar or PAN) and clarify your studio service radius in Hyderabad to complete verification."
-                    </p>
-                  </div>
-                </div>
-
-                <div className="zorevi-status-action-box">
-                  <Link to="/designer/apply" className="zorevi-btn zorevi-btn--primary">
-                    <span>Update Application Details</span>
-                    <ArrowRight size={16} />
-                  </Link>
-                </div>
+        {!loading && !application && (
+          <section className="zorevi-status-empty">
+            <span className="zorevi-status-empty__icon">{error ? <AlertCircle size={25} /> : <FileCheck2 size={25} />}</span>
+            <h1>{error ? 'Application not found' : 'Check your application status'}</h1>
+            <p>{error || 'Enter your application ID to retrieve its saved status from this browser.'}</p>
+            <form className="designer-status-search" onSubmit={handleLookup}>
+              <label htmlFor="application-id-lookup">Application ID</label>
+              <div>
+                <input id="application-id-lookup" value={applicationId} onChange={(event) => setApplicationId(event.target.value)} placeholder="e.g. DSN-2026-482731" autoComplete="off" />
+                <button type="submit" className="zorevi-btn zorevi-btn--primary" disabled={!applicationId.trim()}>
+                  Search <ArrowRight size={16} />
+                </button>
               </div>
-            )}
-          </div>
-        </div>
-
-        {/* Support & Concierge Card */}
-        <div className="zorevi-support-card">
-          <div className="zorevi-support-card__left">
-            <div className="zorevi-support-card__icon">
-              <Mail size={22} />
-            </div>
-            <div>
-              <h4>Need assistance with your verification?</h4>
-              <p>Our designer onboarding team is available Mon–Sat, 9:00 AM – 7:00 PM IST.</p>
-            </div>
-          </div>
-          <div className="zorevi-support-card__contacts">
-            <a href="mailto:concierge@zorevi.in" className="zorevi-support-pill">
-              <Mail size={14} /> concierge@zorevi.in
-            </a>
-            <a href="tel:+919876543210" className="zorevi-support-pill">
-              <Phone size={14} /> +91 98765 43210
-            </a>
-          </div>
-        </div>
-
-        {/* Demo Simulator Toolbar */}
-        <div className="zorevi-status-simulator">
-          <div className="zorevi-status-simulator__label">
-            <RefreshCw size={13} /> Interactive Simulator: Test Different Approval States
-          </div>
-          <div className="zorevi-status-simulator__btns">
-            <button
-              type="button"
-              className={`zorevi-sim-btn ${status === 'pending' ? 'active' : ''}`}
-              onClick={() => setStatus('pending')}
-            >
-              Pending (Under Review)
-            </button>
-            <button
-              type="button"
-              className={`zorevi-sim-btn ${status === 'approved' ? 'active' : ''}`}
-              onClick={handleSimulateApproved}
-            >
-              Approved (Studio Live)
-            </button>
-            <button
-              type="button"
-              className={`zorevi-sim-btn ${status === 'changes_requested' ? 'active' : ''}`}
-              onClick={handleSimulateChanges}
-            >
-              Changes Requested
-            </button>
-          </div>
-        </div>
+            </form>
+            <Link to="/designer/apply" className="zorevi-status-empty__back">Return to designer application</Link>
+          </section>
+        )}
       </main>
     </div>
   );
